@@ -5,12 +5,16 @@
 #include <d3dx11.h>
 #include <d3dcompiler.h>
 
+#include <xnamath.h>
+
 #include "framework.h"
 #include "main.h"
 #include "pch.h"
 
 #define MAX_LOADSTRING (100)
 #define SHADER_BUFFER_SIZE (2048)
+
+// struct
 
 struct FLOAT3 {
     float x;
@@ -26,6 +30,122 @@ struct SimpleVertex
     FLOAT3 Pos; //<xnamath.h>
 };
 
+// For SIMD
+typedef struct Vector4{
+    union 
+    {
+        __m128 m;// <xnamath.h>
+        struct
+        {
+            float x;
+            float y;
+            float z;
+            float a;
+        };
+    };
+    Vector4() 
+    {}
+    Vector4(float _x, float _y, float _z, float _a) {
+        m = _mm_set_ps(_a, _z, _y, _x);
+    }
+    Vector4(const Vector4& _other) {
+        m = _mm_set_ps(_other.a, _other.z, _other.y, _other.x);
+    }
+    static __m128 SetVector4(const Vector4& _other) {
+        return _mm_set_ps(_other.a, _other.z, _other.y, _other.x);
+    }
+
+    static __m128 SetVector4(float _x, float _y, float _z, float _a) {
+        return _mm_set_ps(_a, _z, _y, _x);
+    }
+};
+
+typedef struct Matrix {
+    union
+    {
+        Vector4 m[4]; 
+        struct
+        {
+            float _11, _12, _13, _14;
+            float _21, _22, _23, _24;
+            float _31, _32, _33, _34;
+            float _41, _42, _43, _44;
+        };
+        float r[4][4];
+    };
+    // Operator Overload
+    Matrix() 
+    {
+        m[0] = Vector4();
+        m[1] = Vector4();
+        m[2] = Vector4();
+        m[3] = Vector4();
+    };
+    Matrix(Vector4 v0, Vector4 v1, Vector4 v2, Vector4 v3) {
+        m[0].m = Vector4::SetVector4(v0); 
+        m[1].m = Vector4::SetVector4(v1);
+        m[2].m = Vector4::SetVector4(v2);
+        m[3].m = Vector4::SetVector4(v3);
+    }
+    Matrix(float m00, float m01, float m02, float m03,
+        float m10, float m11, float m12, float m13,
+        float m20, float m21, float m22, float m23,
+        float m30, float m31, float m32, float m33)
+    {
+        m[0].m = Vector4::SetVector4(m00, m01, m02, m03);
+        m[1].m = Vector4::SetVector4(m10, m11, m12, m13);
+        m[2].m = Vector4::SetVector4(m20, m21, m22, m23);
+        m[3].m = Vector4::SetVector4(m30, m31, m32, m33);
+    }
+    Matrix(const float* pArray) {
+        const float* p = pArray;
+        for (size_t i = 0; i < 4; i++) {
+            m[i].m = Vector4::SetVector4(pArray[i * 4], pArray[i * 4 + 1], pArray[i * 4 + 2], pArray[i * 4 + 3]);
+        }
+    }
+    Matrix(const Matrix& _other) {
+        m[0] = _other.m[0];
+        m[1] = _other.m[1];
+        m[2] = _other.m[2];
+        m[3] = _other.m[3];
+    }
+    
+    float operator() (UINT Row, UINT Col) const { return r[Row][Col]; }
+    float& operator() (UINT Row, UINT Col) { return r[Row][Col]; }
+       
+    Matrix& operator=(const Matrix& _M) {
+        for (size_t i = 0; i < 4; i++) {
+            m[i].m = Vector4::SetVector4(_M.m[i]);
+        }
+    }
+
+    Matrix& operator*=(const Matrix & _M) {
+        m[0].m = _mm_mul_ps(m[0].m, _M.m[0].m);
+        m[1].m = _mm_mul_ps(m[1].m, _M.m[1].m);
+        m[2].m = _mm_mul_ps(m[2].m, _M.m[2].m);
+        m[3].m = _mm_mul_ps(m[3].m, _M.m[3].m);
+
+        return *this;
+    }
+
+    Matrix operator*(const Matrix& _M) const{
+        Matrix mat;
+        mat.m[0].m = _mm_mul_ps(m[0].m, _M.m[0].m);
+        mat.m[1].m = _mm_mul_ps(m[1].m, _M.m[1].m);
+        mat.m[2].m = _mm_mul_ps(m[2].m, _M.m[2].m);
+        mat.m[3].m = _mm_mul_ps(m[3].m, _M.m[3].m);
+
+        return mat;
+    }
+
+    static Matrix MatrixTranspose(const Matrix& _other){
+        return Matrix(
+            _other._11, _other._21, _other._31, _other._41,
+            _other._12, _other._22, _other._32, _other._42,
+            _other._13, _other._23, _other._33, _other._43,
+            _other._14, _other._24, _other._34, _other._44);
+    }
+};
 // =================
 // ====전역  변수====
 // =================
@@ -44,6 +164,7 @@ ID3D11VertexShader*         g_pVertexShader = nullptr;
 ID3D11PixelShader*          g_pPixelShader = nullptr;
 ID3D11InputLayout*          g_pVertexLayout = nullptr;
 ID3D11Buffer*               g_pVertexBuffer = nullptr;
+// Transform Matrices
 
 
 // 전역 프로퍼티
@@ -59,6 +180,7 @@ INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 bool                InitDevice();
 void                CleanupDevice();
 bool                SetTriangle();
+bool                SetCube();
 void                Render();
 bool                CompileShaderFromFile(const wchar_t* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
 
@@ -91,9 +213,34 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
+    
+#if 0 // 삼각형 그릴 준비
     if (!SetTriangle()) {
         return FALSE;
     }
+#endif 
+#if 0 // 매트릭스 테스트
+    Matrix mat1(1.f, 2.f, 3.f, 4.f, 
+        5.f, 6.f, 7.f, 8.f, 
+        9.f, 10.f, 11.f, 12.f, 
+        13.f, 14.f, 15.f, 16.f);
+
+    Matrix mat2(1.f, 2.f, 3.f, 4.f,
+        5.f, 6.f, 7.f, 8.f,
+        9.f, 10.f, 11.f, 12.f,
+        13.f, 14.f, 15.f, 16.f);
+
+    Matrix matResult = mat1 * mat2;
+    Matrix matTranspose = Matrix::MatrixTranspose(mat1);
+    
+#endif
+#if 1 // 큐브 그릴 준비
+    if (!SetCube()) {
+
+    }
+#endif
+    
+
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_PROJECT1));
 
@@ -346,7 +493,7 @@ bool SetTriangle()
         return false;
     }
 
-    // Input layer 정의
+    // Vertex Input layer 정의
     D3D11_INPUT_ELEMENT_DESC layout[] =
     {
         {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
@@ -394,11 +541,11 @@ bool SetTriangle()
     bd.ByteWidth = sizeof(SimpleVertex) * 3;
     bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
     bd.CPUAccessFlags = 0;
-
+    // 버텍스 버퍼의 데이터를 세팅한다.
     D3D11_SUBRESOURCE_DATA InitData;
     memset(&InitData, 0, sizeof(InitData));
     InitData.pSysMem = vertices;
-
+    // 디바이스를 버퍼를 초기화하면서 만들어준다.
     hr = g_pd3Device->CreateBuffer(&bd, &InitData, &g_pVertexBuffer);
     if (FAILED(hr)) {
         return false;
@@ -414,6 +561,11 @@ bool SetTriangle()
     g_pd3DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     return true;
+}
+
+bool SetCube()
+{
+    return false;
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
