@@ -3,22 +3,48 @@
 
 #include <d3d11.h>
 #include <d3dx11.h>
+#include <d3dcompiler.h>
 
 #include "framework.h"
 #include "main.h"
 #include "pch.h"
 
-#define MAX_LOADSTRING 100
+#define MAX_LOADSTRING (100)
+#define SHADER_BUFFER_SIZE (2048)
 
-// 전역 변수:
+struct FLOAT3 {
+    float x;
+    float y;
+    float z;
+
+    FLOAT3(float _x, float _y, float _z) :x(_x),y(_y),z(_z){}
+    FLOAT3():x(0.f),y(0.f),z(0.f){}
+};
+
+struct SimpleVertex
+{
+    FLOAT3 Pos; //<xnamath.h>
+};
+
+// =================
+// ====전역  변수====
+// =================
+// Win32
 HINSTANCE                   g_hInst = nullptr;  // 현재 인스턴스
 HWND                        g_hWnd = nullptr;   // 윈도우 핸들
+// d3d
 D3D_DRIVER_TYPE             g_driverType = D3D_DRIVER_TYPE_NULL; // 드라이버 종류
 D3D_FEATURE_LEVEL           g_featureLevel = D3D_FEATURE_LEVEL_11_1; // 사용할 directx 버전(?)
 ID3D11Device*               g_pd3Device = nullptr; // 리소스를 만들고, 디스플레이 어뎁터 기능을 사용하게 하는 것
 ID3D11DeviceContext*        g_pd3DeviceContext = nullptr; // 디바이스로 하여금 파이프라인 상태를 제어하여, 렌더링 명령을 내리는데 사용한다.
 IDXGISwapChain*             g_pSwapChain = nullptr; // 더블 버퍼링을 위한 Surface(IDXGISurface)를 구성하는데 사용한다.
 ID3D11RenderTargetView*     g_pRenderTargetView = nullptr;
+// Shader and Property
+ID3D11VertexShader*         g_pVertexShader = nullptr;
+ID3D11PixelShader*          g_pPixelShader = nullptr;
+ID3D11InputLayout*          g_pVertexLayout = nullptr;
+ID3D11Buffer*               g_pVertexBuffer = nullptr;
+
 
 // 전역 프로퍼티
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트
@@ -32,7 +58,9 @@ INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
 bool                InitDevice();
 void                CleanupDevice();
+bool                SetTriangle();
 void                Render();
+bool                CompileShaderFromFile(const wchar_t* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
 
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -60,6 +88,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     // DirectX 디바이스 초기화를 한다.
     if (!InitDevice()) {
+        return FALSE;
+    }
+
+    if (!SetTriangle()) {
         return FALSE;
     }
 
@@ -160,7 +192,7 @@ bool InitDevice()
     };
     UINT numFeatureLevels = ARRAYSIZE(featureLevels);
 
-    // 스왑 체인 프로퍼티를 설정한다.
+    // 스왑 체인 디스크라이브를 설정한다.
     DXGI_SWAP_CHAIN_DESC sd;
     memset(&sd, 0, sizeof(sd));
     sd.BufferCount = 1;
@@ -227,12 +259,55 @@ bool InitDevice()
 
 void Render()
 {
-    float ClearColor[4] = { 0.f, 0.125f, 0.3f, 1.f };
     // 렌더 타겟 뷰를 디바이스 컨텍스트에서 특정 색으로 싹 깔끔하게 해준다.
+    float ClearColor[4] = { 0.f, 0.125f, 0.3f, 1.f };
     g_pd3DeviceContext->ClearRenderTargetView(g_pRenderTargetView, ClearColor);
+
+    g_pd3DeviceContext->VSSetShader(g_pVertexShader, nullptr, 0);
+    g_pd3DeviceContext->PSSetShader(g_pPixelShader, nullptr, 0);
+    g_pd3DeviceContext->Draw(3, 0);
+
+    // 백 버퍼를 프론트 버퍼로 보여준다.
     g_pSwapChain->Present(0, 0);
 }
 
+bool CompileShaderFromFile(const wchar_t* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut)
+{
+    HRESULT hr;
+
+    BYTE* data = new BYTE[SHADER_BUFFER_SIZE];
+    FILE* file = nullptr;
+    _wfopen_s(&file, szFileName, L"rb");
+    assert(file != nullptr);
+
+    fseek(file, 0, SEEK_END);
+    unsigned long iDataSize = ftell(file);
+    fseek(file, 0, SEEK_SET);
+    fread(data, sizeof(BYTE), (size_t)iDataSize, file);
+    data[(size_t)iDataSize] = '\0';
+
+    fclose(file);
+
+    DWORD dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS; // <d3dcompiler.h>
+#if defined(DEBUG) || defined(_DEBUG)
+    dwShaderFlags |= D3DCOMPILE_DEBUG;
+#endif
+
+    ID3DBlob* pErrorBlob = nullptr;
+    hr = D3DCompile2(data, (size_t)iDataSize, nullptr, nullptr, nullptr, szEntryPoint, szShaderModel, 0, 0, 0, 0, 0, ppBlobOut, &pErrorBlob);
+    if (FAILED(hr)) {
+        if (pErrorBlob != NULL)
+            OutputDebugStringA((char*)pErrorBlob->GetBufferPointer());
+        if (pErrorBlob) 
+            pErrorBlob->Release();
+        return false;
+    }
+    if (pErrorBlob) {
+        pErrorBlob->Release();
+    }
+
+    return true;
+}
 
 void CleanupDevice()
 {
@@ -240,22 +315,105 @@ void CleanupDevice()
     if (g_pd3DeviceContext) {
         g_pd3DeviceContext->ClearState();
     }
+
     // 얘네는 다 COM 객체 들이여서 이렇게 해제를 해줘야 한다.
-    if(g_pRenderTargetView){
-        g_pRenderTargetView->Release();
+    // 해제하는 순서는 잘 모르겠다.
+    if (g_pVertexBuffer) g_pVertexBuffer->Release();
+    if (g_pVertexLayout) g_pVertexLayout->Release();
+    if (g_pVertexShader) g_pVertexShader->Release();
+    if (g_pPixelShader) g_pPixelShader->Release();
+    if (g_pRenderTargetView) g_pRenderTargetView->Release();
+    if (g_pSwapChain) g_pSwapChain->Release();
+    if (g_pd3DeviceContext) g_pd3DeviceContext->Release();
+    if (g_pd3Device) g_pd3Device->Release();
+}
+
+bool SetTriangle()
+{
+    HRESULT hr = S_OK;
+
+    // 버텍스 쉐이더 컴파일
+    ID3DBlob* pVSBlob = nullptr;
+    bool Result = CompileShaderFromFile(L"Tutorial02.fx", "VS", "vs_4_0", &pVSBlob);
+    if (!Result) {
+        return false;
     }
 
-    if (g_pSwapChain) {
-        g_pSwapChain->Release();
+    // 버텍스 쉐이터 만들기
+    hr = g_pd3Device->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), nullptr, &g_pVertexShader);
+    if (FAILED(hr)) {
+        pVSBlob->Release();
+        return false;
     }
 
-    if (g_pd3DeviceContext) {
-        g_pd3DeviceContext->Release();
+    // Input layer 정의
+    D3D11_INPUT_ELEMENT_DESC layout[] =
+    {
+        {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+    };
+    UINT numElements = ARRAYSIZE(layout);
+
+    //  input layout 만들기
+    hr = g_pd3Device->CreateInputLayout(
+        layout, numElements, pVSBlob->GetBufferPointer(),
+        pVSBlob->GetBufferSize(), &g_pVertexLayout);
+
+    pVSBlob->Release();
+
+    if (FAILED(hr))
+        return false;
+
+    // input layout 세팅하기
+    g_pd3DeviceContext->IASetInputLayout(g_pVertexLayout);
+
+    // 픽셀 쉐이더 컴파일
+    ID3DBlob* pPSBlob = nullptr;
+    Result = CompileShaderFromFile(L"Tutorial02.fx", "PS", "ps_4_0", &pPSBlob);
+    if (!Result) {
+        return false;
     }
 
-    if (g_pd3Device) {
-        g_pd3Device->Release();
+    // 버텍스 쉐이터 만들기
+    hr = g_pd3Device->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, &g_pPixelShader);
+    if (FAILED(hr)) {
+        return false;
     }
+
+    // 버텍스 버퍼 만들기
+    SimpleVertex vertices[] =
+    {
+        FLOAT3(0.f, 0.5f, 0.5f),
+        FLOAT3(0.5f, -0.5f, 0.5f),
+        FLOAT3(-0.5f, -0.5f, 0.5f)
+    };
+
+    // 버텍스 버퍼 디스크라이브를 지정한다.
+    D3D11_BUFFER_DESC bd;
+    memset(&bd, 0, sizeof(bd));
+    bd.Usage = D3D11_USAGE_DEFAULT;
+    bd.ByteWidth = sizeof(SimpleVertex) * 3;
+    bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    bd.CPUAccessFlags = 0;
+
+    D3D11_SUBRESOURCE_DATA InitData;
+    memset(&InitData, 0, sizeof(InitData));
+    InitData.pSysMem = vertices;
+
+    hr = g_pd3Device->CreateBuffer(&bd, &InitData, &g_pVertexBuffer);
+    if (FAILED(hr)) {
+        return false;
+    }
+
+    // 버텍스 버퍼를 세팅한다.
+    UINT stride = sizeof(SimpleVertex);
+    UINT offset = 0;
+    // 버텍스 버퍼를 Input - Assembly 상태로 만든다.
+    g_pd3DeviceContext->IASetVertexBuffers(0, 1, &g_pVertexBuffer, &stride, &offset);
+
+    // primitive topology는 간단하게 리스트로 설정한다.
+    g_pd3DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+    return true;
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)

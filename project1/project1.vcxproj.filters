@@ -8,6 +8,9 @@
     <Filter Include="Default">
       <UniqueIdentifier>{068d996b-ca2c-4611-b03c-5dedbe804fc0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{6307f046-a538-41db-8745-c72957ae1981}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -37,5 +40,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Tutorial02.fx">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Text.cpp" />
   </ItemGroup>
 </Project>
