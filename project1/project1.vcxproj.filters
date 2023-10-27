@@ -46,5 +46,8 @@
       <Filter>Shader</Filter>
     </None>
     <None Include="Text.cpp" />
+    <None Include="Tutorial04.fx">
+      <Filter>Shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

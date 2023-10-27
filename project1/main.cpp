@@ -14,138 +14,6 @@
 #define MAX_LOADSTRING (100)
 #define SHADER_BUFFER_SIZE (2048)
 
-// struct
-
-struct FLOAT3 {
-    float x;
-    float y;
-    float z;
-
-    FLOAT3(float _x, float _y, float _z) :x(_x),y(_y),z(_z){}
-    FLOAT3():x(0.f),y(0.f),z(0.f){}
-};
-
-struct SimpleVertex
-{
-    FLOAT3 Pos; //<xnamath.h>
-};
-
-// For SIMD
-typedef struct Vector4{
-    union 
-    {
-        __m128 m;// <xnamath.h>
-        struct
-        {
-            float x;
-            float y;
-            float z;
-            float a;
-        };
-    };
-    Vector4() 
-    {}
-    Vector4(float _x, float _y, float _z, float _a) {
-        m = _mm_set_ps(_a, _z, _y, _x);
-    }
-    Vector4(const Vector4& _other) {
-        m = _mm_set_ps(_other.a, _other.z, _other.y, _other.x);
-    }
-    static __m128 SetVector4(const Vector4& _other) {
-        return _mm_set_ps(_other.a, _other.z, _other.y, _other.x);
-    }
-
-    static __m128 SetVector4(float _x, float _y, float _z, float _a) {
-        return _mm_set_ps(_a, _z, _y, _x);
-    }
-};
-
-typedef struct Matrix {
-    union
-    {
-        Vector4 m[4]; 
-        struct
-        {
-            float _11, _12, _13, _14;
-            float _21, _22, _23, _24;
-            float _31, _32, _33, _34;
-            float _41, _42, _43, _44;
-        };
-        float r[4][4];
-    };
-    // Operator Overload
-    Matrix() 
-    {
-        m[0] = Vector4();
-        m[1] = Vector4();
-        m[2] = Vector4();
-        m[3] = Vector4();
-    };
-    Matrix(Vector4 v0, Vector4 v1, Vector4 v2, Vector4 v3) {
-        m[0].m = Vector4::SetVector4(v0); 
-        m[1].m = Vector4::SetVector4(v1);
-        m[2].m = Vector4::SetVector4(v2);
-        m[3].m = Vector4::SetVector4(v3);
-    }
-    Matrix(float m00, float m01, float m02, float m03,
-        float m10, float m11, float m12, float m13,
-        float m20, float m21, float m22, float m23,
-        float m30, float m31, float m32, float m33)
-    {
-        m[0].m = Vector4::SetVector4(m00, m01, m02, m03);
-        m[1].m = Vector4::SetVector4(m10, m11, m12, m13);
-        m[2].m = Vector4::SetVector4(m20, m21, m22, m23);
-        m[3].m = Vector4::SetVector4(m30, m31, m32, m33);
-    }
-    Matrix(const float* pArray) {
-        const float* p = pArray;
-        for (size_t i = 0; i < 4; i++) {
-            m[i].m = Vector4::SetVector4(pArray[i * 4], pArray[i * 4 + 1], pArray[i * 4 + 2], pArray[i * 4 + 3]);
-        }
-    }
-    Matrix(const Matrix& _other) {
-        m[0] = _other.m[0];
-        m[1] = _other.m[1];
-        m[2] = _other.m[2];
-        m[3] = _other.m[3];
-    }
-    
-    float operator() (UINT Row, UINT Col) const { return r[Row][Col]; }
-    float& operator() (UINT Row, UINT Col) { return r[Row][Col]; }
-       
-    Matrix& operator=(const Matrix& _M) {
-        for (size_t i = 0; i < 4; i++) {
-            m[i].m = Vector4::SetVector4(_M.m[i]);
-        }
-    }
-
-    Matrix& operator*=(const Matrix & _M) {
-        m[0].m = _mm_mul_ps(m[0].m, _M.m[0].m);
-        m[1].m = _mm_mul_ps(m[1].m, _M.m[1].m);
-        m[2].m = _mm_mul_ps(m[2].m, _M.m[2].m);
-        m[3].m = _mm_mul_ps(m[3].m, _M.m[3].m);
-
-        return *this;
-    }
-
-    Matrix operator*(const Matrix& _M) const{
-        Matrix mat;
-        mat.m[0].m = _mm_mul_ps(m[0].m, _M.m[0].m);
-        mat.m[1].m = _mm_mul_ps(m[1].m, _M.m[1].m);
-        mat.m[2].m = _mm_mul_ps(m[2].m, _M.m[2].m);
-        mat.m[3].m = _mm_mul_ps(m[3].m, _M.m[3].m);
-
-        return mat;
-    }
-
-    static Matrix MatrixTranspose(const Matrix& _other){
-        return Matrix(
-            _other._11, _other._21, _other._31, _other._41,
-            _other._12, _other._22, _other._32, _other._42,
-            _other._13, _other._23, _other._33, _other._43,
-            _other._14, _other._24, _other._34, _other._44);
-    }
-};
 // =================
 // ====전역  변수====
 // =================
@@ -155,17 +23,23 @@ HWND                        g_hWnd = nullptr;   // 윈도우 핸들
 // d3d
 D3D_DRIVER_TYPE             g_driverType = D3D_DRIVER_TYPE_NULL; // 드라이버 종류
 D3D_FEATURE_LEVEL           g_featureLevel = D3D_FEATURE_LEVEL_11_1; // 사용할 directx 버전(?)
-ID3D11Device*               g_pd3Device = nullptr; // 리소스를 만들고, 디스플레이 어뎁터 기능을 사용하게 하는 것
-ID3D11DeviceContext*        g_pd3DeviceContext = nullptr; // 디바이스로 하여금 파이프라인 상태를 제어하여, 렌더링 명령을 내리는데 사용한다.
+ID3D11Device*               g_pd3dDevice = nullptr; // 리소스를 만들고, 디스플레이 어뎁터 기능을 사용하게 하는 것
+ID3D11DeviceContext*        g_pd3dDeviceContext = nullptr; // 디바이스로 하여금 파이프라인 상태를 제어하여, 렌더링 명령을 내리는데 사용한다.
 IDXGISwapChain*             g_pSwapChain = nullptr; // 더블 버퍼링을 위한 Surface(IDXGISurface)를 구성하는데 사용한다.
 ID3D11RenderTargetView*     g_pRenderTargetView = nullptr;
 // Shader and Property
 ID3D11VertexShader*         g_pVertexShader = nullptr;
 ID3D11PixelShader*          g_pPixelShader = nullptr;
-ID3D11InputLayout*          g_pVertexLayout = nullptr;
-ID3D11Buffer*               g_pVertexBuffer = nullptr;
-// Transform Matrices
+// Vetex and Indices
+ID3D11InputLayout* g_pVertexLayout = nullptr;
+ID3D11Buffer* g_pVertexBuffer = nullptr;
+ID3D11Buffer* g_pIndexBuffer = NULL;
+ID3D11Buffer* g_pConstantBuffer = NULL;
 
+// Transform Matrices
+Matrix                      g_WorldMat;
+Matrix                      g_ViewMat;
+Matrix                      g_ProjectiondMat;
 
 // 전역 프로퍼티
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트
@@ -177,12 +51,16 @@ bool                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
+// D3D
 bool                InitDevice();
 void                CleanupDevice();
+
+// Helper
+bool                CompileShaderFromFile(const wchar_t* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
+
+void                Render();
 bool                SetTriangle();
 bool                SetCube();
-void                Render();
-bool                CompileShaderFromFile(const wchar_t* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
 
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -214,7 +92,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     }
 
     
-#if 0 // 삼각형 그릴 준비
+#if 1 // 삼각형 그릴 준비
     if (!SetTriangle()) {
         return FALSE;
     }
@@ -234,7 +112,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     Matrix matTranspose = Matrix::MatrixTranspose(mat1);
     
 #endif
-#if 1 // 큐브 그릴 준비
+#if 0 // 큐브 그릴 준비
     if (!SetCube()) {
 
     }
@@ -361,7 +239,7 @@ bool InitDevice()
         hr = D3D11CreateDeviceAndSwapChain(
             nullptr, g_driverType, nullptr, createDeviceFlags,
             featureLevels, numFeatureLevels, D3D11_SDK_VERSION,
-            &sd, &g_pSwapChain,&g_pd3Device, &g_featureLevel, &g_pd3DeviceContext
+            &sd, &g_pSwapChain,&g_pd3dDevice, &g_featureLevel, &g_pd3dDeviceContext
         ); // 원래는 디바이스 생성과 스왑 체인 생성이 따로 이뤄지고, 그것을 나중에 결합하게 된다.
         if (SUCCEEDED(hr)) {
             break;
@@ -381,14 +259,14 @@ bool InitDevice()
         return false;
     }
 
-    hr = g_pd3Device->CreateRenderTargetView(pBackBuffer, nullptr, &g_pRenderTargetView);
+    hr = g_pd3dDevice->CreateRenderTargetView(pBackBuffer, nullptr, &g_pRenderTargetView);
     pBackBuffer->Release();
     if (FAILED(hr)) {
         return false;
     }
 
     // 렌더타겟과 깊이 스텐실 버퍼를 Output-Merge 상태로 바인딩 한다.
-    g_pd3DeviceContext->OMSetRenderTargets(1, &g_pRenderTargetView, nullptr);
+    g_pd3dDeviceContext->OMSetRenderTargets(1, &g_pRenderTargetView, nullptr);
 
     // 뷰포트를 설정한다.
     D3D11_VIEWPORT vp;
@@ -399,7 +277,7 @@ bool InitDevice()
     vp.TopLeftX = 0;
     vp.TopLeftY = 0;
     // 뷰포트 구조체를 레스터라이즈 단계에 바인딩 한다.
-    g_pd3DeviceContext->RSSetViewports(1, &vp);
+    g_pd3dDeviceContext->RSSetViewports(1, &vp);
 
     return true;
 }
@@ -408,11 +286,11 @@ void Render()
 {
     // 렌더 타겟 뷰를 디바이스 컨텍스트에서 특정 색으로 싹 깔끔하게 해준다.
     float ClearColor[4] = { 0.f, 0.125f, 0.3f, 1.f };
-    g_pd3DeviceContext->ClearRenderTargetView(g_pRenderTargetView, ClearColor);
+    g_pd3dDeviceContext->ClearRenderTargetView(g_pRenderTargetView, ClearColor);
 
-    g_pd3DeviceContext->VSSetShader(g_pVertexShader, nullptr, 0);
-    g_pd3DeviceContext->PSSetShader(g_pPixelShader, nullptr, 0);
-    g_pd3DeviceContext->Draw(3, 0);
+    g_pd3dDeviceContext->VSSetShader(g_pVertexShader, nullptr, 0);
+    g_pd3dDeviceContext->PSSetShader(g_pPixelShader, nullptr, 0);
+    g_pd3dDeviceContext->Draw(3, 0);
 
     // 백 버퍼를 프론트 버퍼로 보여준다.
     g_pSwapChain->Present(0, 0);
@@ -459,8 +337,8 @@ bool CompileShaderFromFile(const wchar_t* szFileName, LPCSTR szEntryPoint, LPCST
 void CleanupDevice()
 {
     // Context에서 연관성을 싹 없애준 다음에
-    if (g_pd3DeviceContext) {
-        g_pd3DeviceContext->ClearState();
+    if (g_pd3dDeviceContext) {
+        g_pd3dDeviceContext->ClearState();
     }
 
     // 얘네는 다 COM 객체 들이여서 이렇게 해제를 해줘야 한다.
@@ -471,8 +349,8 @@ void CleanupDevice()
     if (g_pPixelShader) g_pPixelShader->Release();
     if (g_pRenderTargetView) g_pRenderTargetView->Release();
     if (g_pSwapChain) g_pSwapChain->Release();
-    if (g_pd3DeviceContext) g_pd3DeviceContext->Release();
-    if (g_pd3Device) g_pd3Device->Release();
+    if (g_pd3dDeviceContext) g_pd3dDeviceContext->Release();
+    if (g_pd3dDevice) g_pd3dDevice->Release();
 }
 
 bool SetTriangle()
@@ -483,11 +361,13 @@ bool SetTriangle()
     ID3DBlob* pVSBlob = nullptr;
     bool Result = CompileShaderFromFile(L"Tutorial02.fx", "VS", "vs_4_0", &pVSBlob);
     if (!Result) {
+        MessageBox(NULL,
+            L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
         return false;
     }
 
     // 버텍스 쉐이터 만들기
-    hr = g_pd3Device->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), nullptr, &g_pVertexShader);
+    hr = g_pd3dDevice->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), nullptr, &g_pVertexShader);
     if (FAILED(hr)) {
         pVSBlob->Release();
         return false;
@@ -501,7 +381,7 @@ bool SetTriangle()
     UINT numElements = ARRAYSIZE(layout);
 
     //  input layout 만들기
-    hr = g_pd3Device->CreateInputLayout(
+    hr = g_pd3dDevice->CreateInputLayout(
         layout, numElements, pVSBlob->GetBufferPointer(),
         pVSBlob->GetBufferSize(), &g_pVertexLayout);
 
@@ -511,17 +391,19 @@ bool SetTriangle()
         return false;
 
     // input layout 세팅하기
-    g_pd3DeviceContext->IASetInputLayout(g_pVertexLayout);
+    g_pd3dDeviceContext->IASetInputLayout(g_pVertexLayout);
 
     // 픽셀 쉐이더 컴파일
     ID3DBlob* pPSBlob = nullptr;
     Result = CompileShaderFromFile(L"Tutorial02.fx", "PS", "ps_4_0", &pPSBlob);
     if (!Result) {
+        MessageBox(NULL,
+            L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
         return false;
     }
 
     // 버텍스 쉐이터 만들기
-    hr = g_pd3Device->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, &g_pPixelShader);
+    hr = g_pd3dDevice->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, &g_pPixelShader);
     if (FAILED(hr)) {
         return false;
     }
@@ -529,9 +411,9 @@ bool SetTriangle()
     // 버텍스 버퍼 만들기
     SimpleVertex vertices[] =
     {
-        FLOAT3(0.f, 0.5f, 0.5f),
-        FLOAT3(0.5f, -0.5f, 0.5f),
-        FLOAT3(-0.5f, -0.5f, 0.5f)
+        {FLOAT3(0.f, 0.5f, 0.5f), FLOAT4(0.f,0.f,0.f,0.f)},
+        {FLOAT3(0.5f, -0.5f, 0.5f), FLOAT4(0.f,0.f,0.f,0.f)},
+        {FLOAT3(-0.5f, -0.5f, 0.5f), FLOAT4(0.f,0.f,0.f,0.f)}
     };
 
     // 버텍스 버퍼 디스크라이브를 지정한다.
@@ -546,7 +428,7 @@ bool SetTriangle()
     memset(&InitData, 0, sizeof(InitData));
     InitData.pSysMem = vertices;
     // 디바이스를 버퍼를 초기화하면서 만들어준다.
-    hr = g_pd3Device->CreateBuffer(&bd, &InitData, &g_pVertexBuffer);
+    hr = g_pd3dDevice->CreateBuffer(&bd, &InitData, &g_pVertexBuffer);
     if (FAILED(hr)) {
         return false;
     }
@@ -555,17 +437,160 @@ bool SetTriangle()
     UINT stride = sizeof(SimpleVertex);
     UINT offset = 0;
     // 버텍스 버퍼를 Input - Assembly 상태로 만든다.
-    g_pd3DeviceContext->IASetVertexBuffers(0, 1, &g_pVertexBuffer, &stride, &offset);
+    g_pd3dDeviceContext->IASetVertexBuffers(0, 1, &g_pVertexBuffer, &stride, &offset);
 
     // primitive topology는 간단하게 리스트로 설정한다.
-    g_pd3DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    g_pd3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     return true;
 }
 
 bool SetCube()
 {
-    return false;
+    HRESULT hr = S_OK;
+
+    // 버텍스 쉐이더 컴파일
+    ID3DBlob* pVSBlob = nullptr;
+    bool Result = CompileShaderFromFile(L"Tutorial04.fx", "VS", "vs_4_0", &pVSBlob);
+    if (!Result) {
+        MessageBox(NULL,
+            L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
+        return false;
+    }
+
+    // 버텍스 쉐이터 만들기
+    hr = g_pd3dDevice->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), nullptr, &g_pVertexShader);
+    if (FAILED(hr)) {
+        pVSBlob->Release();
+        return false;
+    }
+
+    // Vertex Input layer 정의
+    D3D11_INPUT_ELEMENT_DESC layout[] =
+    {
+        {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+        {"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12,D3D11_INPUT_PER_VERTEX_DATA, 0}
+    };
+    // 저기 COLOR 부분에 12가 뭐냐면, 이후에 넣어준 Vertex 데이터에
+    // 점->색->점->색 이렇게 데이터가 들어가는데,
+    // 점이 float 3개니까 12바이트가 지나가면 COLOR가 나온다는 뜻이다.
+    UINT numElements = ARRAYSIZE(layout);
+
+    //  input layout 만들기
+    hr = g_pd3dDevice->CreateInputLayout(
+        layout, numElements, pVSBlob->GetBufferPointer(),
+        pVSBlob->GetBufferSize(), &g_pVertexLayout);
+
+    pVSBlob->Release();
+
+    if (FAILED(hr))
+        return false;
+
+    // input layout 세팅하기
+    g_pd3dDeviceContext->IASetInputLayout(g_pVertexLayout);
+
+    // 픽셀 쉐이더 컴파일
+    ID3DBlob* pPSBlob = nullptr;
+    Result = CompileShaderFromFile(L"Tutorial04.fx", "PS", "ps_4_0", &pPSBlob);
+    if (!Result) {
+        MessageBox(NULL,
+            L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
+        return false;
+    }
+
+    // 버텍스 쉐이터 만들기
+    hr = g_pd3dDevice->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, &g_pPixelShader);
+    if (FAILED(hr)) {
+        return false;
+    }
+
+    // 버텍스 버퍼 만들기
+    SimpleVertex vertices[] =
+    {
+         { FLOAT3(-1.0f, 1.0f, -1.0f), FLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
+        { FLOAT3(1.0f, 1.0f, -1.0f), FLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },
+        { FLOAT3(1.0f, 1.0f, 1.0f), FLOAT4(0.0f, 1.0f, 1.0f, 1.0f) },
+        { FLOAT3(-1.0f, 1.0f, 1.0f), FLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },
+        { FLOAT3(-1.0f, -1.0f, -1.0f), FLOAT4(1.0f, 0.0f, 1.0f, 1.0f) },
+        { FLOAT3(1.0f, -1.0f, -1.0f), FLOAT4(1.0f, 1.0f, 0.0f, 1.0f) },
+        { FLOAT3(1.0f, -1.0f, 1.0f), FLOAT4(1.0f, 1.0f, 1.0f, 1.0f) },
+        { FLOAT3(-1.0f, -1.0f, 1.0f), FLOAT4(0.0f, 0.0f, 0.0f, 1.0f) },
+    };
+
+    // 버텍스 버퍼 디스크라이브를 지정한다.
+    D3D11_BUFFER_DESC bd;
+    memset(&bd, 0, sizeof(bd));
+    bd.Usage = D3D11_USAGE_DEFAULT;
+    bd.ByteWidth = sizeof(SimpleVertex) * 8;
+    bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    bd.CPUAccessFlags = 0;
+    // 버텍스 버퍼의 데이터를 세팅한다.
+    D3D11_SUBRESOURCE_DATA InitData;
+    memset(&InitData, 0, sizeof(InitData));
+    InitData.pSysMem = vertices;
+    // 디바이스를 버퍼를 초기화하면서 만들어준다.
+    hr = g_pd3dDevice->CreateBuffer(&bd, &InitData, &g_pVertexBuffer);
+    if (FAILED(hr)) {
+        return false;
+    }
+
+    // 버텍스 버퍼를 세팅한다.
+    UINT stride = sizeof(SimpleVertex);
+    UINT offset = 0;
+    // 버텍스 버퍼를 Input - Assembly 상태로 만든다.
+    g_pd3dDeviceContext->IASetVertexBuffers(0, 1, &g_pVertexBuffer, &stride, &offset);
+
+    // Vertex를 여러번 쓰기 위한 Index 버퍼를 만든다.
+    WORD indices[] =
+    {
+        3,1,0,
+        2,1,3,
+
+        0,5,4,
+        1,5,0,
+
+        3,4,7,
+        0,4,3,
+
+        1,6,5,
+        2,6,1,
+
+        2,7,6,
+        3,7,2,
+
+        6,4,5,
+        7,4,6,
+    };
+    bd.Usage = D3D11_USAGE_DEFAULT;
+    bd.ByteWidth = sizeof(WORD) * 36; // 12개의 삼각형
+    bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    bd.CPUAccessFlags = 0;
+
+    InitData.pSysMem = indices;
+    hr = g_pd3dDevice->CreateBuffer(&bd, nullptr, &g_pIndexBuffer);
+    if (FAILED(hr)) {
+        return false;
+    }
+
+    // 인덱스 버퍼 만들기
+    g_pd3dDeviceContext->IASetIndexBuffer(g_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+
+    // primitive topology는 간단하게 리스트로 설정한다.
+    g_pd3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+    // 셰이더에 들어가는 상수 버퍼 만들기
+    bd.Usage = D3D11_USAGE_DEFAULT;
+    bd.ByteWidth = sizeof(ConstantBuffer);
+    bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    bd.CPUAccessFlags = 0;
+    hr = g_pd3dDevice->CreateBuffer(&bd, nullptr, &g_pConstantBuffer);
+    if (FAILED(hr)) {
+        return false;
+    }
+
+
+
+    return true;
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
