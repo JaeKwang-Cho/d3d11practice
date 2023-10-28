@@ -1,6 +1,19 @@
 #pragma once
 
+#include <cassert>
+#include <cmath>
+
 #include "resource.h"
+
+#define PI  3.141592654f
+#define PIMul2  6.283185307f
+#define PIDiv2 1.570796327f
+#define PIDiv4 0.785398163f
+#define OneDivPI 0.318309886f
+#define OneDiv2PI 0.159154943f
+
+float ConvertToRadians(float fDegrees) { return fDegrees * (PI / 180.0f); }
+float ConvertToDegrees(float fRadians) { return fRadians * (180.0f / PI); }
 
 // struct
 struct FLOAT3 {
@@ -29,7 +42,7 @@ struct SimpleVertex
 };
 
 // For SIMD
-typedef struct Vector4 {
+struct Vector4 {
     union
     {
         __m128 m;// <xnamath.h>
@@ -38,7 +51,7 @@ typedef struct Vector4 {
             float x;
             float y;
             float z;
-            float a;
+            float w;
         };
     };
     Vector4() {}
@@ -46,10 +59,52 @@ typedef struct Vector4 {
         m = _mm_set_ps(_a, _z, _y, _x);
     }
     Vector4(const Vector4& _other) {
-        m = _mm_set_ps(_other.a, _other.z, _other.y, _other.x);
+        m = _other.m;
     }
+    Vector4 operator-(const Vector4& _other) {
+        Vector4 vec;
+        vec.m = _mm_sub_ps(m, _other.m);
+        return vec;
+    }
+
+    Vector4 operator*(const Vector4& _other) {
+        Vector4 vec = Vector4(x*_other.x, y * _other.y, z * _other.z, w * _other.w);
+        return vec;
+    }
+
+    bool operator==(const Vector4& _other) {
+        return _other.x == x && 
+            _other.y == y&&
+            _other.z == z&&
+            _other.w == w;
+    }
+
+    bool operator!=(const Vector4& _other) {
+        return _other.x != x ||
+            _other.y != y ||
+            _other.z != z ||
+            _other.w != w;
+    }
+
+    float Length3Vec() const{
+        double sum = 0.;
+        sum += x * x;
+        sum += y * z;
+        sum += z * z;
+
+        return (float)sqrt(sum);
+    }
+
+    Vector4 Normalize3Vec() {
+        float len = Length3Vec();
+        if (len <= 0.00001f) {
+            return Vector4(0.f, 0.f, 0.f, 0.f);
+        }
+        return Vector4(x / len, y / len, z / len, 0);
+    }
+
     static __m128 SetVector4(const Vector4& _other) {
-        return _mm_set_ps(_other.a, _other.z, _other.y, _other.x);
+        return _other.m;
     }
 
     static __m128 SetVector4(float _x, float _y, float _z, float _a) {
@@ -57,7 +112,22 @@ typedef struct Vector4 {
     }
 };
 
-typedef struct Matrix {
+Vector4 CrossVector3Vec(Vector4 v1, Vector4 v2) {
+    Vector4 vResult(
+        v1.y*v2.z - v1.z*v2.y, 
+        v1.z*v2.x - v2.z*v1.x, 
+        v1.x*v2.y - v2.x*v1.y, 
+        0.f);
+
+    return vResult;
+}
+
+Vector4 DotVector3Vec(Vector4 v1, Vector4 v2) {
+    float Result = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+    return Vector4(Result, Result, Result, Result);
+}
+
+struct Matrix {
     union
     {
         Vector4 m[4];
@@ -109,13 +179,16 @@ typedef struct Matrix {
 
     float operator() (UINT Row, UINT Col) const { return r[Row][Col]; }
     float& operator() (UINT Row, UINT Col) { return r[Row][Col]; }
-
+    
     Matrix& operator=(const Matrix& _M) {
-        for (size_t i = 0; i < 4; i++) {
-            m[i].m = Vector4::SetVector4(_M.m[i]);
+        if (this != &_M) {
+            for (size_t i = 0; i < 4; i++) {
+                m[i].m = Vector4::SetVector4(_M.m[i]);
+            }
         }
+        return *this;
     }
-
+    
     Matrix& operator*=(const Matrix& _M) {
         m[0].m = _mm_mul_ps(m[0].m, _M.m[0].m);
         m[1].m = _mm_mul_ps(m[1].m, _M.m[1].m);
@@ -134,15 +207,140 @@ typedef struct Matrix {
 
         return mat;
     }
-
-    static Matrix MatrixTranspose(const Matrix& _other) {
-        return Matrix(
-            _other._11, _other._21, _other._31, _other._41,
-            _other._12, _other._22, _other._32, _other._42,
-            _other._13, _other._23, _other._33, _other._43,
-            _other._14, _other._24, _other._34, _other._44);
-    }
 };
+
+Matrix MatrixTranspose(const Matrix& _other) {
+    return Matrix(
+        _other._11, _other._21, _other._31, _other._41,
+        _other._12, _other._22, _other._32, _other._42,
+        _other._13, _other._23, _other._33, _other._43,
+        _other._14, _other._24, _other._34, _other._44);
+}
+
+Matrix MatrixIdentity() {
+    return Matrix(
+        1.f, 0.f, 0.f, 0.f,
+        0.f, 1.f, 0.f, 0.f, 
+        0.f, 0.f, 1.f, 0.f, 
+        0.f, 0.f, 0.f, 1.f);
+}
+
+Matrix MatrixRotationX(float Radian) {
+    float SinRadian = sinf(Radian);
+    float CosRadian = cosf(Radian);
+
+    Matrix M;
+    M.m[0] = Vector4(1.f, 0.f, 0.f, 0.f);
+    M.m[1] = Vector4(0.f, CosRadian, SinRadian * -1.f, 0.f);
+    M.m[2] = Vector4(0.f, SinRadian, CosRadian, 0.f);
+    M.m[3] = Vector4(0.f, 0.f, 0.f, 1.f);
+
+    return M;
+}
+
+Matrix MatrixRotationY(float Radian) {
+    float SinRadian = sinf(Radian);
+    float CosRadian = cosf(Radian);
+
+    Matrix M;
+    M.m[0] = Vector4(CosRadian, 0.f, SinRadian,  0.f);
+    M.m[1] = Vector4(0.f, 1.f, 0.f, 0.f);
+    M.m[2] = Vector4(SinRadian * -1.f, 0.f, CosRadian, 0.f);
+    M.m[3] = Vector4(0.f, 0.f, 0.f, 1.f);
+
+    return M;
+}
+
+Matrix MatrixRotationZ(float Radian) {
+    float SinRadian = sinf(Radian);
+    float CosRadian = cosf(Radian);
+
+    Matrix M;
+    M.m[0] = Vector4(CosRadian, SinRadian * -1.f, 0.f, 0.f);
+    M.m[1] = Vector4(SinRadian, CosRadian, 0.f, 0.f);
+    M.m[2] = Vector4(0.f, 0.f, 1.f, 0.f);
+    M.m[3] = Vector4(0.f, 0.f, 0.f, 1.f);
+
+    return M;
+}
+
+Matrix MatrixScale(float _sx, float _sy, float _sz) {
+    Matrix Mat;
+
+    Mat.m[0] = Vector4(_sx, 0.f, 0.f, 0.f);
+    Mat.m[1] = Vector4(0.f, _sy, 0.f, 0.f);
+    Mat.m[2] = Vector4(0.f, 0.f, _sz, 0.f);
+    Mat.m[3] = Vector4(0.f, 0.f, 0.f, 1.f);
+
+    return Mat;
+}
+
+Matrix MatrixTranslation(float _sx, float _sy, float _sz) {
+    Matrix Mat;
+
+    Mat.m[0] = Vector4(1.f, 0.f, 0.f, 0.f);
+    Mat.m[1] = Vector4(0.f, 1.f, 0.f, 0.f);
+    Mat.m[2] = Vector4(0.f, 0.f, 1.f, 0.f);
+    Mat.m[3] = Vector4(_sx, _sy, _sz, 1.f);
+
+    return Mat;
+}
+
+Matrix MatrixPerspectiveFovLH(float FovRadianY, float AspectRatio, float NearZ, float FarZ) {
+    Matrix Mat;
+
+    float SinRadian = sinf(FovRadianY * 0.5f);
+    float CosRadian = cosf(FovRadianY * 0.5f);
+
+    float Height = CosRadian / SinRadian;
+    float Width = Height / AspectRatio;
+
+    Mat.m[0] = Vector4(Width, 0.0f, 0.0f, 0.0f);
+    Mat.m[1] = Vector4(0.0f, Height, 0.0f, 0.0f);
+    Mat.m[2] = Vector4(0.0f, 0.0f, FarZ / (FarZ - NearZ), 1.0f);
+    Mat.m[3] = Vector4(0.0f, 0.0f, -Mat.m[2].z * NearZ, 0.0f);
+
+    return Mat;
+}
+
+Matrix MatrixLookAtLH(Vector4 CameraPosition, Vector4 LookAtPosition, Vector4 UpDirection) {
+    Matrix Mat;
+
+    Vector4 CameraDirection = LookAtPosition - CameraPosition;
+
+    Vector4 NegEyePosition;
+    Vector4 D0, D1, D2;
+    Vector4 R0, R1, R2;
+    Vector4 M;
+
+    Vector4 ZeroVector(0.f, 0.f, 0.f, 0.f);
+    assert(CameraDirection != ZeroVector);
+    assert(UpDirection != ZeroVector);
+
+    R2 = CameraDirection.Normalize3Vec(); // 카메라가 바라보는 방향 벡터 R2
+
+    R0 = CrossVector3Vec(UpDirection, R2); // 카메라의 위쪽 백터와 카메라가 바라보는 벡터(R2)의 외적 -> 카메라의 왼쪽 R0
+    R0 = R0.Normalize3Vec();
+
+    R1 = CrossVector3Vec(R2, R0); // 카메라의 정수리 벡터 R1
+
+    // 물체에 대한 카메라의 상대 위치
+    NegEyePosition = CameraPosition * Vector4(-1.f, -1.f, -1.f, -1.f);
+
+    // 물체에 대한 카메라의 상대 위치를 각 축에 대해서 도트
+    D0 = DotVector3Vec(R0, NegEyePosition);
+    D1 = DotVector3Vec(R1, NegEyePosition);
+    D2 = DotVector3Vec(R2, NegEyePosition);
+
+    Mat.m[0] = Vector4(R0.x, R0.y, R0.z, D0.w);
+    Mat.m[1] = Vector4(R1.x, R1.y, R1.z, D1.w);
+    Mat.m[2] = Vector4(R2.x, R2.y, R2.z, D2.w);
+    Mat.m[3] = Vector4(0.f, 0.f, 0.f, 1.f);
+
+    Mat = MatrixTranspose(Mat);
+
+    return Mat;
+}
 
 struct ConstantBuffer
 {

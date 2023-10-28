@@ -39,7 +39,7 @@ ID3D11Buffer* g_pConstantBuffer = NULL;
 // Transform Matrices
 Matrix                      g_WorldMat;
 Matrix                      g_ViewMat;
-Matrix                      g_ProjectiondMat;
+Matrix                      g_ProjectionMat;
 
 // 전역 프로퍼티
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트
@@ -97,24 +97,56 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 #endif 
+#if 0 // _mm_shuffle_ps 테스트
+    Vector4 v1 = Vector4(1.f, 2.f, 3.f, 4.f);
+    Vector4 v2 = Vector4(5.f, 6.f, 7.f, 8.f);
+
+    Vector4 temp = v1;
+    temp.m = _mm_shuffle_ps(temp.m, v2.m, _MM_SHUFFLE(3,2,1,0));
+    //1278
+    temp = v1;
+    temp.m = _mm_shuffle_ps(temp.m, v2.m, _MM_SHUFFLE(0,1,2,3));
+    //4365
+    temp = v1;
+    temp.m = _mm_shuffle_ps(temp.m, v2.m, _MM_SHUFFLE(0, 0, 0, 0));
+    // 1155
+    temp = v1;
+    temp.m = _mm_shuffle_ps(temp.m, v2.m, _MM_SHUFFLE(1, 1, 1, 1));
+    // 2266
+    temp = v1;
+    temp.m = _mm_shuffle_ps(temp.m, v2.m, _MM_SHUFFLE(2, 2, 2, 2));
+    //3377
+    temp = v1;
+    temp.m = _mm_shuffle_ps(temp.m, v2.m, _MM_SHUFFLE(3, 3, 3, 3));
+    //4488
+    temp = v1;
+    temp.m = _mm_shuffle_ps(temp.m, v2.m, _MM_SHUFFLE(0, 1, 0, 1));
+    // 2165
+    temp = v1;
+    temp.m = _mm_shuffle_ps(temp.m, v2.m, _MM_SHUFFLE(1, 0, 1, 0));
+    // 1256
+    temp = v1;
+    temp.m = _mm_shuffle_ps(temp.m, v2.m, _MM_SHUFFLE(0, 2, 0, 2));
+    //3175
+    temp = v1;
+    temp.m = _mm_shuffle_ps(temp.m, v2.m, _MM_SHUFFLE(2, 0, 2, 0));
+    //1357
+    temp = v1;
+    temp.m = _mm_shuffle_ps(temp.m, v2.m, _MM_SHUFFLE(0, 2, 0, 2));
+    //3175
+#endif
+
 #if 0 // 매트릭스 테스트
-    Matrix mat1(1.f, 2.f, 3.f, 4.f, 
-        5.f, 6.f, 7.f, 8.f, 
-        9.f, 10.f, 11.f, 12.f, 
-        13.f, 14.f, 15.f, 16.f);
-
-    Matrix mat2(1.f, 2.f, 3.f, 4.f,
-        5.f, 6.f, 7.f, 8.f,
-        9.f, 10.f, 11.f, 12.f,
-        13.f, 14.f, 15.f, 16.f);
-
-    Matrix matResult = mat1 * mat2;
-    Matrix matTranspose = Matrix::MatrixTranspose(mat1);
+    Matrix imat = MatrixIdentity();
+    Matrix matTranspose = MatrixTranspose(imat);
+    Matrix rotatematy = MatrixRotationX(45);
+    rotatematy = MatrixRotationY(45);
+    rotatematy = MatrixRotationZ(45);
     
 #endif
-#if 0 // 큐브 그릴 준비
+#if 1 // 큐브 그릴 준비
     if (!SetCube()) {
-
+        return FALSE;
     }
 #endif
     
@@ -284,6 +316,7 @@ bool InitDevice()
 
 void Render()
 {
+#if 0
     // 렌더 타겟 뷰를 디바이스 컨텍스트에서 특정 색으로 싹 깔끔하게 해준다.
     float ClearColor[4] = { 0.f, 0.125f, 0.3f, 1.f };
     g_pd3dDeviceContext->ClearRenderTargetView(g_pRenderTargetView, ClearColor);
@@ -293,6 +326,54 @@ void Render()
     g_pd3dDeviceContext->Draw(3, 0);
 
     // 백 버퍼를 프론트 버퍼로 보여준다.
+    g_pSwapChain->Present(0, 0);
+#endif
+    // Update our time
+    static float t = 0.0f;
+    if (g_driverType == D3D_DRIVER_TYPE_REFERENCE)
+    {
+        t += (float)PI * 0.0125f;
+    }
+    else
+    {
+        static DWORD dwTimeStart = 0;
+        DWORD dwTimeCur = GetTickCount();
+        if (dwTimeStart == 0)
+            dwTimeStart = dwTimeCur;
+        t = (dwTimeCur - dwTimeStart) / 1000.0f;
+    }
+
+    //
+    // Animate the cube
+    //
+    g_WorldMat = MatrixRotationY(t);
+
+    //
+    // Clear the back buffer
+    //
+    float ClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f }; // red,green,blue,alpha
+    g_pd3dDeviceContext->ClearRenderTargetView(g_pRenderTargetView, ClearColor);
+
+    //
+    // Update variables
+    //
+    ConstantBuffer cb;
+    cb.mWorld = MatrixTranspose(g_WorldMat);
+    cb.mView = MatrixTranspose(g_ViewMat);
+    cb.mProjection = MatrixTranspose(g_ProjectionMat);
+    g_pd3dDeviceContext->UpdateSubresource(g_pConstantBuffer, 0, NULL, &cb, 0, 0);
+
+    //
+    // Renders a triangle
+    //
+    g_pd3dDeviceContext->VSSetShader(g_pVertexShader, NULL, 0);
+    g_pd3dDeviceContext->VSSetConstantBuffers(0, 1, &g_pConstantBuffer);
+    g_pd3dDeviceContext->PSSetShader(g_pPixelShader, NULL, 0);
+    g_pd3dDeviceContext->DrawIndexed(36, 0, 0);        // 36 vertices needed for 12 triangles in a triangle list
+
+    //
+    // Present our back buffer to our front buffer
+    //
     g_pSwapChain->Present(0, 0);
 }
 
@@ -448,28 +529,29 @@ bool SetTriangle()
 bool SetCube()
 {
     HRESULT hr = S_OK;
-
     // 버텍스 쉐이더 컴파일
-    ID3DBlob* pVSBlob = nullptr;
+    ID3DBlob* pVSBlob = NULL;
     bool Result = CompileShaderFromFile(L"Tutorial04.fx", "VS", "vs_4_0", &pVSBlob);
-    if (!Result) {
+    if (FAILED(hr))
+    {
         MessageBox(NULL,
             L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
-        return false;
+        return hr;
     }
 
     // 버텍스 쉐이터 만들기
-    hr = g_pd3dDevice->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), nullptr, &g_pVertexShader);
-    if (FAILED(hr)) {
+    hr = g_pd3dDevice->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), NULL, &g_pVertexShader);
+    if (FAILED(hr))
+    {
         pVSBlob->Release();
-        return false;
+        return hr;
     }
 
     // Vertex Input layer 정의
     D3D11_INPUT_ELEMENT_DESC layout[] =
     {
-        {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-        {"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12,D3D11_INPUT_PER_VERTEX_DATA, 0}
+        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
     };
     // 저기 COLOR 부분에 12가 뭐냐면, 이후에 넣어준 Vertex 데이터에
     // 점->색->점->색 이렇게 데이터가 들어가는데,
@@ -482,7 +564,6 @@ bool SetCube()
         pVSBlob->GetBufferSize(), &g_pVertexLayout);
 
     pVSBlob->Release();
-
     if (FAILED(hr))
         return false;
 
@@ -492,22 +573,23 @@ bool SetCube()
     // 픽셀 쉐이더 컴파일
     ID3DBlob* pPSBlob = nullptr;
     Result = CompileShaderFromFile(L"Tutorial04.fx", "PS", "ps_4_0", &pPSBlob);
-    if (!Result) {
+    if (FAILED(hr))
+    {
         MessageBox(NULL,
             L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
         return false;
     }
 
-    // 버텍스 쉐이터 만들기
-    hr = g_pd3dDevice->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, &g_pPixelShader);
-    if (FAILED(hr)) {
+    // 픽셀 쉐이더 만들기
+    hr = g_pd3dDevice->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), NULL, &g_pPixelShader);
+    pPSBlob->Release();
+    if (FAILED(hr))
         return false;
-    }
 
     // 버텍스 버퍼 만들기
     SimpleVertex vertices[] =
     {
-         { FLOAT3(-1.0f, 1.0f, -1.0f), FLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
+        { FLOAT3(-1.0f, 1.0f, -1.0f), FLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
         { FLOAT3(1.0f, 1.0f, -1.0f), FLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },
         { FLOAT3(1.0f, 1.0f, 1.0f), FLOAT4(0.0f, 1.0f, 1.0f, 1.0f) },
         { FLOAT3(-1.0f, 1.0f, 1.0f), FLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },
@@ -519,20 +601,19 @@ bool SetCube()
 
     // 버텍스 버퍼 디스크라이브를 지정한다.
     D3D11_BUFFER_DESC bd;
-    memset(&bd, 0, sizeof(bd));
+    ZeroMemory(&bd, sizeof(bd));
     bd.Usage = D3D11_USAGE_DEFAULT;
     bd.ByteWidth = sizeof(SimpleVertex) * 8;
     bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
     bd.CPUAccessFlags = 0;
     // 버텍스 버퍼의 데이터를 세팅한다.
     D3D11_SUBRESOURCE_DATA InitData;
-    memset(&InitData, 0, sizeof(InitData));
+    ZeroMemory(&InitData, sizeof(InitData));
     InitData.pSysMem = vertices;
     // 디바이스를 버퍼를 초기화하면서 만들어준다.
     hr = g_pd3dDevice->CreateBuffer(&bd, &InitData, &g_pVertexBuffer);
-    if (FAILED(hr)) {
+    if (FAILED(hr))
         return false;
-    }
 
     // 버텍스 버퍼를 세팅한다.
     UINT stride = sizeof(SimpleVertex);
@@ -562,15 +643,14 @@ bool SetCube()
         7,4,6,
     };
     bd.Usage = D3D11_USAGE_DEFAULT;
-    bd.ByteWidth = sizeof(WORD) * 36; // 12개의 삼각형
+    bd.ByteWidth = sizeof(WORD) * 36;        // 12개의 삼각형
     bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
     bd.CPUAccessFlags = 0;
 
     InitData.pSysMem = indices;
-    hr = g_pd3dDevice->CreateBuffer(&bd, nullptr, &g_pIndexBuffer);
-    if (FAILED(hr)) {
+    hr = g_pd3dDevice->CreateBuffer(&bd, &InitData, &g_pIndexBuffer);
+    if (FAILED(hr))
         return false;
-    }
 
     // 인덱스 버퍼 만들기
     g_pd3dDeviceContext->IASetIndexBuffer(g_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
@@ -583,12 +663,26 @@ bool SetCube()
     bd.ByteWidth = sizeof(ConstantBuffer);
     bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
     bd.CPUAccessFlags = 0;
-    hr = g_pd3dDevice->CreateBuffer(&bd, nullptr, &g_pConstantBuffer);
-    if (FAILED(hr)) {
+    hr = g_pd3dDevice->CreateBuffer(&bd, NULL, &g_pConstantBuffer);
+    if (FAILED(hr))
         return false;
-    }
 
+    // 월드 매트릭스 초기화
+    g_WorldMat = MatrixIdentity();
 
+    // 카메라 메트릭스 초기화
+    Vector4 Eye = Vector4(0.0f, 1.0f, -5.0f, 0.0f);
+    Vector4 At = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+    Vector4 Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+    g_ViewMat = MatrixLookAtLH(Eye, At, Up);
+
+    RECT rc;
+    GetClientRect(g_hWnd, &rc);
+    UINT width = rc.right - rc.left;
+    UINT height = rc.bottom - rc.top;
+
+    // Perspective로 프로젝션 매트릭스 초기화
+    g_ProjectionMat = MatrixPerspectiveFovLH(PIDiv2, (float)width / (float)height, 0.01f, 100.0f);
 
     return true;
 }
