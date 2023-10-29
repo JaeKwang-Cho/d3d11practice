@@ -68,7 +68,8 @@ struct Vector4 {
     }
 
     Vector4 operator*(const Vector4& _other) {
-        Vector4 vec = Vector4(x*_other.x, y * _other.y, z * _other.z, w * _other.w);
+        Vector4 vec;
+        vec.m = _mm_mul_ps(m, _other.m);
         return vec;
     }
 
@@ -88,9 +89,9 @@ struct Vector4 {
 
     float Length3Vec() const{
         double sum = 0.;
-        sum += x * x;
-        sum += y * z;
-        sum += z * z;
+        Vector4 vec;
+        vec.m = _mm_mul_ps(m, m);
+        sum += (double)vec.x + (double)vec.y + (double)vec.z;
 
         return (float)sqrt(sum);
     }
@@ -112,7 +113,7 @@ struct Vector4 {
     }
 };
 
-Vector4 CrossVector3Vec(Vector4 v1, Vector4 v2) {
+Vector4 CrossVector3Vec(const Vector4& v1, const Vector4& v2) {
     Vector4 vResult(
         v1.y*v2.z - v1.z*v2.y, 
         v1.z*v2.x - v2.z*v1.x, 
@@ -122,9 +123,13 @@ Vector4 CrossVector3Vec(Vector4 v1, Vector4 v2) {
     return vResult;
 }
 
-Vector4 DotVector3Vec(Vector4 v1, Vector4 v2) {
+Vector4 DotVector3Vec(const Vector4& v1, const Vector4& v2) {
     float Result = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
     return Vector4(Result, Result, Result, Result);
+}
+
+float SumVectorElements(const Vector4& v) {
+    return v.x + v.y + v.z + v.w;
 }
 
 struct Matrix {
@@ -165,7 +170,6 @@ struct Matrix {
         m[3].m = Vector4::SetVector4(m30, m31, m32, m33);
     }
     Matrix(const float* pArray) {
-        const float* p = pArray;
         for (size_t i = 0; i < 4; i++) {
             m[i].m = Vector4::SetVector4(pArray[i * 4], pArray[i * 4 + 1], pArray[i * 4 + 2], pArray[i * 4 + 3]);
         }
@@ -179,34 +183,12 @@ struct Matrix {
 
     float operator() (UINT Row, UINT Col) const { return r[Row][Col]; }
     float& operator() (UINT Row, UINT Col) { return r[Row][Col]; }
-    
-    Matrix& operator=(const Matrix& _M) {
-        if (this != &_M) {
-            for (size_t i = 0; i < 4; i++) {
-                m[i].m = Vector4::SetVector4(_M.m[i]);
-            }
-        }
-        return *this;
-    }
-    
-    Matrix& operator*=(const Matrix& _M) {
-        m[0].m = _mm_mul_ps(m[0].m, _M.m[0].m);
-        m[1].m = _mm_mul_ps(m[1].m, _M.m[1].m);
-        m[2].m = _mm_mul_ps(m[2].m, _M.m[2].m);
-        m[3].m = _mm_mul_ps(m[3].m, _M.m[3].m);
 
-        return *this;
-    }
+    Matrix& operator=(const Matrix& _M);
 
-    Matrix operator*(const Matrix& _M) const {
-        Matrix mat;
-        mat.m[0].m = _mm_mul_ps(m[0].m, _M.m[0].m);
-        mat.m[1].m = _mm_mul_ps(m[1].m, _M.m[1].m);
-        mat.m[2].m = _mm_mul_ps(m[2].m, _M.m[2].m);
-        mat.m[3].m = _mm_mul_ps(m[3].m, _M.m[3].m);
+    Matrix& operator*=(const Matrix& _M);
 
-        return mat;
-    }
+    Matrix operator*(const Matrix& _M) const;
 };
 
 Matrix MatrixTranspose(const Matrix& _other) {
@@ -340,6 +322,93 @@ Matrix MatrixLookAtLH(Vector4 CameraPosition, Vector4 LookAtPosition, Vector4 Up
     Mat = MatrixTranspose(Mat);
 
     return Mat;
+}
+
+Matrix& Matrix::operator=(const Matrix& _M) {
+    if (this != &_M) {
+        for (size_t i = 0; i < 4; i++) {
+            m[i].m = Vector4::SetVector4(_M.m[i]);
+        }
+    }
+    return *this;
+}
+
+Matrix& Matrix::operator*=(const Matrix& _M) {
+    Matrix mat = *this;;
+    Matrix t_M = MatrixTranspose(_M);
+
+    Vector4 temp1 = mat.m[0] * t_M.m[0];
+    Vector4 temp2 = mat.m[0] * t_M.m[1];
+    Vector4 temp3 = mat.m[0] * t_M.m[2];
+    Vector4 temp4 = mat.m[0] * t_M.m[3];
+
+    Vector4 v(SumVectorElements(temp1), SumVectorElements(temp2), SumVectorElements(temp3), SumVectorElements(temp4));
+    this->m[0] = v;
+
+    temp1 = mat.m[1] * t_M.m[0];
+    temp2 = mat.m[1] * t_M.m[1];
+    temp3 = mat.m[1] * t_M.m[2];
+    temp4 = mat.m[1] * t_M.m[3];
+
+    v = Vector4(SumVectorElements(temp1), SumVectorElements(temp2), SumVectorElements(temp3), SumVectorElements(temp4));
+    this->m[1] = v;
+
+    temp1 = mat.m[2] * t_M.m[0];
+    temp2 = mat.m[2] * t_M.m[1];
+    temp3 = mat.m[2] * t_M.m[2];
+    temp4 = mat.m[2] * t_M.m[3];
+
+    v = Vector4(SumVectorElements(temp1), SumVectorElements(temp2), SumVectorElements(temp3), SumVectorElements(temp4));
+    this->m[2] = v;
+
+    temp1 = mat.m[3] * t_M.m[0];
+    temp2 = mat.m[3] * t_M.m[1];
+    temp3 = mat.m[3] * t_M.m[2];
+    temp4 = mat.m[3] * t_M.m[3];
+
+    v = Vector4(SumVectorElements(temp1), SumVectorElements(temp2), SumVectorElements(temp3), SumVectorElements(temp4));
+    this->m[3] = v;
+
+    return *this;
+}
+
+Matrix Matrix::operator*(const Matrix& _M) const {
+    Matrix mat = *this;;
+    Matrix t_M = MatrixTranspose(_M);
+    
+    Vector4 temp1 = mat.m[0] * t_M.m[0];
+    Vector4 temp2 = mat.m[0] * t_M.m[1];
+    Vector4 temp3 = mat.m[0] * t_M.m[2];
+    Vector4 temp4 = mat.m[0] * t_M.m[3];
+
+    Vector4 v(SumVectorElements(temp1), SumVectorElements(temp2), SumVectorElements(temp3), SumVectorElements(temp4));
+    mat.m[0] = v;
+
+     temp1 = mat.m[1] * t_M.m[0];
+     temp2 = mat.m[1] * t_M.m[1];
+     temp3 = mat.m[1] * t_M.m[2];
+     temp4 = mat.m[1] * t_M.m[3];
+
+    v = Vector4(SumVectorElements(temp1), SumVectorElements(temp2), SumVectorElements(temp3), SumVectorElements(temp4));
+    mat.m[1] = v;
+
+     temp1 = mat.m[2] * t_M.m[0];
+     temp2 = mat.m[2] * t_M.m[1];
+     temp3 = mat.m[2] * t_M.m[2];
+     temp4 = mat.m[2] * t_M.m[3];
+
+    v = Vector4(SumVectorElements(temp1), SumVectorElements(temp2), SumVectorElements(temp3), SumVectorElements(temp4));
+    mat.m[2] = v;
+
+     temp1 = mat.m[3] * t_M.m[0];
+     temp2 = mat.m[3] * t_M.m[1];
+     temp3 = mat.m[3] * t_M.m[2];
+     temp4 = mat.m[3] * t_M.m[3];
+
+    v = Vector4(SumVectorElements(temp1), SumVectorElements(temp2), SumVectorElements(temp3), SumVectorElements(temp4));
+    mat.m[3] = v;
+
+    return mat;
 }
 
 struct ConstantBuffer

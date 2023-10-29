@@ -11,6 +11,8 @@
 #include "main.h"
 #include "pch.h"
 
+#include <dxgidebug.h>
+
 #define MAX_LOADSTRING (100)
 #define SHADER_BUFFER_SIZE (2048)
 
@@ -24,20 +26,23 @@ HWND                        g_hWnd = nullptr;   // 윈도우 핸들
 D3D_DRIVER_TYPE             g_driverType = D3D_DRIVER_TYPE_NULL; // 드라이버 종류
 D3D_FEATURE_LEVEL           g_featureLevel = D3D_FEATURE_LEVEL_11_1; // 사용할 directx 버전(?)
 ID3D11Device*               g_pd3dDevice = nullptr; // 리소스를 만들고, 디스플레이 어뎁터 기능을 사용하게 하는 것
-ID3D11DeviceContext*        g_pd3dDeviceContext = nullptr; // 디바이스로 하여금 파이프라인 상태를 제어하여, 렌더링 명령을 내리는데 사용한다.
+ID3D11DeviceContext*        g_pImmediateContext = nullptr; // 디바이스로 하여금 파이프라인 상태를 제어하여, 렌더링 명령을 내리는데 사용한다.
 IDXGISwapChain*             g_pSwapChain = nullptr; // 더블 버퍼링을 위한 Surface(IDXGISurface)를 구성하는데 사용한다.
 ID3D11RenderTargetView*     g_pRenderTargetView = nullptr;
 // Shader and Property
+ID3D11Texture2D*            g_pDepthStencil = nullptr;
+ID3D11DepthStencilView*     g_pDepthStencilView = nullptr;
 ID3D11VertexShader*         g_pVertexShader = nullptr;
 ID3D11PixelShader*          g_pPixelShader = nullptr;
 // Vetex and Indices
-ID3D11InputLayout* g_pVertexLayout = nullptr;
-ID3D11Buffer* g_pVertexBuffer = nullptr;
-ID3D11Buffer* g_pIndexBuffer = NULL;
-ID3D11Buffer* g_pConstantBuffer = NULL;
+ID3D11InputLayout*          g_pVertexLayout = nullptr;
+ID3D11Buffer*               g_pVertexBuffer = nullptr;
+ID3D11Buffer*               g_pIndexBuffer = nullptr;
+ID3D11Buffer*               g_pConstantBuffer = nullptr;
 
 // Transform Matrices
 Matrix                      g_WorldMat;
+Matrix                      g_WorldMat2;
 Matrix                      g_ViewMat;
 Matrix                      g_ProjectionMat;
 
@@ -61,7 +66,6 @@ bool                CompileShaderFromFile(const wchar_t* szFileName, LPCSTR szEn
 void                Render();
 bool                SetTriangle();
 bool                SetCube();
-
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -92,7 +96,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     }
 
     
-#if 1 // 삼각형 그릴 준비
+#if 0 // 삼각형 그릴 준비
     if (!SetTriangle()) {
         return FALSE;
     }
@@ -134,8 +138,19 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     temp = v1;
     temp.m = _mm_shuffle_ps(temp.m, v2.m, _MM_SHUFFLE(0, 2, 0, 2));
     //3175
-#endif
 
+#endif
+#if 0
+    // _mm_mul_ps , _mm_add_ps 테스트
+    Vector4 v1 = Vector4(1.f, 2.f, 3.f, 4.f);
+    Vector4 v2 = Vector4(5.f, 6.f, 7.f, 8.f);
+
+    Vector4 temp;
+    temp.m = _mm_mul_ps(v1.m, v2.m);
+
+    temp.m = _mm_add_ps(v1.m, v2.m);
+
+#endif
 #if 0 // 매트릭스 테스트
     Matrix imat = MatrixIdentity();
     Matrix matTranspose = MatrixTranspose(imat);
@@ -149,8 +164,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 #endif
-    
-
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_PROJECT1));
 
@@ -271,7 +284,7 @@ bool InitDevice()
         hr = D3D11CreateDeviceAndSwapChain(
             nullptr, g_driverType, nullptr, createDeviceFlags,
             featureLevels, numFeatureLevels, D3D11_SDK_VERSION,
-            &sd, &g_pSwapChain,&g_pd3dDevice, &g_featureLevel, &g_pd3dDeviceContext
+            &sd, &g_pSwapChain,&g_pd3dDevice, &g_featureLevel, &g_pImmediateContext
         ); // 원래는 디바이스 생성과 스왑 체인 생성이 따로 이뤄지고, 그것을 나중에 결합하게 된다.
         if (SUCCEEDED(hr)) {
             break;
@@ -297,8 +310,39 @@ bool InitDevice()
         return false;
     }
 
-    // 렌더타겟과 깊이 스텐실 버퍼를 Output-Merge 상태로 바인딩 한다.
-    g_pd3dDeviceContext->OMSetRenderTargets(1, &g_pRenderTargetView, nullptr);
+    // depth stencil texture 를 만든다.
+    D3D11_TEXTURE2D_DESC descDepth;
+    memset(&descDepth, 0, sizeof(descDepth));
+    descDepth.Width = width;
+    descDepth.Height = height;
+    descDepth.MipLevels = 1;
+    descDepth.ArraySize = 1;
+    descDepth.ArraySize = 1;
+    descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+    descDepth.SampleDesc.Count = 1;
+    descDepth.SampleDesc.Quality = 0;
+    descDepth.Usage = D3D11_USAGE_DEFAULT;
+    descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+    descDepth.CPUAccessFlags = 0;
+    descDepth.MiscFlags = 0;
+    hr = g_pd3dDevice->CreateTexture2D(&descDepth, nullptr, &g_pDepthStencil);
+    if (FAILED(hr)) {
+        return false;
+    }
+
+    // depth stencil view를 만든다.
+    D3D11_DEPTH_STENCIL_VIEW_DESC descDSv;
+    memset(&descDSv, 0, sizeof(descDSv));
+    descDSv.Format = descDepth.Format;
+    descDSv.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+    descDSv.Texture2D.MipSlice = 0;
+    hr = g_pd3dDevice->CreateDepthStencilView(g_pDepthStencil, &descDSv, &g_pDepthStencilView);
+    if (FAILED(hr)) {
+        return false;
+    }
+
+    // Render Target View와 Depth Stencil View를 Output-Merge 상태로 바인딩 한다.
+    g_pImmediateContext->OMSetRenderTargets(1, &g_pRenderTargetView, g_pDepthStencilView);
 
     // 뷰포트를 설정한다.
     D3D11_VIEWPORT vp;
@@ -309,7 +353,7 @@ bool InitDevice()
     vp.TopLeftX = 0;
     vp.TopLeftY = 0;
     // 뷰포트 구조체를 레스터라이즈 단계에 바인딩 한다.
-    g_pd3dDeviceContext->RSSetViewports(1, &vp);
+    g_pImmediateContext->RSSetViewports(1, &vp);
 
     return true;
 }
@@ -328,7 +372,7 @@ void Render()
     // 백 버퍼를 프론트 버퍼로 보여준다.
     g_pSwapChain->Present(0, 0);
 #endif
-    // Update our time
+    // 시간을 계속 쌓아주고
     static float t = 0.0f;
     if (g_driverType == D3D_DRIVER_TYPE_REFERENCE)
     {
@@ -343,37 +387,62 @@ void Render()
         t = (dwTimeCur - dwTimeStart) / 1000.0f;
     }
 
-    //
-    // Animate the cube
-    //
+    // 첫번째 큐브는 그냥 누적된 시간에 맞춰서 Y축으러 자전만 시켜주고
     g_WorldMat = MatrixRotationY(t);
 
-    //
-    // Clear the back buffer
-    //
-    float ClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f }; // red,green,blue,alpha
-    g_pd3dDeviceContext->ClearRenderTargetView(g_pRenderTargetView, ClearColor);
+    // 두번째 큐브는 궤도를 따라 공전을 하면서, 동시에 자전도 시켜준다.
+    Matrix mSpin = MatrixRotationZ(-t);
+    Matrix mOrbit = MatrixRotationY(-t * 2.0f);
+    Matrix mTranslate = MatrixTranslation(-4.f, 0.f, 0.f);
+    Matrix mScale = MatrixScale(0.3f, 0.3f, 0.3f);
 
-    //
-    // Update variables
-    //
+    g_WorldMat2 = mScale * mSpin * mTranslate * mOrbit;
+
+
+    // 백 버퍼를 깔끔하게 치워주고
+    float ClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f }; // red,green,blue,alpha
+    g_pImmediateContext->ClearRenderTargetView(g_pRenderTargetView, ClearColor);
+
+    // 스텐실 버퍼도 1.0으로 깔끔하게 지워준다.
+    g_pImmediateContext->ClearDepthStencilView(g_pDepthStencilView, D3D11_CLEAR_DEPTH, 1.f, 0);
+
+    // ================
+    // == 첫번째 큐브 ==
+    // ================
+
+    // 쉐이더로 넘겨줄 값을 초기화하고, 
     ConstantBuffer cb;
     cb.mWorld = MatrixTranspose(g_WorldMat);
     cb.mView = MatrixTranspose(g_ViewMat);
     cb.mProjection = MatrixTranspose(g_ProjectionMat);
-    g_pd3dDeviceContext->UpdateSubresource(g_pConstantBuffer, 0, NULL, &cb, 0, 0);
 
-    //
-    // Renders a triangle
-    //
-    g_pd3dDeviceContext->VSSetShader(g_pVertexShader, NULL, 0);
-    g_pd3dDeviceContext->VSSetConstantBuffers(0, 1, &g_pConstantBuffer);
-    g_pd3dDeviceContext->PSSetShader(g_pPixelShader, NULL, 0);
-    g_pd3dDeviceContext->DrawIndexed(36, 0, 0);        // 36 vertices needed for 12 triangles in a triangle list
+    // Constant 버퍼를 위한 리소스 메모리인 g_pConstantBuffer에다가 그것을 넘겨준다. (첫번째 큐브)
+    g_pImmediateContext->UpdateSubresource(g_pConstantBuffer, 0, NULL, &cb, 0, 0);
 
-    //
-    // Present our back buffer to our front buffer
-    //
+    // 삼각형을 그린다.
+    g_pImmediateContext->VSSetShader(g_pVertexShader, NULL, 0);
+    // 설정된 상수버퍼를 세팅한다. (슬롯 번호, 갯수, 포인터)
+    g_pImmediateContext->VSSetConstantBuffers(0, 1, &g_pConstantBuffer);
+    g_pImmediateContext->PSSetShader(g_pPixelShader, NULL, 0); 
+    g_pImmediateContext->DrawIndexed(36, 0, 0);        // 36 vertices needed for 12 triangles in a triangle list
+
+    // ================
+    // == 두번째 큐브 ==
+    // ================
+
+    // 쉐이더로 넘겨줄 값을 초기화하고, 
+    ConstantBuffer cb2;
+    cb2.mWorld = MatrixTranspose(g_WorldMat2);
+    cb2.mView = MatrixTranspose(g_ViewMat);
+    cb2.mProjection = MatrixTranspose(g_ProjectionMat);
+
+    // Constant 버퍼를 위한 리소스 메모리인 g_pConstantBuffer에다가 그것을 넘겨준다. (두번째 큐브)
+    g_pImmediateContext->UpdateSubresource(g_pConstantBuffer, 0, NULL, &cb2, 0, 0);
+
+    // 셰이더는 똑같은 친구를 사용한다.
+    g_pImmediateContext->DrawIndexed(36, 0, 0);
+
+    // 다 그린거를 화면에 뿌린다.
     g_pSwapChain->Present(0, 0);
 }
 
@@ -418,19 +487,23 @@ bool CompileShaderFromFile(const wchar_t* szFileName, LPCSTR szEntryPoint, LPCST
 void CleanupDevice()
 {
     // Context에서 연관성을 싹 없애준 다음에
-    if (g_pd3dDeviceContext) {
-        g_pd3dDeviceContext->ClearState();
+    if (g_pImmediateContext) {
+        g_pImmediateContext->ClearState();
     }
 
     // 얘네는 다 COM 객체 들이여서 이렇게 해제를 해줘야 한다.
     // 해제하는 순서는 잘 모르겠다.
+    if (g_pConstantBuffer) g_pConstantBuffer->Release();
     if (g_pVertexBuffer) g_pVertexBuffer->Release();
+    if (g_pIndexBuffer) g_pIndexBuffer->Release();
     if (g_pVertexLayout) g_pVertexLayout->Release();
     if (g_pVertexShader) g_pVertexShader->Release();
     if (g_pPixelShader) g_pPixelShader->Release();
+    if (g_pDepthStencil) g_pDepthStencil->Release();
+    if (g_pDepthStencilView) g_pDepthStencilView->Release();
     if (g_pRenderTargetView) g_pRenderTargetView->Release();
     if (g_pSwapChain) g_pSwapChain->Release();
-    if (g_pd3dDeviceContext) g_pd3dDeviceContext->Release();
+    if (g_pImmediateContext) g_pImmediateContext->Release();
     if (g_pd3dDevice) g_pd3dDevice->Release();
 }
 
@@ -472,7 +545,7 @@ bool SetTriangle()
         return false;
 
     // input layout 세팅하기
-    g_pd3dDeviceContext->IASetInputLayout(g_pVertexLayout);
+    g_pImmediateContext->IASetInputLayout(g_pVertexLayout);
 
     // 픽셀 쉐이더 컴파일
     ID3DBlob* pPSBlob = nullptr;
@@ -518,10 +591,10 @@ bool SetTriangle()
     UINT stride = sizeof(SimpleVertex);
     UINT offset = 0;
     // 버텍스 버퍼를 Input - Assembly 상태로 만든다.
-    g_pd3dDeviceContext->IASetVertexBuffers(0, 1, &g_pVertexBuffer, &stride, &offset);
+    g_pImmediateContext->IASetVertexBuffers(0, 1, &g_pVertexBuffer, &stride, &offset);
 
     // primitive topology는 간단하게 리스트로 설정한다.
-    g_pd3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    g_pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     return true;
 }
@@ -531,7 +604,7 @@ bool SetCube()
     HRESULT hr = S_OK;
     // 버텍스 쉐이더 컴파일
     ID3DBlob* pVSBlob = NULL;
-    bool Result = CompileShaderFromFile(L"Tutorial04.fx", "VS", "vs_4_0", &pVSBlob);
+    bool Result = CompileShaderFromFile(L"Tutorial05.fx", "VS", "vs_4_0", &pVSBlob);
     if (FAILED(hr))
     {
         MessageBox(NULL,
@@ -550,6 +623,7 @@ bool SetCube()
     // Vertex Input layer 정의
     D3D11_INPUT_ELEMENT_DESC layout[] =
     {
+        // Sementic 뒤에 있는 숫자는 똑같은 Sementic Name을 쓰고 싶을때, 인덱스로 넣는 친구이다.
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
         { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
     };
@@ -568,7 +642,7 @@ bool SetCube()
         return false;
 
     // input layout 세팅하기
-    g_pd3dDeviceContext->IASetInputLayout(g_pVertexLayout);
+    g_pImmediateContext->IASetInputLayout(g_pVertexLayout);
 
     // 픽셀 쉐이더 컴파일
     ID3DBlob* pPSBlob = nullptr;
@@ -619,7 +693,7 @@ bool SetCube()
     UINT stride = sizeof(SimpleVertex);
     UINT offset = 0;
     // 버텍스 버퍼를 Input - Assembly 상태로 만든다.
-    g_pd3dDeviceContext->IASetVertexBuffers(0, 1, &g_pVertexBuffer, &stride, &offset);
+    g_pImmediateContext->IASetVertexBuffers(0, 1, &g_pVertexBuffer, &stride, &offset);
 
     // Vertex를 여러번 쓰기 위한 Index 버퍼를 만든다.
     WORD indices[] =
@@ -653,10 +727,10 @@ bool SetCube()
         return false;
 
     // 인덱스 버퍼 만들기
-    g_pd3dDeviceContext->IASetIndexBuffer(g_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+    g_pImmediateContext->IASetIndexBuffer(g_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 
     // primitive topology는 간단하게 리스트로 설정한다.
-    g_pd3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    g_pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     // 셰이더에 들어가는 상수 버퍼 만들기
     bd.Usage = D3D11_USAGE_DEFAULT;
@@ -672,7 +746,7 @@ bool SetCube()
 
     // 카메라 메트릭스 초기화
     Vector4 Eye = Vector4(0.0f, 1.0f, -5.0f, 0.0f);
-    Vector4 At = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+    Vector4 At = Vector4(0.0f, 0.0f, 0.0f, 0.0f);
     Vector4 Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
     g_ViewMat = MatrixLookAtLH(Eye, At, Up);
 
