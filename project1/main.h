@@ -33,12 +33,15 @@ struct FLOAT4 {
 
     FLOAT4(float _x, float _y, float _z, float _a) :x(_x), y(_y), z(_z), a(_a) {}
     FLOAT4() :x(0.f), y(0.f), z(0.f), a(0.f) {}
-};
 
-struct SimpleVertex
-{
-    FLOAT3 Pos; 
-    FLOAT4 Color;
+    FLOAT4 Nomalize() {
+        double sumP = (double)x * (double)x + (double)y * (double)y + (double)z * (double)z + (double)a * (double)a;
+        float sum = (float) sqrt(sumP);
+        if (sum <= 0.00001) {
+            return FLOAT4(0.f, 0.f, 0.f, 0.f);
+        }
+        return FLOAT4(x / sum, y / sum, z / sum, a / sum);
+    }
 };
 
 // For SIMD
@@ -61,26 +64,36 @@ struct Vector4 {
     Vector4(const Vector4& _other) {
         m = _other.m;
     }
-    Vector4 operator-(const Vector4& _other) {
+    Vector4(const FLOAT4& _fNum) {
+        m = _mm_set_ps(_fNum.z, _fNum.z, _fNum.y, _fNum.x);
+    }
+    Vector4 operator-(const Vector4& _other) const{
         Vector4 vec;
         vec.m = _mm_sub_ps(m, _other.m);
         return vec;
     }
 
-    Vector4 operator*(const Vector4& _other) {
+    Vector4 operator*(float _other) const{
+        Vector4 vec;
+        Vector4 _scalar(_other, _other, _other, _other);
+        vec.m = _mm_mul_ps(m, _scalar.m);
+        return vec;
+    }
+
+    Vector4 operator*(const Vector4& _other) const {
         Vector4 vec;
         vec.m = _mm_mul_ps(m, _other.m);
         return vec;
     }
 
-    bool operator==(const Vector4& _other) {
+    bool operator==(const Vector4& _other) const{
         return _other.x == x && 
             _other.y == y&&
             _other.z == z&&
             _other.w == w;
     }
 
-    bool operator!=(const Vector4& _other) {
+    bool operator!=(const Vector4& _other) const{
         return _other.x != x ||
             _other.y != y ||
             _other.z != z ||
@@ -111,26 +124,11 @@ struct Vector4 {
     static __m128 SetVector4(float _x, float _y, float _z, float _a) {
         return _mm_set_ps(_a, _z, _y, _x);
     }
+
+    FLOAT4 GetFloat4() { return FLOAT4(x, y, z, w); }
+
+    friend struct Matrix;
 };
-
-Vector4 CrossVector3Vec(const Vector4& v1, const Vector4& v2) {
-    Vector4 vResult(
-        v1.y*v2.z - v1.z*v2.y, 
-        v1.z*v2.x - v2.z*v1.x, 
-        v1.x*v2.y - v2.x*v1.y, 
-        0.f);
-
-    return vResult;
-}
-
-Vector4 DotVector3Vec(const Vector4& v1, const Vector4& v2) {
-    float Result = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
-    return Vector4(Result, Result, Result, Result);
-}
-
-float SumVectorElements(const Vector4& v) {
-    return v.x + v.y + v.z + v.w;
-}
 
 struct Matrix {
     union
@@ -189,7 +187,48 @@ struct Matrix {
     Matrix& operator*=(const Matrix& _M);
 
     Matrix operator*(const Matrix& _M) const;
+
+    friend struct Vector4;
 };
+
+Vector4 CrossVector3Vec(const Vector4& v1, const Vector4& v2) {
+    Vector4 vResult(
+        v1.y * v2.z - v1.z * v2.y,
+        v1.z * v2.x - v2.z * v1.x,
+        v1.x * v2.y - v2.x * v1.y,
+        0.f);
+
+    return vResult;
+}
+
+Vector4 DotVector3Vec(const Vector4& v1, const Vector4& v2) {
+    float Result = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+    return Vector4(Result, Result, Result, Result);
+}
+
+float SumVectorElements(const Vector4& v) {
+    return v.x + v.y + v.z + v.w;
+}
+
+Vector4 VectorTransform(const Vector4& _vec, const Matrix& _mat) {
+    Vector4 vResult;
+    Vector4 vTemp;
+
+    vResult.m = _mm_shuffle_ps(_vec.m, _vec.m, _MM_SHUFFLE(0, 0, 0, 0));
+    vResult.m = _mm_mul_ps(vResult.m, _mat.m[0].m);
+    vTemp.m = _mm_shuffle_ps(_vec.m, _vec.m, _MM_SHUFFLE(1, 1, 1, 1));
+    vTemp.m = _mm_mul_ps(vTemp.m, _mat.m[1].m);
+    vResult.m = _mm_add_ps(vResult.m, vTemp.m);
+    vTemp.m = _mm_shuffle_ps(_vec.m, _vec.m, _MM_SHUFFLE(2, 2, 2, 2));
+    vTemp.m = _mm_mul_ps(vTemp.m, _mat.m[2].m);
+    vResult.m = _mm_add_ps(vResult.m, vTemp.m);
+
+    // w 성분은 그냥 더하기
+    vResult.m = _mm_add_ps(vResult.m, _mat.m[3].m);
+
+    return vResult;
+}
+
 
 Matrix MatrixTranspose(const Matrix& _other) {
     return Matrix(
@@ -264,6 +303,17 @@ Matrix MatrixTranslation(float _sx, float _sy, float _sz) {
     Mat.m[1] = Vector4(0.f, 1.f, 0.f, 0.f);
     Mat.m[2] = Vector4(0.f, 0.f, 1.f, 0.f);
     Mat.m[3] = Vector4(_sx, _sy, _sz, 1.f);
+
+    return Mat;
+}
+
+Matrix MatrixTranslation(FLOAT4 _fNum) {
+    Matrix Mat;
+
+    Mat.m[0] = Vector4(1.f, 0.f, 0.f, 0.f);
+    Mat.m[1] = Vector4(0.f, 1.f, 0.f, 0.f);
+    Mat.m[2] = Vector4(0.f, 0.f, 1.f, 0.f);
+    Mat.m[3] = Vector4(_fNum.x, _fNum.y, _fNum.z, 1.f);
 
     return Mat;
 }
@@ -411,9 +461,4 @@ Matrix Matrix::operator*(const Matrix& _M) const {
     return mat;
 }
 
-struct ConstantBuffer
-{
-    Matrix mWorld;
-    Matrix mView;
-    Matrix mProjection;
-};
+
