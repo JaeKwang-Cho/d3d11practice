@@ -16,6 +16,15 @@ float ConvertToRadians(float fDegrees) { return fDegrees * (PI / 180.0f); }
 float ConvertToDegrees(float fRadians) { return fRadians * (180.0f / PI); }
 
 // struct
+struct FLOAT2 {
+
+    float u;
+    float v;
+
+    FLOAT2(float _u, float _v): u(_u), v(_v){}
+    FLOAT2() : u(0.f), v(0.f){}
+};
+
 struct FLOAT3 {
     float x;
     float y;
