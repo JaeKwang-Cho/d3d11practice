@@ -1,5 +1,8 @@
 ﻿#include "pch.h"
 #include "project2.h"
+#include "DirectXTex.h"
+
+using namespace DirectX;
 
 struct SimpleVertex
 {
@@ -215,7 +218,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     vec = vec;
 #endif
     // 큐브 그릴 준비
-#if 1 
+#if 0 
     if (!SetCube())
     {
         return FALSE;
@@ -228,7 +231,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 #endif
-#if 0
+#if 1
     if (!SetCubeWithTex())
     {
         return FALSE;
@@ -249,9 +252,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
         else
         {
-            RenderCube();
+            //RenderCube();
             //RenderCube_Norm();
-            //RenderCube_Tex();
+            RenderCube_Tex();
         }
     }
 
@@ -1200,11 +1203,16 @@ bool SetCubeWithTex()
 
     // Load the Texture
     // DirectTex로 나중에 바꾸도록 하자.
+    
+    ScratchImage scratchImage = ScratchImage{};
+    hr = LoadFromDDSFile(L"seafloor.dds", DirectX::DDS_FLAGS_NONE, nullptr, scratchImage);
     //hr = D3DX11CreateShaderResourceViewFromFile(g_pd3dDevice, L"seafloor.dds", nullptr, nullptr, &g_pTextureRV, nullptr);
     if (FAILED(hr))
     {
         return false;
     }
+
+    hr = CreateShaderResourceView(g_pd3dDevice, scratchImage.GetImages(), scratchImage.GetImageCount(), scratchImage.GetMetadata(), &g_pTextureRV);
 
     // 텍스쳐의 Sampler state 만들기
     D3D11_SAMPLER_DESC sampDesc;

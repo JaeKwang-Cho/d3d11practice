@@ -98,22 +98,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Tutorial04.fx">
-      <Filter>Shader\Samples</Filter>
-    </FxCompile>
-    <FxCompile Include="Tutorial05.fx">
-      <Filter>Shader\Samples</Filter>
-    </FxCompile>
-    <FxCompile Include="Tutorial06.fx">
-      <Filter>Shader\Samples</Filter>
-    </FxCompile>
-    <FxCompile Include="Tutorial07.fx">
-      <Filter>Shader\Samples</Filter>
-    </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Tutorial02.fx">
       <Filter>Shader\Samples</Filter>
     </None>
+    <None Include="Tutorial04.fx" />
+    <None Include="Tutorial05.fx" />
+    <None Include="Tutorial06.fx" />
+    <None Include="Tutorial07.fx" />
   </ItemGroup>
 </Project>

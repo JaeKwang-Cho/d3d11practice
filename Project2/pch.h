@@ -12,6 +12,7 @@ using std::vector;
 
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "DirectXTexd.lib")
 
 // #2 Project provide
 #include "Resource.h"
