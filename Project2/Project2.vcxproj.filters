@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Defauit">
+      <UniqueIdentifier>{869e275c-e055-4203-97ab-27941dba4c71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Defauit\리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{a25ca663-9826-49c8-8e03-1e33f28f2836}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\01.Header">
+      <UniqueIdentifier>{e4d7c2c4-214c-4ba4-aca4-11fadc175319}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03.Manager">
+      <UniqueIdentifier>{230c4b98-88bd-4e9c-be43-cc7e5e9435b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03.Manager\InputManager">
+      <UniqueIdentifier>{b6142647-690e-4d96-8efc-687f10d6868f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\02.Core">
+      <UniqueIdentifier>{eb1772e2-6897-43e3-a383-44e0be7c128d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{32a9c3e2-6153-415b-b6e3-c80b92e7dd71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\Samples">
+      <UniqueIdentifier>{cb335940-19c9-40a7-b248-853975c67a21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\01.Header\Functions">
+      <UniqueIdentifier>{d83a41ce-674d-41ac-94af-b62b91ce42e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\01.Header\CPPs">
+      <UniqueIdentifier>{b6822588-d881-4f12-ae00-241d9bae4c52}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="targetver.h">
+      <Filter>Defauit</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Defauit</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>Defauit</Filter>
+    </ClInclude>
+    <ClInclude Include="project2.h">
+      <Filter>Engine\01.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="CKeyManager.h">
+      <Filter>Engine\03.Manager\InputManager</Filter>
+    </ClInclude>
+    <ClInclude Include="define.h">
+      <Filter>Engine\01.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="struct.h">
+      <Filter>Engine\01.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="CCore.h">
+      <Filter>Engine\02.Core</Filter>
+    </ClInclude>
+    <ClInclude Include="D3DHelperFunc.h">
+      <Filter>Engine\01.Header\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="function.h">
+      <Filter>Engine\01.Header</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Project2.rc">
+      <Filter>Defauit\리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>Defauit\리소스 파일</Filter>
+    </Image>
+    <Image Include="Project2.ico">
+      <Filter>Defauit\리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="CKeyManager.cpp">
+      <Filter>Engine\03.Manager\InputManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CCore.cpp">
+      <Filter>Engine\02.Core</Filter>
+    </ClCompile>
+    <ClCompile Include="struct.cpp">
+      <Filter>Engine\01.Header\CPPs</Filter>
+    </ClCompile>
+    <ClCompile Include="D3DHelperFunc.cpp">
+      <Filter>Engine\01.Header\CPPs</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Tutorial04.fx">
+      <Filter>Shader\Samples</Filter>
+    </FxCompile>
+    <FxCompile Include="Tutorial05.fx">
+      <Filter>Shader\Samples</Filter>
+    </FxCompile>
+    <FxCompile Include="Tutorial06.fx">
+      <Filter>Shader\Samples</Filter>
+    </FxCompile>
+    <FxCompile Include="Tutorial07.fx">
+      <Filter>Shader\Samples</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Tutorial02.fx">
+      <Filter>Shader\Samples</Filter>
+    </None>
+  </ItemGroup>
+</Project>

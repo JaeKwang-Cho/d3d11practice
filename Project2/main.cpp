@@ -1,20 +1,5 @@
-﻿// project1.cpp : 애플리케이션에 대한 진입점을 정의합니다.
-//
-
-#include <d3d11.h>
-#include <d3dx11.h>
-#include <d3dcompiler.h>
-
-#include <xnamath.h>
-
-#include "framework.h"
-#include "main.h"
-#include "pch.h"
-
-#include <dxgidebug.h>
-
-#define MAX_LOADSTRING (100)
-#define SHADER_BUFFER_SIZE (8192)
+﻿#include "pch.h"
+#include "project2.h"
 
 struct SimpleVertex
 {
@@ -22,7 +7,7 @@ struct SimpleVertex
     FLOAT4 Normal;
 };
 
-struct SimpleVertex_Norm 
+struct SimpleVertex_Norm
 {
     FLOAT3 POS;
     FLOAT3 Normal;
@@ -78,28 +63,28 @@ HWND                        g_hWnd = nullptr;   // 윈도우 핸들
 D3D_DRIVER_TYPE             g_driverType = D3D_DRIVER_TYPE_NULL; // 드라이버 종류
 D3D_FEATURE_LEVEL           g_featureLevel = D3D_FEATURE_LEVEL_11_1; // 사용할 directx 버전(?)
 // d3d Property
-ID3D11Device*               g_pd3dDevice = nullptr; // 리소스를 만들고, 디스플레이 어뎁터 기능을 사용하게 하는 것
-ID3D11DeviceContext*        g_pImmediateContext = nullptr; // 디바이스로 하여금 파이프라인 상태를 제어하여, 렌더링 명령을 내리는데 사용한다.
-IDXGISwapChain*             g_pSwapChain = nullptr; // 더블 버퍼링을 위한 Surface(IDXGISurface)를 구성하는데 사용한다.
-ID3D11RenderTargetView*     g_pRenderTargetView = nullptr;
+ID3D11Device* g_pd3dDevice = nullptr; // 리소스를 만들고, 디스플레이 어뎁터 기능을 사용하게 하는 것
+ID3D11DeviceContext* g_pImmediateContext = nullptr; // 디바이스로 하여금 파이프라인 상태를 제어하여, 렌더링 명령을 내리는데 사용한다.
+IDXGISwapChain* g_pSwapChain = nullptr; // 더블 버퍼링을 위한 Surface(IDXGISurface)를 구성하는데 사용한다.
+ID3D11RenderTargetView* g_pRenderTargetView = nullptr;
 // Shader and Property
-ID3D11Texture2D*            g_pDepthStencil = nullptr;
-ID3D11DepthStencilView*     g_pDepthStencilView = nullptr;
-ID3D11VertexShader*         g_pVertexShader = nullptr;
-ID3D11PixelShader*          g_pPixelShader = nullptr;
-ID3D11PixelShader*          g_pPixelShaderSolid = nullptr;
+ID3D11Texture2D* g_pDepthStencil = nullptr;
+ID3D11DepthStencilView* g_pDepthStencilView = nullptr;
+ID3D11VertexShader* g_pVertexShader = nullptr;
+ID3D11PixelShader* g_pPixelShader = nullptr;
+ID3D11PixelShader* g_pPixelShaderSolid = nullptr;
 // Vetex and Indices
-ID3D11InputLayout*          g_pVertexLayout = nullptr;
-ID3D11Buffer*               g_pVertexBuffer = nullptr;
-ID3D11Buffer*               g_pIndexBuffer = nullptr;
+ID3D11InputLayout* g_pVertexLayout = nullptr;
+ID3D11Buffer* g_pVertexBuffer = nullptr;
+ID3D11Buffer* g_pIndexBuffer = nullptr;
 // Constant Buffer
-ID3D11Buffer*               g_pConstantBuffer = nullptr;
-ID3D11Buffer*               g_pCBNeverChanges = nullptr;
-ID3D11Buffer*               g_pCBChangeOnResize = nullptr;
-ID3D11Buffer*               g_pCBChangesEveryFrame = nullptr;
+ID3D11Buffer* g_pConstantBuffer = nullptr;
+ID3D11Buffer* g_pCBNeverChanges = nullptr;
+ID3D11Buffer* g_pCBChangeOnResize = nullptr;
+ID3D11Buffer* g_pCBChangesEveryFrame = nullptr;
 // Texture
-ID3D11ShaderResourceView*   g_pTextureRV = nullptr;
-ID3D11SamplerState*         g_pSamplerLinear = nullptr;
+ID3D11ShaderResourceView* g_pTextureRV = nullptr;
+ID3D11SamplerState* g_pSamplerLinear = nullptr;
 
 
 // Transform Matrices
@@ -107,7 +92,7 @@ Matrix                      g_WorldMat;
 Matrix                      g_WorldMat2;
 Matrix                      g_ViewMat;
 Matrix                      g_ProjectionMat;
-FLOAT4                      g_vMeshColor(0.7f, 0.7, 0.7f, 1.0f);
+FLOAT4                      g_vMeshColor(0.7f, 0.7f, 0.7f, 1.0f);
 
 // 전역 프로퍼티
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트
@@ -119,26 +104,20 @@ bool                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
-// D3D
-bool                InitDevice();
-void                CleanupDevice();
 
-// Helper
-bool                CompileShaderFromFile(const wchar_t* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
 
 void                RenderCube();
 void                RenderCube_Norm();
 void                RenderCube_Tex();
 
-bool                SetTriangle();
 bool                SetCube();
 bool                SetCubeWithNdotL();
 bool                SetCubeWithTex();
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
-                     _In_opt_ HINSTANCE hPrevInstance,
-                     _In_ LPWSTR    lpCmdLine,
-                     _In_ int       nCmdShow)
+                      _In_opt_ HINSTANCE hPrevInstance,
+                      _In_ LPWSTR    lpCmdLine,
+                      _In_ int       nCmdShow)
 {
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
@@ -147,38 +126,33 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_PROJECT1, szWindowClass, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDC_PROJECT2, szWindowClass, MAX_LOADSTRING);
 
     // 윈도우의 스타일을 지정하고,
     MyRegisterClass(hInstance);
 
     // 애플리케이션 초기화를 수행합니다:
-    if (!InitInstance (hInstance, nCmdShow))
+    if (!InitInstance(hInstance, nCmdShow))
     {
         return FALSE;
     }
 
     // DirectX 디바이스 초기화를 한다.
-    if (!InitDevice()) {
+    if (!InitDevice())
+    {
         return FALSE;
     }
 
-    // #1 삼각형 그릴 준비
-#if 0
-    if (!SetTriangle()) {
-        return FALSE;
-    }
-#endif 
     // _mm_shuffle_ps , mm_mul_ps , _mm_add_ps 테스트
 #if 0 
     Vector4 v1 = Vector4(1.f, 2.f, 3.f, 4.f);
     Vector4 v2 = Vector4(5.f, 6.f, 7.f, 8.f);
 
     Vector4 temp = v1;
-    temp.m = _mm_shuffle_ps(temp.m, v2.m, _MM_SHUFFLE(3,2,1,0));
+    temp.m = _mm_shuffle_ps(temp.m, v2.m, _MM_SHUFFLE(3, 2, 1, 0));
     //1278
     temp = v1;
-    temp.m = _mm_shuffle_ps(temp.m, v2.m, _MM_SHUFFLE(0,1,2,3));
+    temp.m = _mm_shuffle_ps(temp.m, v2.m, _MM_SHUFFLE(0, 1, 2, 3));
     //4365
     temp = v1;
     temp.m = _mm_shuffle_ps(temp.m, v2.m, _MM_SHUFFLE(0, 0, 0, 0));
@@ -216,14 +190,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     Matrix rotatematy = MatrixRotationX(45);
     rotatematy = MatrixRotationY(45);
     rotatematy = MatrixRotationZ(45);
-    
+
 #endif
     // XM 테스트
 #if 0 
     XMMATRIX xMat(1.f, 2.f, 3.f, 4.f,
-        5.f, 6.f, 7.f, 8.f,
-        9.f, 10.f, 11.f, 12.f,
-        13.f, 14.f, 15.f, 16.f);
+                  5.f, 6.f, 7.f, 8.f,
+                  9.f, 10.f, 11.f, 12.f,
+                  13.f, 14.f, 15.f, 16.f);
     XMFLOAT4 xFloat(-1.f, -2.f, -3.f, -4.f);
     XMVECTOR xVec = XMLoadFloat4(&xFloat);
 
@@ -231,9 +205,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     xVec = xVec;
 
     Matrix mat(1.f, 2.f, 3.f, 4.f,
-        5.f, 6.f, 7.f, 8.f,
-        9.f, 10.f, 11.f, 12.f,
-        13.f, 14.f, 15.f, 16.f);
+               5.f, 6.f, 7.f, 8.f,
+               9.f, 10.f, 11.f, 12.f,
+               13.f, 14.f, 15.f, 16.f);
 
     Vector4 vec(-1.f, -2.f, -3.f, -4.f);
 
@@ -242,35 +216,39 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 #endif
     // 큐브 그릴 준비
 #if 1 
-    if (!SetCube()) {
+    if (!SetCube())
+    {
         return FALSE;
     }
 #endif
     // 큐브 + NdotL Light
 #if 0
-    if (!SetCubeWithNdotL()) {
+    if (!SetCubeWithNdotL())
+    {
         return FALSE;
     }
 #endif
 #if 0
-    if (!SetCubeWithTex()) {
+    if (!SetCubeWithTex())
+    {
         return FALSE;
     }
 #endif 0  
 
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_PROJECT1));
+    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_PROJECT2));
 
     MSG msg = { 0 };
 
     // 기본 메시지 루프입니다:
     while (WM_QUIT != msg.message)
     {
-        if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) 
+        if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
         {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
-        else {
+        else
+        {
             RenderCube();
             //RenderCube_Norm();
             //RenderCube_Tex();
@@ -279,7 +257,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     CleanupDevice();
 
-    return (int) msg.wParam;
+    return (int)msg.wParam;
 }
 
 ATOM MyRegisterClass(HINSTANCE hInstance)
@@ -288,168 +266,39 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 
     wcex.cbSize = sizeof(WNDCLASSEX);
 
-    wcex.style          = CS_HREDRAW | CS_VREDRAW;
-    wcex.lpfnWndProc    = WndProc;
-    wcex.cbClsExtra     = 0;
-    wcex.cbWndExtra     = 0;
-    wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_PROJECT1));
-    wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_PROJECT1);
-    wcex.lpszClassName  = szWindowClass;
-    wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+    wcex.style = CS_HREDRAW | CS_VREDRAW;
+    wcex.lpfnWndProc = WndProc;
+    wcex.cbClsExtra = 0;
+    wcex.cbWndExtra = 0;
+    wcex.hInstance = hInstance;
+    wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_PROJECT2));
+    wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
+    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wcex.lpszMenuName = MAKEINTRESOURCEW(IDC_PROJECT2);
+    wcex.lpszClassName = szWindowClass;
+    wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
     return RegisterClassExW(&wcex);
 }
 
 bool InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
-   g_hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
+    g_hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
-   // 윈도우 사이즈를 정하고
-   RECT rc = { 0, 0, 640, 480 };
-   AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, true);
+    // 윈도우 사이즈를 정하고
+    RECT rc = { 0, 0, 640, 480 };
+    AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, true);
 
-   g_hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance, nullptr);
+    g_hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+                           CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance, nullptr);
 
-   if (!g_hWnd)
-   {
-      return false;
-   }
-
-   ShowWindow(g_hWnd, nCmdShow);
-   UpdateWindow(g_hWnd);
-
-   return true;
-}
-
-// Init ID3D11Device
-bool InitDevice()
-{
-    HRESULT hr = S_OK;
-
-    // 일단 윈도우의 프로퍼티를 가져오고
-    RECT rc;
-    GetClientRect(g_hWnd, &rc);
-    UINT    width = rc.right - rc.left;
-    UINT    height = rc.bottom - rc.top;
-
-    UINT createDeviceFlags = 0;
-#ifdef _DEBUG
-    createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
-#endif // _DEBUG
-
-    // 체크할 드라이버 타입과
-    D3D_DRIVER_TYPE driverTypes[] = {
-        D3D_DRIVER_TYPE_HARDWARE,
-        D3D_DRIVER_TYPE_WARP,
-        D3D_DRIVER_TYPE_REFERENCE
-    };
-    UINT numDriverTypes = ARRAYSIZE(driverTypes);
-
-    // 피쳐 레벨을 배열로 만들어 놓고
-    D3D_FEATURE_LEVEL featureLevels[] = {
-        D3D_FEATURE_LEVEL_11_0,
-        D3D_FEATURE_LEVEL_10_1,
-        D3D_FEATURE_LEVEL_10_0,
-    };
-    UINT numFeatureLevels = ARRAYSIZE(featureLevels);
-
-    // 스왑 체인 디스크라이브를 설정한다.
-    DXGI_SWAP_CHAIN_DESC sd;
-    memset(&sd, 0, sizeof(sd));
-    sd.BufferCount = 1;
-    sd.BufferDesc.Width = width;
-    sd.BufferDesc.Height = height;
-    sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; // 알파 값을 포함하는, 부호 없는 4개의 정수 sRGB(+A) 방식
-    sd.BufferDesc.RefreshRate.Numerator = 60; // Hz
-    sd.BufferDesc.RefreshRate.Denominator = 1;
-    sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT; // Surface나 Resource를 출력 대상으로 사용하겠다는 것이다.
-    sd.OutputWindow = g_hWnd; //출력 윈도우를 정해주고
-    sd.SampleDesc.Count = 1; // 멀티 샘플링 프로퍼티도 정해주고
-    sd.SampleDesc.Quality = 0;
-    sd.Windowed = true; // 창모드로 설정해주고
-
-    for (UINT i = 0; i < numDriverTypes; i++) {
-        g_driverType = driverTypes[i];
-        // 이 커다란 함수 하나에서 드라이버 타입과 피쳐레밸을 확인하면서
-        // 프로퍼티로 스왑체인, 디바이스, 피쳐레벨, 디바이스 컨텍스트를 생성한다.
-        hr = D3D11CreateDeviceAndSwapChain(
-            nullptr, g_driverType, nullptr, createDeviceFlags,
-            featureLevels, numFeatureLevels, D3D11_SDK_VERSION,
-            &sd, &g_pSwapChain,&g_pd3dDevice, &g_featureLevel, &g_pImmediateContext
-        ); // 원래는 디바이스 생성과 스왑 체인 생성이 따로 이뤄지고, 그것을 나중에 결합하게 된다.
-        if (SUCCEEDED(hr)) {
-            break;
-        }
-    }
-    if (FAILED(hr)) {
-        return false;
-    }
-    
-    // 렌더 타겟 뷰, 쉐이더 리소스 뷰 둘 중 하나로 가능하다.(읽기 전용)
-    // 이런 뷰 들은 리소스를 사용하기 위한 파생 인터페이스로
-    // 만들어진 친구이다. (근원은 텍스쳐이다. 텍스쳐는 쓰기가 가능하다.)
-    ID3D11Texture2D* pBackBuffer = nullptr;
-    // 스왑체인을 생성하면 기본적으로 나오는 텍스쳐를 백으로 준다. (프론드는 Desktop Window Manager에서 관리하는 애가 프론트이다.)
-    hr = g_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&pBackBuffer);
-    if (FAILED(hr)) {
-        return false;
-    }
-    // Texture2D 백 버퍼로 부터, 랜더 타겟으로 사용할 수 있는 Comptr을 하나 만들게 된다. 리소스는 똑같은 것을 가리킨다.
-    hr = g_pd3dDevice->CreateRenderTargetView(pBackBuffer, nullptr, &g_pRenderTargetView);
-    pBackBuffer->Release();
-    if (FAILED(hr)) {
+    if (!g_hWnd)
+    {
         return false;
     }
 
-    // depth stencil texture 를 만든다.
-    D3D11_TEXTURE2D_DESC descDepth;
-    memset(&descDepth, 0, sizeof(descDepth));
-    descDepth.Width = width;
-    descDepth.Height = height;
-    descDepth.MipLevels = 1;
-    descDepth.ArraySize = 1;
-    descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-    descDepth.SampleDesc.Count = 1;
-    descDepth.SampleDesc.Quality = 0;
-    descDepth.Usage = D3D11_USAGE_DEFAULT;
-    descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL; 
-    descDepth.CPUAccessFlags = 0;
-    descDepth.MiscFlags = 0;
-    // 뎁스 버퍼도 텍스쳐를 일단 만들어서 사용하는 것이다.
-    hr = g_pd3dDevice->CreateTexture2D(&descDepth, nullptr, &g_pDepthStencil);
-    if (FAILED(hr)) {
-        return false;
-    }
-
-    // depth stencil view를 만든다.
-    D3D11_DEPTH_STENCIL_VIEW_DESC descDSv;
-    memset(&descDSv, 0, sizeof(descDSv));
-    descDSv.Format = descDepth.Format;
-    descDSv.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-    descDSv.Texture2D.MipSlice = 0;
-    // 위에서 만든 텍스쳐로 뎁스 스텐실 뷰를 만드는 것.
-    hr = g_pd3dDevice->CreateDepthStencilView(g_pDepthStencil, &descDSv, &g_pDepthStencilView);
-    if (FAILED(hr)) {
-        return false;
-    }
-
-    // Render Target View와 Depth Stencil View를 Output-Merge 상태로 바인딩 한다.
-    g_pImmediateContext->OMSetRenderTargets(1, &g_pRenderTargetView, g_pDepthStencilView);
-
-    // 뷰포트를 설정한다.
-    D3D11_VIEWPORT vp;
-    vp.Width = (float)width;
-    vp.Height = (float)height;
-    vp.MinDepth = 0.f;
-    vp.MaxDepth = 1.f;
-    vp.TopLeftX = 0;
-    vp.TopLeftY = 0;
-    // 뷰포트 구조체를 레스터라이즈 단계에 바인딩 한다.
-    g_pImmediateContext->RSSetViewports(1, &vp);
+    ShowWindow(g_hWnd, nCmdShow);
+    UpdateWindow(g_hWnd);
 
     return true;
 }
@@ -476,8 +325,8 @@ void RenderCube()
     }
     else
     {
-        static DWORD dwTimeStart = 0;
-        DWORD dwTimeCur = GetTickCount();
+        static ULONGLONG dwTimeStart = 0;
+        ULONGLONG dwTimeCur = GetTickCount64();
         if (dwTimeStart == 0)
             dwTimeStart = dwTimeCur;
         t = (dwTimeCur - dwTimeStart) / 1000.0f;
@@ -549,12 +398,12 @@ void RenderCube_Norm()
     static float t = 0.0f;
     if (g_driverType == D3D_DRIVER_TYPE_REFERENCE)
     {
-        t += (float)XM_PI * 0.0125f;
+        t += (float)PI * 0.0125f;
     }
     else
     {
-        static DWORD dwTimeStart = 0;
-        DWORD dwTimeCur = GetTickCount();
+        static ULONGLONG dwTimeStart = 0;
+        ULONGLONG dwTimeCur = GetTickCount64();
         if (dwTimeStart == 0)
             dwTimeStart = dwTimeCur;
         t = (dwTimeCur - dwTimeStart) / 1000.0f;
@@ -575,7 +424,7 @@ void RenderCube_Norm()
     };
 
     // 빨간 조명을 공전하게 한다.
-    Matrix mRotate = MatrixRotationY(-2.f* t);
+    Matrix mRotate = MatrixRotationY(-2.f * t);
     Vector4 vLightDir(vLightDirections[1]);
     vLightDir = VectorTransform(vLightDir, mRotate);
     vLightDirections[1] = vLightDir.GetFloat4();
@@ -632,12 +481,12 @@ void RenderCube_Tex()
     static float t = 0.0f;
     if (g_driverType == D3D_DRIVER_TYPE_REFERENCE)
     {
-        t += (float)XM_PI * 0.0125f;
+        t += (float)PI * 0.0125f;
     }
     else
     {
-        static DWORD dwTimeStart = 0;
-        DWORD dwTimeCur = GetTickCount();
+        static ULONGLONG dwTimeStart = 0;
+        ULONGLONG dwTimeCur = GetTickCount64();
         if (dwTimeStart == 0)
             dwTimeStart = dwTimeCur;
         t = (dwTimeCur - dwTimeStart) / 1000.0f;
@@ -685,78 +534,6 @@ void RenderCube_Tex()
     g_pSwapChain->Present(0, 0);
 }
 
-bool CompileShaderFromFile(const wchar_t* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut)
-{
-    HRESULT hr;
-
-    BYTE* data = new BYTE[SHADER_BUFFER_SIZE];
-    FILE* file = nullptr;
-    _wfopen_s(&file, szFileName, L"rb");
-    assert(file != nullptr);
-
-    fseek(file, 0, SEEK_END);
-    unsigned long iDataSize = ftell(file);
-    fseek(file, 0, SEEK_SET);
-    fread(data, sizeof(BYTE), (size_t)iDataSize, file);
-    data[(size_t)iDataSize] = '\0';
-
-    fclose(file);
-
-    DWORD dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS; // <d3dcompiler.h>
-#if defined(DEBUG) || defined(_DEBUG)
-    dwShaderFlags |= D3DCOMPILE_DEBUG;
-#endif
-    // Blob은 Binary Large Object를 말한다.
-    ID3DBlob* pErrorBlob = nullptr;
-    hr = D3DCompile2(data, (size_t)iDataSize, nullptr, nullptr, nullptr, szEntryPoint, szShaderModel, 0, 0, 0, 0, 0, ppBlobOut, &pErrorBlob);
-    if (FAILED(hr)) {
-        if (pErrorBlob != NULL)
-            OutputDebugStringA((char*)pErrorBlob->GetBufferPointer());
-        if (pErrorBlob) 
-            pErrorBlob->Release();
-        return false;
-    }
-    if (pErrorBlob) {
-        pErrorBlob->Release();
-    }
-
-    return true;
-}
-
-void CleanupDevice()
-{
-    // Context에서 연관성을 싹 없애준 다음에
-    if (g_pImmediateContext) {
-        g_pImmediateContext->ClearState();
-    }
-
-    // 얘네는 다 COM 객체 들이여서 이렇게 해제를 해줘야 한다.
-    // 해제하는 순서는 잘 모르겠다.
-    // Common
-    if (g_pDepthStencil) g_pDepthStencil->Release();
-    if (g_pDepthStencilView) g_pDepthStencilView->Release();
-    if (g_pRenderTargetView) g_pRenderTargetView->Release();
-    if (g_pSwapChain) g_pSwapChain->Release();
-    if (g_pImmediateContext) g_pImmediateContext->Release();
-    if (g_pd3dDevice) g_pd3dDevice->Release();
-    // Texutre
-    if (g_pSamplerLinear) g_pSamplerLinear->Release();
-    if (g_pTextureRV) g_pTextureRV->Release();
-    if (g_pCBNeverChanges) g_pCBNeverChanges->Release();
-    if (g_pCBChangeOnResize) g_pCBChangeOnResize->Release();
-    if (g_pCBChangesEveryFrame) g_pCBChangesEveryFrame->Release();
-    // Cube
-    if (g_pConstantBuffer) g_pConstantBuffer->Release();
-    if (g_pVertexBuffer) g_pVertexBuffer->Release();
-    if (g_pIndexBuffer) g_pIndexBuffer->Release();
-    if (g_pVertexLayout) g_pVertexLayout->Release();
-    // Light
-    if (g_pVertexShader) g_pVertexShader->Release();
-    if (g_pPixelShaderSolid) g_pPixelShaderSolid->Release();
-    if (g_pPixelShader) g_pPixelShader->Release();
-
-}
-
 bool SetTriangle()
 {
     HRESULT hr = S_OK;
@@ -764,15 +541,17 @@ bool SetTriangle()
     // 버텍스 쉐이더 컴파일
     ID3DBlob* pVSBlob = nullptr;
     bool Result = CompileShaderFromFile(L"Tutorial02.fx", "VS", "vs_4_0", &pVSBlob);
-    if (!Result) {
+    if (!Result)
+    {
         MessageBox(NULL,
-            L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
+                   L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
         return false;
     }
 
     // 버텍스 쉐이터 만들기
     hr = g_pd3dDevice->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), nullptr, &g_pVertexShader);
-    if (FAILED(hr)) {
+    if (FAILED(hr))
+    {
         pVSBlob->Release();
         return false;
     }
@@ -800,15 +579,17 @@ bool SetTriangle()
     // 픽셀 쉐이더 컴파일
     ID3DBlob* pPSBlob = nullptr;
     Result = CompileShaderFromFile(L"Tutorial02.fx", "PS", "ps_4_0", &pPSBlob);
-    if (!Result) {
+    if (!Result)
+    {
         MessageBox(NULL,
-            L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
+                   L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
         return false;
     }
 
     // 버텍스 쉐이터 만들기
     hr = g_pd3dDevice->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, &g_pPixelShader);
-    if (FAILED(hr)) {
+    if (FAILED(hr))
+    {
         return false;
     }
 
@@ -833,7 +614,8 @@ bool SetTriangle()
     InitData.pSysMem = vertices;
     // 디바이스를 버퍼를 초기화하면서 만들어준다.
     hr = g_pd3dDevice->CreateBuffer(&bd, &InitData, &g_pVertexBuffer);
-    if (FAILED(hr)) {
+    if (FAILED(hr))
+    {
         return false;
     }
 
@@ -858,8 +640,8 @@ bool SetCube()
     if (Result == false)
     {
         MessageBox(NULL,
-            L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
-        return hr;
+                   L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
+        return false;
     }
 
     // 버텍스 쉐이터 만들기
@@ -867,7 +649,7 @@ bool SetCube()
     if (FAILED(hr))
     {
         pVSBlob->Release();
-        return hr;
+        return false;
     }
 
     // Vertex Input layer 정의
@@ -900,7 +682,7 @@ bool SetCube()
     if (FAILED(hr))
     {
         MessageBox(NULL,
-            L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
+                   L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
         return false;
     }
 
@@ -1026,7 +808,7 @@ bool SetCubeWithNdotL()
     if (Result == false)
     {
         MessageBox(NULL,
-            L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
+                   L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
         return false;
     }
 
@@ -1066,7 +848,7 @@ bool SetCubeWithNdotL()
     if (FAILED(hr))
     {
         MessageBox(NULL,
-            L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
+                   L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
         return false;
     }
 
@@ -1079,10 +861,10 @@ bool SetCubeWithNdotL()
     // 픽셀 쉐이더 컴파일 #1 (빛을 반사하지 않는 친구)
     pPSBlob = nullptr;
     Result = CompileShaderFromFile(L"Tutorial06.fx", "PSSolid", "ps_4_0", &pPSBlob);
-    if (FAILED(hr))
+    if (Result == false)
     {
         MessageBox(NULL,
-            L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
+                   L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
         return false;
     }
 
@@ -1128,7 +910,7 @@ bool SetCubeWithNdotL()
 
     // 버텍스 버퍼 디스크라이브를 지정한다.
     D3D11_BUFFER_DESC bd;
-    memset(&bd ,0 , sizeof(bd));
+    memset(&bd, 0, sizeof(bd));
     bd.Usage = D3D11_USAGE_DEFAULT;
     bd.ByteWidth = sizeof(SimpleVertex_Norm) * 24;
     bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -1234,15 +1016,17 @@ bool SetCubeWithTex()
     // Shader를 컴파일 해서 Binary Large Object file로 만들기
     ID3DBlob* pVSBlob = nullptr;
     bool Result = CompileShaderFromFile(L"Tutorial07.fx", "VS", "vs_4_0", &pVSBlob);
-    if (Result == false) {
+    if (Result == false)
+    {
         MessageBox(nullptr,
-            L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
+                   L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
         return false;
     }
 
     // 버텍스 쉐이더 객체 만들기
     hr = g_pd3dDevice->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), nullptr, &g_pVertexShader);
-    if (FAILED(hr)) {
+    if (FAILED(hr))
+    {
         pVSBlob->Release();
         return false;
     }
@@ -1261,7 +1045,8 @@ bool SetCubeWithTex()
         pVSBlob->GetBufferSize(), &g_pVertexLayout);
 
     pVSBlob->Release();
-    if (FAILED(hr)) {
+    if (FAILED(hr))
+    {
         return false;
     }
 
@@ -1271,16 +1056,18 @@ bool SetCubeWithTex()
     // 픽셀 쉐이더 컴파일 해주기
     ID3DBlob* pPSBlob = nullptr;
     Result = CompileShaderFromFile(L"Tutorial07.fx", "PS", "ps_4_0", &pPSBlob);
-    if (Result == false) {
+    if (Result == false)
+    {
         MessageBox(NULL,
-            L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
+                   L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
         return false;
     }
 
     // 픽셀 쉐이더 만들기
     hr = g_pd3dDevice->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, &g_pPixelShader);
     pPSBlob->Release();
-    if (FAILED(hr)) {
+    if (FAILED(hr))
+    {
         return false;
     }
 
@@ -1331,7 +1118,8 @@ bool SetCubeWithTex()
     memset(&InitData, 0, sizeof(InitData));
     InitData.pSysMem = vertices;
     hr = g_pd3dDevice->CreateBuffer(&bd, &InitData, &g_pVertexBuffer);
-    if (FAILED(hr)) {
+    if (FAILED(hr))
+    {
         return false;
     }
 
@@ -1367,16 +1155,17 @@ bool SetCubeWithTex()
     bd.ByteWidth = sizeof(WORD) * 36;
     bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
     bd.CPUAccessFlags = 0;
-    
+
     // 인덱스 데이터 포인터 연결해주기
     InitData.pSysMem = indices;
 
     // 인덱스 버퍼 만들어주기
     hr = g_pd3dDevice->CreateBuffer(&bd, &InitData, &g_pIndexBuffer);
-    if (FAILED(hr)) {
+    if (FAILED(hr))
+    {
         return false;
     }
-        
+
     // 인덱스 버퍼 세팅 (인덱스 개수가 엄청 많아지면 DXGI_FORMAT_R32_UINT로 바꾼다.)
     g_pImmediateContext->IASetIndexBuffer(g_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 
@@ -1390,26 +1179,30 @@ bool SetCubeWithTex()
     //  #1 
     bd.ByteWidth = sizeof(CBNeverChanges);
     hr = g_pd3dDevice->CreateBuffer(&bd, nullptr, &g_pCBNeverChanges);
-    if (FAILED(hr)) {
+    if (FAILED(hr))
+    {
         return false;
     }
     // #2
     bd.ByteWidth = sizeof(CBChangeOnResize);
     hr = g_pd3dDevice->CreateBuffer(&bd, nullptr, &g_pCBChangeOnResize);
-    if (FAILED(hr)) {
+    if (FAILED(hr))
+    {
         return false;
     }
     // #3
     bd.ByteWidth = sizeof(CBChangesEveryFrame);
     hr = g_pd3dDevice->CreateBuffer(&bd, nullptr, &g_pCBChangesEveryFrame);
-    if (FAILED(hr)) {
+    if (FAILED(hr))
+    {
         return false;
     }
 
     // Load the Texture
     // DirectTex로 나중에 바꾸도록 하자.
-    hr = D3DX11CreateShaderResourceViewFromFile(g_pd3dDevice, L"seafloor.dds", nullptr, nullptr, &g_pTextureRV, nullptr);
-    if (FAILED(hr)) {
+    //hr = D3DX11CreateShaderResourceViewFromFile(g_pd3dDevice, L"seafloor.dds", nullptr, nullptr, &g_pTextureRV, nullptr);
+    if (FAILED(hr))
+    {
         return false;
     }
 
@@ -1425,9 +1218,10 @@ bool SetCubeWithTex()
     sampDesc.MinLOD = 0;
     sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-    
+
     hr = g_pd3dDevice->CreateSamplerState(&sampDesc, &g_pSamplerLinear);
-    if (FAILED(hr)) {
+    if (FAILED(hr))
+    {
         return false;
     }
 
@@ -1446,7 +1240,7 @@ bool SetCubeWithTex()
     g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbNeverChanges, 0, 0);
 
     // 프로젝션 매트릭스 초기화
-    g_ProjectionMat = MatrixPerspectiveFovLH(PIDiv4, width / (float)height, 0.01, 100.f);
+    g_ProjectionMat = MatrixPerspectiveFovLH(PIDiv4, width / (float)height, 0.01f, 100.f);
 
     // 윈도우 크기 변환 시에 변하는 Constant buffer 초기화
     CBChangeOnResize cbChangeOnResize;
@@ -1461,47 +1255,48 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_COMMAND:
+    {
+        int wmId = LOWORD(wParam);
+        // 메뉴 선택을 구문 분석합니다:
+        switch (wmId)
         {
-            int wmId = LOWORD(wParam);
-            // 메뉴 선택을 구문 분석합니다:
-            switch (wmId)
-            {
-            case IDM_ABOUT:
-                DialogBox(g_hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-                break;
-            case IDM_EXIT:
-                DestroyWindow(hWnd);
-                break;
-            default:
-                return DefWindowProc(hWnd, message, wParam, lParam);
-            }
+        case IDM_ABOUT:
+            DialogBox(g_hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+            break;
+        case IDM_EXIT:
+            DestroyWindow(hWnd);
+            break;
+        default:
+            return DefWindowProc(hWnd, message, wParam, lParam);
         }
-        break;
+    }
+    break;
     case WM_PAINT:
-        {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
-            EndPaint(hWnd, &ps);
-        }
-        break;
+    {
+        PAINTSTRUCT ps;
+        HDC hdc = BeginPaint(hWnd, &ps);
+        // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
+        EndPaint(hWnd, &ps);
+    }
+    break;
     case WM_SIZE:
-        {
+    {
         // 윈도우 사이즈가 변할 때, projection matrix를 바꿔 준다.
-            if (g_pImmediateContext != nullptr) {
-                RECT rc;
-                GetClientRect(g_hWnd, &rc);
-                UINT width = rc.right - rc.left;
-                UINT height = rc.bottom - rc.top;
-                g_ProjectionMat = MatrixPerspectiveFovLH(PIDiv4, width / (float)height, 0.01, 100.f);
+        if (g_pImmediateContext != nullptr)
+        {
+            RECT rc;
+            GetClientRect(g_hWnd, &rc);
+            UINT width = rc.right - rc.left;
+            UINT height = rc.bottom - rc.top;
+            g_ProjectionMat = MatrixPerspectiveFovLH(PIDiv4, width / (float)height, 0.01f, 100.f);
 
-                // 윈도우 크기 변환 시에 변하는 Constant buffer 초기화
-                CBChangeOnResize cbChangeOnResize;
-                cbChangeOnResize.mProjection = MatrixTranspose(g_ProjectionMat);
-                g_pImmediateContext->UpdateSubresource(g_pCBChangeOnResize, 0, nullptr, &cbChangeOnResize, 0, 0);
-            }    
+            // 윈도우 크기 변환 시에 변하는 Constant buffer 초기화
+            CBChangeOnResize cbChangeOnResize;
+            cbChangeOnResize.mProjection = MatrixTranspose(g_ProjectionMat);
+            g_pImmediateContext->UpdateSubresource(g_pCBChangeOnResize, 0, nullptr, &cbChangeOnResize, 0, 0);
         }
-        break;
+    }
+    break;
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
