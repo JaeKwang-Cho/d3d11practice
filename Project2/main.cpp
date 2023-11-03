@@ -65,6 +65,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     MSG msg = { 0 };
 
+    // Core를 초기화 한다.
+    if (FAILED(CCore::GetInstance()->Init(g_hWnd, POINT{ 1280, 768 })))
+    {
+        MessageBox(g_hWnd, L"Core Init Failed", L"Error", MB_OK);
+        // https://learn.microsoft.com/ko-kr/windows/win32/api/winuser/nf-winuser-messagebox
+        return FALSE; // 끝을 낸다.
+    }
+
     // 기본 메시지 루프입니다:
     while (WM_QUIT != msg.message)
     {
@@ -75,7 +83,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
         else
         {
-
+            CCore::GetInstance()->Progress();
         }
     }
 
@@ -98,7 +106,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_PROJECT2));
     wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-    wcex.lpszMenuName = MAKEINTRESOURCEW(IDC_PROJECT2);
+    wcex.lpszMenuName = nullptr;
     wcex.lpszClassName = szWindowClass;
     wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -158,20 +166,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     break;
     case WM_SIZE:
     {
-        // 윈도우 사이즈가 변할 때, projection matrix를 바꿔 준다.
-        if (g_pImmediateContext != nullptr)
-        {
-            RECT rc;
-            GetClientRect(g_hWnd, &rc);
-            UINT width = rc.right - rc.left;
-            UINT height = rc.bottom - rc.top;
-            g_ProjectionMat = MatrixPerspectiveFovLH(PIDiv4, width / (float)height, 0.01f, 100.f);
+        //// 윈도우 사이즈가 변할 때, projection matrix를 바꿔 준다.
+        //if (g_pImmediateContext != nullptr)
+        //{
+        //    RECT rc;
+        //    GetClientRect(g_hWnd, &rc);
+        //    UINT width = rc.right - rc.left;
+        //    UINT height = rc.bottom - rc.top;
+        //    g_ProjectionMat = MatrixPerspectiveFovLH(PIDiv4, width / (float)height, 0.01f, 100.f);
 
-            // 윈도우 크기 변환 시에 변하는 Constant buffer 초기화
-            CBChangeOnResize cbChangeOnResize;
-            cbChangeOnResize.mProjection = MatrixTranspose(g_ProjectionMat);
-            g_pImmediateContext->UpdateSubresource(g_pCBChangeOnResize, 0, nullptr, &cbChangeOnResize, 0, 0);
-        }
+        //    // 윈도우 크기 변환 시에 변하는 Constant buffer 초기화
+        //    CBChangeOnResize cbChangeOnResize;
+        //    cbChangeOnResize.mProjection = MatrixTranspose(g_ProjectionMat);
+        //    g_pImmediateContext->UpdateSubresource(g_pCBChangeOnResize, 0, nullptr, &cbChangeOnResize, 0, 0);
+        //}
     }
     break;
     case WM_DESTROY:

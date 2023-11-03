@@ -11,9 +11,6 @@
     <Filter Include="Engine">
       <UniqueIdentifier>{a25ca663-9826-49c8-8e03-1e33f28f2836}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\01.Header">
-      <UniqueIdentifier>{e4d7c2c4-214c-4ba4-aca4-11fadc175319}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\03.Manager">
       <UniqueIdentifier>{230c4b98-88bd-4e9c-be43-cc7e5e9435b9}</UniqueIdentifier>
     </Filter>
@@ -26,17 +23,47 @@
     <Filter Include="Shader">
       <UniqueIdentifier>{32a9c3e2-6153-415b-b6e3-c80b92e7dd71}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shader\Samples">
-      <UniqueIdentifier>{cb335940-19c9-40a7-b248-853975c67a21}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Defauit\Sameples">
-      <UniqueIdentifier>{848dfd4c-9c28-4e47-bfb4-526d8f2fa414}</UniqueIdentifier>
+    <Filter Include="Engine\01.Header">
+      <UniqueIdentifier>{e4d7c2c4-214c-4ba4-aca4-11fadc175319}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\01.Header\struct">
       <UniqueIdentifier>{b6822588-d881-4f12-ae00-241d9bae4c52}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\01.Header\functions">
       <UniqueIdentifier>{d83a41ce-674d-41ac-94af-b62b91ce42e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03.Manager\TimeManager">
+      <UniqueIdentifier>{8d10605f-a4dd-4318-a6e8-fd677c795929}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Property">
+      <UniqueIdentifier>{5c08496e-1a5c-44e0-ba2f-3116868ab32d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Property\Primitives">
+      <UniqueIdentifier>{330b232f-50b7-4354-9e82-2fdc554ad469}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\04.Object">
+      <UniqueIdentifier>{74d7cc56-bc04-40fb-b9b4-4585e43f4a4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\04.Object\Actor">
+      <UniqueIdentifier>{6d3e9b55-81c3-4526-9fd3-84ad11209e9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\04.Object\Component">
+      <UniqueIdentifier>{4ea3d7f9-a243-41f5-ad6e-c5c644825012}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\04.Object\Component\ActorComponent">
+      <UniqueIdentifier>{896f9388-6542-4433-a533-be814f9cfb98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\04.Object\RenderAsset">
+      <UniqueIdentifier>{b9a3c86c-3453-475b-8f59-cb42a30c90df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\07.Factory">
+      <UniqueIdentifier>{638a0eac-a36c-49eb-90f4-1fd5440f41a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\06.Scene">
+      <UniqueIdentifier>{e9e51c58-08ba-4be1-9c43-995140729882}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Defauit\Samples">
+      <UniqueIdentifier>{848dfd4c-9c28-4e47-bfb4-526d8f2fa414}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -69,10 +96,31 @@
       <Filter>Engine\01.Header</Filter>
     </ClInclude>
     <ClInclude Include="Samples.h">
-      <Filter>Defauit\Sameples</Filter>
+      <Filter>Defauit\Samples</Filter>
     </ClInclude>
     <ClInclude Include="struct.h">
       <Filter>Engine\01.Header\struct</Filter>
+    </ClInclude>
+    <ClInclude Include="CTimeManager.h">
+      <Filter>Engine\03.Manager\TimeManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SimplePrimitives.h">
+      <Filter>Property\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="CObject.h">
+      <Filter>Engine\04.Object</Filter>
+    </ClInclude>
+    <ClInclude Include="CActor.h">
+      <Filter>Engine\04.Object\Actor</Filter>
+    </ClInclude>
+    <ClInclude Include="CActorComponent.h">
+      <Filter>Engine\04.Object\Component\ActorComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="CRenderAsset.h">
+      <Filter>Engine\04.Object\RenderAsset</Filter>
+    </ClInclude>
+    <ClInclude Include="CScene.h">
+      <Filter>Engine\06.Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -100,19 +148,51 @@
       <Filter>Engine\01.Header\struct</Filter>
     </ClCompile>
     <ClCompile Include="Samples.cpp">
-      <Filter>Defauit\Sameples</Filter>
+      <Filter>Defauit\Samples</Filter>
     </ClCompile>
     <ClCompile Include="D3DHelperFunc.cpp">
       <Filter>Engine\01.Header\functions</Filter>
     </ClCompile>
+    <ClCompile Include="CTimeManager.cpp">
+      <Filter>Engine\03.Manager\TimeManager</Filter>
+    </ClCompile>
+    <ClCompile Include="SimplePrimitives.cpp">
+      <Filter>Property\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="CObject.cpp">
+      <Filter>Engine\04.Object</Filter>
+    </ClCompile>
+    <ClCompile Include="CActor.cpp">
+      <Filter>Engine\04.Object\Actor</Filter>
+    </ClCompile>
+    <ClCompile Include="CActorComponent.cpp">
+      <Filter>Engine\04.Object\Component\ActorComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="CRenderAsset.cpp">
+      <Filter>Engine\04.Object\RenderAsset</Filter>
+    </ClCompile>
+    <ClCompile Include="CScene.cpp">
+      <Filter>Engine\06.Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Tutorial02.fx">
-      <Filter>Shader\Samples</Filter>
+      <Filter>Defauit\Samples</Filter>
     </None>
-    <None Include="Tutorial04.fx" />
-    <None Include="Tutorial05.fx" />
-    <None Include="Tutorial06.fx" />
-    <None Include="Tutorial07.fx" />
+    <None Include="Tutorial04.fx">
+      <Filter>Defauit\Samples</Filter>
+    </None>
+    <None Include="Tutorial05.fx">
+      <Filter>Defauit\Samples</Filter>
+    </None>
+    <None Include="Tutorial06.fx">
+      <Filter>Defauit\Samples</Filter>
+    </None>
+    <None Include="Tutorial07.fx">
+      <Filter>Defauit\Samples</Filter>
+    </None>
+    <None Include="DefaultShader.fx">
+      <Filter>Shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

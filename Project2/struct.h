@@ -264,4 +264,14 @@ Matrix MatrixPerspectiveFovLH(float FovRadianY, float AspectRatio, float NearZ, 
 
 Matrix MatrixLookAtLH(Vector4 CameraPosition, Vector4 LookAtPosition, Vector4 UpDirection);
 
+// World Space rotation order : XYZ
+ 
+// Local Space rotation order : ZYX
 
+struct DefaultVertex {
+    FLOAT3 Pos;
+    FLOAT4 Color;
+
+    FLOAT3 Normal;
+    FLOAT2 TEX;
+};

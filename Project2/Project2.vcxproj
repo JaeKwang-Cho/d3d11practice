@@ -154,8 +154,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CActor.h" />
+    <ClInclude Include="CActorComponent.h" />
     <ClInclude Include="CCore.h" />
     <ClInclude Include="CKeyManager.h" />
+    <ClInclude Include="CObject.h" />
+    <ClInclude Include="CRenderAsset.h" />
+    <ClInclude Include="CScene.h" />
+    <ClInclude Include="CTimeManager.h" />
     <ClInclude Include="D3DHelperFunc.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="framework.h" />
@@ -164,15 +170,23 @@
     <ClInclude Include="project2.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Samples.h" />
+    <ClInclude Include="SimplePrimitives.h" />
     <ClInclude Include="struct.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CActor.cpp" />
+    <ClCompile Include="CActorComponent.cpp" />
     <ClCompile Include="CCore.cpp" />
     <ClCompile Include="CKeyManager.cpp" />
+    <ClCompile Include="CObject.cpp" />
+    <ClCompile Include="CRenderAsset.cpp" />
+    <ClCompile Include="CScene.cpp" />
+    <ClCompile Include="CTimeManager.cpp" />
     <ClCompile Include="D3DHelperFunc.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Samples.cpp" />
+    <ClCompile Include="SimplePrimitives.cpp" />
     <ClCompile Include="struct.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -196,6 +210,11 @@
       <FileType>Document</FileType>
     </None>
     <None Include="Tutorial07.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DefaultShader.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

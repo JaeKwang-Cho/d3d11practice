@@ -10,6 +10,9 @@
 #include <vector>
 using std::vector;
 
+#include <string>
+using std::wstring;
+
 #include <d3d11.h>
 #include <d3dcompiler.h>
 

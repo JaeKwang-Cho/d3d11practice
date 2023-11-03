@@ -19,3 +19,17 @@
 								private:\
 									_classname();\
 									~_classname();
+
+#define KEYINPUTCHECK(_KEY, _STATE) CKeyManager::GetInstance()->GetKeyState(_KEY) == _STATE
+
+#define KEYINPUTHOLD(_KEY) KEYINPUTCHECK(_KEY, KEY_STATE::KS_HOLD)
+
+#define KEYINPUTTAP(_KEY) KEYINPUTCHECK(_KEY, KEY_STATE::KS_TAP)
+
+#define KEYINPUTAWAY(_KEY) KEYINPUTCHECK(_KEY, KEY_STATE::KS_AWAY)
+
+#define fDelta CTimeManager::GetInstance()->GetfDT()
+
+#define Delta CTimeManager::GetInstance()->GetDT()
+
+#define MOUSE_POS CKeyManager::GetInstance()->GetMousePos()

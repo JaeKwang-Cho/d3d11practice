@@ -43,9 +43,6 @@ void CKeyManager::Init()
 	{
 		m_VecKey.push_back(tKeyInfo{ KEY_STATE::KS_NONE, false });
 	}
-
-	KEY_STATE testState = m_VecKey[(int)KEY::K_LEFT].eState;
-	bool bTestPrev = m_VecKey[(int)KEY::K_LEFT].bPrevPush; // 이렇게 접근하면 되는 것이다.
 }
 
 // 얘도 Core에서 계속 루프를 돌면서 key 상태를 체크할 것이다.

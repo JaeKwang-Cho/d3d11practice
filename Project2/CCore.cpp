@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "CCore.h"
+
+#include "CTimeManager.h"
 #include "CKeyManager.h"
 
 int CCore::Init(HWND _hWnd, POINT _ptResolution)
@@ -17,6 +19,7 @@ int CCore::Init(HWND _hWnd, POINT _ptResolution)
 
 	//Manager 초기화
 	{
+		CTimeManager::GetInstance()->Init();
 		CKeyManager::GetInstance()->Init();
 	}
 
@@ -25,10 +28,25 @@ int CCore::Init(HWND _hWnd, POINT _ptResolution)
 
 void CCore::Progress()
 {
-	CKeyManager::GetInstance()->Update();
+	// ===========
+	// ===Update==
+	// ===========
+	// 메니저 업데이트 루프
+	{
+		CTimeManager::GetInstance()->Update();
+		CKeyManager::GetInstance()->Update();
+	}
+	// 씬 업데이트 루프
+	{
+		CTimeManager::GetInstance()->Render();
+	}
 
-	update();
-	render();
+	// =============
+	// ==Rendering==
+	// =============
+	{
+
+	}
 
 	return;
 }

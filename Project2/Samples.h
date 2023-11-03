@@ -4,19 +4,19 @@
 struct SimpleVertex
 {
     FLOAT3 Pos;
-    FLOAT4 Normal;
+    FLOAT4 Color;
 };
 
 struct SimpleVertex_Norm
 {
-    struct FLOAT3 POS;
-    struct FLOAT3 Normal;
+    FLOAT3 POS;
+    FLOAT3 Normal;
 };
 
 struct SimpleVertex_Tex
 {
-    struct FLOAT3 Pos;
-    struct FLOAT2 TEX;
+    FLOAT3 Pos;
+    FLOAT2 TEX;
 };
 
 struct ConstantBuffer
