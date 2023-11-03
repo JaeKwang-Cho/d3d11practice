@@ -29,11 +29,14 @@
     <Filter Include="Shader\Samples">
       <UniqueIdentifier>{cb335940-19c9-40a7-b248-853975c67a21}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\01.Header\Functions">
-      <UniqueIdentifier>{d83a41ce-674d-41ac-94af-b62b91ce42e9}</UniqueIdentifier>
+    <Filter Include="Defauit\Sameples">
+      <UniqueIdentifier>{848dfd4c-9c28-4e47-bfb4-526d8f2fa414}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\01.Header\CPPs">
+    <Filter Include="Engine\01.Header\struct">
       <UniqueIdentifier>{b6822588-d881-4f12-ae00-241d9bae4c52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\01.Header\functions">
+      <UniqueIdentifier>{d83a41ce-674d-41ac-94af-b62b91ce42e9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -56,17 +59,20 @@
     <ClInclude Include="define.h">
       <Filter>Engine\01.Header</Filter>
     </ClInclude>
-    <ClInclude Include="struct.h">
-      <Filter>Engine\01.Header</Filter>
-    </ClInclude>
     <ClInclude Include="CCore.h">
       <Filter>Engine\02.Core</Filter>
     </ClInclude>
     <ClInclude Include="D3DHelperFunc.h">
-      <Filter>Engine\01.Header\Functions</Filter>
+      <Filter>Engine\01.Header\functions</Filter>
     </ClInclude>
     <ClInclude Include="function.h">
       <Filter>Engine\01.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Samples.h">
+      <Filter>Defauit\Sameples</Filter>
+    </ClInclude>
+    <ClInclude Include="struct.h">
+      <Filter>Engine\01.Header\struct</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -91,10 +97,13 @@
       <Filter>Engine\02.Core</Filter>
     </ClCompile>
     <ClCompile Include="struct.cpp">
-      <Filter>Engine\01.Header\CPPs</Filter>
+      <Filter>Engine\01.Header\struct</Filter>
+    </ClCompile>
+    <ClCompile Include="Samples.cpp">
+      <Filter>Defauit\Sameples</Filter>
     </ClCompile>
     <ClCompile Include="D3DHelperFunc.cpp">
-      <Filter>Engine\01.Header\CPPs</Filter>
+      <Filter>Engine\01.Header\functions</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

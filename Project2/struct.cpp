@@ -10,6 +10,11 @@ float ConvertToDegrees(float fRadians)
     return fRadians * (180.0f / PI);
 }
 
+FLOAT2::FLOAT2(const POINT& _point)
+    : u((float)_point.x), v((float)_point.y)
+{
+}
+
 Vector4 CrossVector3Vec(const Vector4& v1, const Vector4& v2)
 {
     Vector4 vResult(

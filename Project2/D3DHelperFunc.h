@@ -39,6 +39,7 @@ extern ID3D11SamplerState* g_pSamplerLinear;
 // D3D
 bool                InitDevice();
 void                CleanupDevice();
+void				CleanupSamples();
 
 // Helper
 bool                CompileShaderFromFile(const wchar_t* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);

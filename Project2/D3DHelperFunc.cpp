@@ -194,6 +194,25 @@ void CleanupDevice()
     if (g_pSwapChain) g_pSwapChain->Release();
     if (g_pImmediateContext) g_pImmediateContext->Release();
     if (g_pd3dDevice) g_pd3dDevice->Release();
+}
+
+void CleanupSamples()
+{
+    // Context에서 연관성을 싹 없애준 다음에
+    if (g_pImmediateContext)
+    {
+        g_pImmediateContext->ClearState();
+    }
+
+    // 얘네는 다 COM 객체 들이여서 이렇게 해제를 해줘야 한다.
+    // 해제하는 순서는 잘 모르겠다.
+    // Common
+    if (g_pDepthStencil) g_pDepthStencil->Release();
+    if (g_pDepthStencilView) g_pDepthStencilView->Release();
+    if (g_pRenderTargetView) g_pRenderTargetView->Release();
+    if (g_pSwapChain) g_pSwapChain->Release();
+    if (g_pImmediateContext) g_pImmediateContext->Release();
+    if (g_pd3dDevice) g_pd3dDevice->Release();
 
     // Texutre
     if (g_pSamplerLinear) g_pSamplerLinear->Release();
@@ -210,5 +229,4 @@ void CleanupDevice()
     if (g_pVertexShader) g_pVertexShader->Release();
     if (g_pPixelShaderSolid) g_pPixelShaderSolid->Release();
     if (g_pPixelShader) g_pPixelShader->Release();
-
 }

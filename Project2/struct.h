@@ -1,6 +1,7 @@
 #pragma once
 
 #include <DirectXMath.h>
+#include "pch.h"
 
 float ConvertToRadians(float fDegrees);
 
@@ -18,9 +19,7 @@ struct FLOAT2 {
     FLOAT2() : u(0.f), v(0.f)
     {
     }
-    FLOAT2(const POINT& _point): u((float)_point.x), v((float)_point.y)
-    {
-    }
+    FLOAT2(const POINT& _point);
 };
 
 struct FLOAT3 {

@@ -1,6 +1,9 @@
 #pragma once
 
 // #1 Window provide
+#include <Windows.h>
+#include <windef.h>
+
 #include <cassert>
 #include <cmath>
 
@@ -26,3 +29,5 @@ using std::vector;
 
 // #4 many use class
 #include "CCore.h"
+#include "DirectXTex.h"
+using namespace DirectX;
