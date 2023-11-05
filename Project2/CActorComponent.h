@@ -5,8 +5,6 @@ class CActorComponent :
     public CObject
 {
 public:
-	virtual void AddComponent(const CObject* _comp) override;
-	virtual void AddSubObject(const CObject* _subObj) override;
 
 public:
 	virtual void Start() override;

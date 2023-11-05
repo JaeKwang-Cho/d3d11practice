@@ -10,16 +10,16 @@ protected:
 
 	CObject* m_OwnerObject;
 	// Components or SubObject;
-	vector<const CObject*> m_Components;
+	vector<CObject*> m_Components;
 public:
 	void SetOwnerObject(CObject* const _OwnerObject) {
 		m_OwnerObject = _OwnerObject;
 	 }
-	virtual void AddComponent(const CObject* _comp);
-	virtual void AddSubObject(const CObject* _subObj);
+	void AddComponent(const CObject* _comp);
 public:
 	virtual void Start() = 0;
-
+	
+	void Update();
 	virtual void UpdateObject() = 0;
 	virtual void UpdateComponent();
 	virtual void Render() = 0;

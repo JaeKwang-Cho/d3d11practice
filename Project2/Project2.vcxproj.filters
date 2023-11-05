@@ -35,12 +35,6 @@
     <Filter Include="Engine\03.Manager\TimeManager">
       <UniqueIdentifier>{8d10605f-a4dd-4318-a6e8-fd677c795929}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Property">
-      <UniqueIdentifier>{5c08496e-1a5c-44e0-ba2f-3116868ab32d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Property\Primitives">
-      <UniqueIdentifier>{330b232f-50b7-4354-9e82-2fdc554ad469}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\04.Object">
       <UniqueIdentifier>{74d7cc56-bc04-40fb-b9b4-4585e43f4a4f}</UniqueIdentifier>
     </Filter>
@@ -64,6 +58,24 @@
     </Filter>
     <Filter Include="Defauit\Samples">
       <UniqueIdentifier>{848dfd4c-9c28-4e47-bfb4-526d8f2fa414}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\10.DefaultProperty">
+      <UniqueIdentifier>{5c08496e-1a5c-44e0-ba2f-3116868ab32d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\10.DefaultProperty\Primitives">
+      <UniqueIdentifier>{330b232f-50b7-4354-9e82-2fdc554ad469}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Contents">
+      <UniqueIdentifier>{500d9a56-730c-475e-935a-9352970d4925}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Contents\Level1">
+      <UniqueIdentifier>{b4de67c4-6d90-4091-a7da-431d20e3b7d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03.Manager\SceneManager">
+      <UniqueIdentifier>{493b2e90-546a-4ab2-8c80-00cfad56037e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\06.Scene\Default_Scene">
+      <UniqueIdentifier>{049d540a-10c7-40ee-beef-17cb7219fd2b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -105,7 +117,7 @@
       <Filter>Engine\03.Manager\TimeManager</Filter>
     </ClInclude>
     <ClInclude Include="SimplePrimitives.h">
-      <Filter>Property\Primitives</Filter>
+      <Filter>Engine\10.DefaultProperty\Primitives</Filter>
     </ClInclude>
     <ClInclude Include="CObject.h">
       <Filter>Engine\04.Object</Filter>
@@ -121,6 +133,12 @@
     </ClInclude>
     <ClInclude Include="CScene.h">
       <Filter>Engine\06.Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="CSceneManager.h">
+      <Filter>Engine\03.Manager\SceneManager</Filter>
+    </ClInclude>
+    <ClInclude Include="CDefault_Scene.h">
+      <Filter>Engine\06.Scene\Default_Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -157,7 +175,7 @@
       <Filter>Engine\03.Manager\TimeManager</Filter>
     </ClCompile>
     <ClCompile Include="SimplePrimitives.cpp">
-      <Filter>Property\Primitives</Filter>
+      <Filter>Engine\10.DefaultProperty\Primitives</Filter>
     </ClCompile>
     <ClCompile Include="CObject.cpp">
       <Filter>Engine\04.Object</Filter>
@@ -173,6 +191,12 @@
     </ClCompile>
     <ClCompile Include="CScene.cpp">
       <Filter>Engine\06.Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="CSceneManager.cpp">
+      <Filter>Engine\03.Manager\SceneManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CDefault_Scene.cpp">
+      <Filter>Engine\06.Scene\Default_Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

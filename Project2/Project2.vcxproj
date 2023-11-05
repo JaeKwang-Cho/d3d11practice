@@ -157,10 +157,12 @@
     <ClInclude Include="CActor.h" />
     <ClInclude Include="CActorComponent.h" />
     <ClInclude Include="CCore.h" />
+    <ClInclude Include="CDefault_Scene.h" />
     <ClInclude Include="CKeyManager.h" />
     <ClInclude Include="CObject.h" />
     <ClInclude Include="CRenderAsset.h" />
     <ClInclude Include="CScene.h" />
+    <ClInclude Include="CSceneManager.h" />
     <ClInclude Include="CTimeManager.h" />
     <ClInclude Include="D3DHelperFunc.h" />
     <ClInclude Include="define.h" />
@@ -178,10 +180,12 @@
     <ClCompile Include="CActor.cpp" />
     <ClCompile Include="CActorComponent.cpp" />
     <ClCompile Include="CCore.cpp" />
+    <ClCompile Include="CDefault_Scene.cpp" />
     <ClCompile Include="CKeyManager.cpp" />
     <ClCompile Include="CObject.cpp" />
     <ClCompile Include="CRenderAsset.cpp" />
     <ClCompile Include="CScene.cpp" />
+    <ClCompile Include="CSceneManager.cpp" />
     <ClCompile Include="CTimeManager.cpp" />
     <ClCompile Include="D3DHelperFunc.cpp" />
     <ClCompile Include="main.cpp" />

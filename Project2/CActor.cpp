@@ -23,6 +23,10 @@ CObject* CActor::Clone()
 }
 
 CActor::CActor()
+	: CObject()
+	, m_vPosition(FLOAT4(0.f,0.f,0.f,0.f))
+	, m_vRotation(FLOAT3(0.f, 0.f, 0.f))
+	, m_vScale(FLOAT3(1.f, 1.f, 1.f))
 {
 }
 

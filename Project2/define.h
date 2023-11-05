@@ -28,8 +28,20 @@
 
 #define KEYINPUTAWAY(_KEY) KEYINPUTCHECK(_KEY, KEY_STATE::KS_AWAY)
 
-#define fDelta CTimeManager::GetInstance()->GetfDT()
+#define DELTA_F CTimeManager::GetInstance()->GetfDelta()
 
-#define Delta CTimeManager::GetInstance()->GetDT()
+#define DELTA_D CTimeManager::GetInstance()->GetDelTa()
 
 #define MOUSE_POS CKeyManager::GetInstance()->GetMousePos()
+
+enum class GROUP_TYPE { // Scene 안에 Object들을 나누는 그룹이다.
+	Default,
+
+	END = 32,
+};
+
+enum class SCENE_TYPE {
+	Default,
+
+	END,
+};

@@ -5,8 +5,16 @@ void CObject::AddComponent(const CObject* _comp)
 {
 }
 
-void CObject::AddSubObject(const CObject* _subObj)
+void CObject::Update()
 {
+	UpdateComponent();
+
+	UpdateObject();
+
+	if (m_bRenderComponent)
+	{
+		Render_Component();
+	}
 }
 
 void CObject::UpdateComponent()
@@ -25,7 +33,7 @@ void CObject::Render_Component()
 	auto iter = m_Components.begin();
 	for (; iter != m_Components.end(); iter++)
 	{
-		iter->Render();
+		(*iter)->Render();
 	}
 }
 
@@ -41,4 +49,10 @@ CObject::CObject(const CObject& _other)
 CObject::~CObject()
 {
 	// delete all component
+	auto iter = m_Components.begin();
+	for (; iter != m_Components.end(); iter++)
+	{
+		delete (*iter);
+	}
+	m_Components.clear();
 }
