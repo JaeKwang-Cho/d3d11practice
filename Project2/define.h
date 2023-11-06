@@ -45,3 +45,12 @@ enum class SCENE_TYPE {
 
 	END,
 };
+
+enum class ROT_ORDER {
+	XYZ,
+	XZY,
+	YXZ,
+	YZX,
+	ZXY,
+	ZYX
+};

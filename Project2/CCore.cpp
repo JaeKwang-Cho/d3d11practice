@@ -3,6 +3,7 @@
 
 #include "CTimeManager.h"
 #include "CKeyManager.h"
+#include "CSceneManager.h"
 
 int CCore::Init(HWND _hWnd, POINT _ptResolution)
 {
@@ -21,6 +22,7 @@ int CCore::Init(HWND _hWnd, POINT _ptResolution)
 	{
 		CTimeManager::GetInstance()->Init();
 		CKeyManager::GetInstance()->Init();
+		CSceneManager::GetInstance()->Init();
 	}
 
 	return S_OK;
@@ -39,6 +41,7 @@ void CCore::Progress()
 	// 씬 업데이트 루프
 	{
 		CTimeManager::GetInstance()->Render();
+		CSceneManager::GetInstance()->Render();
 	}
 
 	// =============

@@ -275,3 +275,19 @@ struct DefaultVertex {
     FLOAT3 Normal;
     FLOAT2 TEX;
 };
+
+struct CBNeverChanges
+{
+    Matrix mView;
+};
+
+struct CBChangeOnResize
+{
+    Matrix mProjection;
+};
+
+struct CBChangesEveryFrame
+{
+    Matrix mWorld;
+    FLOAT4 vMeshColor;
+};

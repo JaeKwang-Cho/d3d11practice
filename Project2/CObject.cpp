@@ -5,16 +5,27 @@ void CObject::AddComponent(const CObject* _comp)
 {
 }
 
+void CObject::Start()
+{
+	StartObject();
+
+	StartComponent();
+}
+
+void CObject::StartComponent()
+{
+	auto iter = m_Components.begin();
+	for (; iter != m_Components.end(); iter++)
+	{
+		(*iter)->StartObject();
+	}
+}
+
 void CObject::Update()
 {
-	UpdateComponent();
-
 	UpdateObject();
 
-	if (m_bRenderComponent)
-	{
-		Render_Component();
-	}
+	UpdateComponent();
 }
 
 void CObject::UpdateComponent()
@@ -25,6 +36,13 @@ void CObject::UpdateComponent()
 	{
 		(*iter)->UpdateObject();
 	}
+}
+
+void CObject::Render()
+{
+	RenderObject();
+
+	Render_Component();
 }
 
 void CObject::Render_Component()
@@ -38,11 +56,18 @@ void CObject::Render_Component()
 }
 
 CObject::CObject()
-	:m_Name{}, m_bAlive(true), m_bRenderComponent(false)
+	: m_OwnerObject(nullptr)
+	, m_Name{}
+	, m_bAlive(true)
+	, m_bRenderComponent(false)
 {
 }
 
 CObject::CObject(const CObject& _other)
+	: m_OwnerObject(nullptr)
+	, m_Name{}
+	, m_bAlive(true)
+	, m_bRenderComponent(false)
 {
 }
 

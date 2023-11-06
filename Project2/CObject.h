@@ -17,12 +17,16 @@ public:
 	 }
 	void AddComponent(const CObject* _comp);
 public:
-	virtual void Start() = 0;
+	void Start();
+	virtual void StartObject() = 0;
+	void StartComponent();
 	
 	void Update();
 	virtual void UpdateObject() = 0;
-	virtual void UpdateComponent();
-	virtual void Render() = 0;
+	void UpdateComponent();
+
+	void Render();
+	virtual void RenderObject() = 0;
 
 	virtual CObject* Clone() = 0;
 

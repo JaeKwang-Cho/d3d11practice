@@ -7,11 +7,10 @@ class CActorComponent :
 public:
 
 public:
-	virtual void Start() override;
+	virtual void StartObject() override;
 
 	virtual void UpdateObject() override;
-	virtual void UpdateComponent() override;
-	virtual void Render() override;
+	virtual void RenderObject() override;
 
 	virtual CActorComponent* Clone()
 	{

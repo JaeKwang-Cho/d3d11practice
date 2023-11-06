@@ -1,6 +1,5 @@
 ﻿#include "pch.h"
 #include "project2.h"
-#include "Samples.h"
 
 // =================
 // ====전역  변수====
@@ -20,7 +19,18 @@ ID3D11RenderTargetView* g_pRenderTargetView = nullptr;
 ID3D11Texture2D* g_pDepthStencil = nullptr;
 ID3D11DepthStencilView* g_pDepthStencilView = nullptr;
 
-extern Matrix                      g_ProjectionMat;
+// Transform Matrices
+Matrix                      g_WorldMat;
+Matrix                      g_WorldMat2;
+Matrix                      g_ViewMat;
+Matrix                      g_ProjectionMat;
+FLOAT4                      g_vMeshColor(0.7f, 0.7f, 0.7f, 1.0f);
+
+// Temp// Constant Buffer
+ID3D11Buffer* g_pConstantBuffer = nullptr;
+ID3D11Buffer* g_pCBNeverChanges = nullptr;
+ID3D11Buffer* g_pCBChangeOnResize = nullptr;
+ID3D11Buffer* g_pCBChangesEveryFrame = nullptr;
 
 // 전역 프로퍼티
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트

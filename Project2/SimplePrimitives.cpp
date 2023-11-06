@@ -60,7 +60,7 @@ bool GetSimpleCube(ID3D11Device* _d3dDevice,
                    ID3D11DeviceContext* _d3dImmediateContext,
                    ID3D11VertexShader** _VS,
                    ID3D11Buffer** _VertexBuff,
-                   ID3D11InputLayout* _Layout,
+                   ID3D11InputLayout** _Layout,
                    ID3D11PixelShader** _PS,
                    ID3D11Buffer** _IndexBuff,
                    const wchar_t* _texFile,
@@ -106,7 +106,7 @@ bool GetSimpleCube(ID3D11Device* _d3dDevice,
     // input layout 만들기
     hr = _d3dDevice->CreateInputLayout(
         layout, numElements, pVSBlob->GetBufferPointer(),
-        pVSBlob->GetBufferSize(), &_Layout);
+        pVSBlob->GetBufferSize(), _Layout);
 
     pVSBlob->Release();
     if (FAILED(hr))
@@ -115,7 +115,7 @@ bool GetSimpleCube(ID3D11Device* _d3dDevice,
     }
 
     // input layer 세팅해주기
-    _d3dImmediateContext->IASetInputLayout(_Layout);
+    _d3dImmediateContext->IASetInputLayout(*_Layout);
 
     // 픽셀 쉐이더 컴파일 해주기
     ID3DBlob* pPSBlob = nullptr;

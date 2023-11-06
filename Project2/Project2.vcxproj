@@ -171,10 +171,11 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="project2.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="Samples.h" />
+    <None Include="Samples.h" />
     <ClInclude Include="SimplePrimitives.h" />
     <ClInclude Include="struct.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="TextActor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CActor.cpp" />
@@ -189,9 +190,10 @@
     <ClCompile Include="CTimeManager.cpp" />
     <ClCompile Include="D3DHelperFunc.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Samples.cpp" />
+    <None Include="Samples.cpp" />
     <ClCompile Include="SimplePrimitives.cpp" />
     <ClCompile Include="struct.cpp" />
+    <ClCompile Include="TextActor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project2.rc" />

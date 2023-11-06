@@ -68,14 +68,17 @@
     <Filter Include="Contents">
       <UniqueIdentifier>{500d9a56-730c-475e-935a-9352970d4925}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Contents\Level1">
-      <UniqueIdentifier>{b4de67c4-6d90-4091-a7da-431d20e3b7d7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\03.Manager\SceneManager">
       <UniqueIdentifier>{493b2e90-546a-4ab2-8c80-00cfad56037e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\06.Scene\Default_Scene">
+    <Filter Include="Contents\Default">
       <UniqueIdentifier>{049d540a-10c7-40ee-beef-17cb7219fd2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Contents\Default\Scene">
+      <UniqueIdentifier>{b82a2990-6db2-4e5b-bf0e-ae054398cc59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Contents\Default\Actors">
+      <UniqueIdentifier>{1bedf24d-1b19-4694-a533-561fa3a5c60f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -107,9 +110,6 @@
     <ClInclude Include="function.h">
       <Filter>Engine\01.Header</Filter>
     </ClInclude>
-    <ClInclude Include="Samples.h">
-      <Filter>Defauit\Samples</Filter>
-    </ClInclude>
     <ClInclude Include="struct.h">
       <Filter>Engine\01.Header\struct</Filter>
     </ClInclude>
@@ -138,7 +138,10 @@
       <Filter>Engine\03.Manager\SceneManager</Filter>
     </ClInclude>
     <ClInclude Include="CDefault_Scene.h">
-      <Filter>Engine\06.Scene\Default_Scene</Filter>
+      <Filter>Contents\Default\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="TextActor.h">
+      <Filter>Contents\Default\Actors</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -164,9 +167,6 @@
     </ClCompile>
     <ClCompile Include="struct.cpp">
       <Filter>Engine\01.Header\struct</Filter>
-    </ClCompile>
-    <ClCompile Include="Samples.cpp">
-      <Filter>Defauit\Samples</Filter>
     </ClCompile>
     <ClCompile Include="D3DHelperFunc.cpp">
       <Filter>Engine\01.Header\functions</Filter>
@@ -196,7 +196,10 @@
       <Filter>Engine\03.Manager\SceneManager</Filter>
     </ClCompile>
     <ClCompile Include="CDefault_Scene.cpp">
-      <Filter>Engine\06.Scene\Default_Scene</Filter>
+      <Filter>Contents\Default\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="TextActor.cpp">
+      <Filter>Contents\Default\Actors</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -217,6 +220,12 @@
     </None>
     <None Include="DefaultShader.fx">
       <Filter>Shader</Filter>
+    </None>
+    <None Include="Samples.h">
+      <Filter>Defauit\Samples</Filter>
+    </None>
+    <None Include="Samples.cpp">
+      <Filter>Defauit\Samples</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "CActorComponent.h"
 
-void CActorComponent::Start()
+void CActorComponent::StartObject()
 {
 }
 
@@ -9,11 +9,7 @@ void CActorComponent::UpdateObject()
 {
 }
 
-void CActorComponent::UpdateComponent()
-{
-}
-
-void CActorComponent::Render()
+void CActorComponent::RenderObject()
 {
 }
 

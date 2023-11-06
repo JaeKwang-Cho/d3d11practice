@@ -214,19 +214,4 @@ void CleanupSamples()
     if (g_pImmediateContext) g_pImmediateContext->Release();
     if (g_pd3dDevice) g_pd3dDevice->Release();
 
-    // Texutre
-    if (g_pSamplerLinear) g_pSamplerLinear->Release();
-    if (g_pTextureRV) g_pTextureRV->Release();
-    if (g_pCBNeverChanges) g_pCBNeverChanges->Release();
-    if (g_pCBChangeOnResize) g_pCBChangeOnResize->Release();
-    if (g_pCBChangesEveryFrame) g_pCBChangesEveryFrame->Release();
-    // Cube
-    if (g_pConstantBuffer) g_pConstantBuffer->Release();
-    if (g_pVertexBuffer) g_pVertexBuffer->Release();
-    if (g_pIndexBuffer) g_pIndexBuffer->Release();
-    if (g_pVertexLayout) g_pVertexLayout->Release();
-    // Light
-    if (g_pVertexShader) g_pVertexShader->Release();
-    if (g_pPixelShaderSolid) g_pPixelShaderSolid->Release();
-    if (g_pPixelShader) g_pPixelShader->Release();
 }

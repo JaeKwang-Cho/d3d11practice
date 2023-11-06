@@ -18,24 +18,6 @@ extern ID3D11RenderTargetView*		g_pRenderTargetView;
 extern ID3D11Texture2D*				g_pDepthStencil;
 extern ID3D11DepthStencilView*		g_pDepthStencilView;
 
-
-extern ID3D11VertexShader* g_pVertexShader;
-extern ID3D11PixelShader* g_pPixelShader;
-extern ID3D11PixelShader* g_pPixelShaderSolid;
-// Vetex and Indices
-extern ID3D11InputLayout* g_pVertexLayout;
-extern ID3D11Buffer* g_pVertexBuffer;
-extern ID3D11Buffer* g_pIndexBuffer;
-// Constant Buffer
-extern ID3D11Buffer* g_pConstantBuffer;
-extern ID3D11Buffer* g_pCBNeverChanges;
-extern ID3D11Buffer* g_pCBChangeOnResize;
-extern ID3D11Buffer* g_pCBChangesEveryFrame;
-// Texture
-extern ID3D11ShaderResourceView* g_pTextureRV;
-extern ID3D11SamplerState* g_pSamplerLinear;
-
-
 // D3D
 bool                InitDevice();
 void                CleanupDevice();
