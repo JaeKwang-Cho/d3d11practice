@@ -15,7 +15,10 @@ public:
 	void SetOwnerObject(CObject* const _OwnerObject) {
 		m_OwnerObject = _OwnerObject;
 	 }
-	void AddComponent(const CObject* _comp);
+	void AddComponent(CObject* _comp)
+	{
+		m_Components.push_back(_comp);
+	}
 public:
 	void Start();
 	virtual void StartObject() = 0;

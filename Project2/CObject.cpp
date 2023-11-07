@@ -1,10 +1,6 @@
 #include "pch.h"
 #include "CObject.h"
 
-void CObject::AddComponent(const CObject* _comp)
-{
-}
-
 void CObject::Start()
 {
 	StartObject();
@@ -34,7 +30,7 @@ void CObject::UpdateComponent()
 	auto iter = m_Components.begin();
 	for (; iter != m_Components.end(); iter++)
 	{
-		(*iter)->UpdateObject();
+		(*iter)->Update();
 	}
 }
 

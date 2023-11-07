@@ -22,17 +22,16 @@ cbuffer cbChangeOnResize : register(b2)
 cbuffer cbChangesEveryFrame : register(b3)
 {
     matrix World;
-    float4 vMeshColor;
 };
 
 
 //--------------------------------------------------------------------------------------
 struct VS_INPUT
 {
-    float4 Pos : SV_POSITION;
+    float4 Pos : POSITION;
     float4 Color : COLOR;
     float3 Normal : NORMAL;
-    float2 Tex : TEXCOORD0;
+    float2 Tex : TEXCOORD;
 };
 
 struct PS_INPUT
@@ -40,7 +39,7 @@ struct PS_INPUT
     float4 Pos : SV_POSITION;
     float4 Color : COLOR;
     float3 Norm : NORMAL;
-    float2 Tex : TEXCOORD1;
+    float2 Tex : TEXCOORD;
 };
 
 
@@ -53,6 +52,10 @@ PS_INPUT VS(VS_INPUT input)
     output.Pos = mul(input.Pos, World);
     output.Pos = mul(output.Pos, View);
     output.Pos = mul(output.Pos, Projection);
+    
+    output.Color = input.Color;
+    output.Norm = mul(input.Normal, World);
+    
     output.Tex = input.Tex;
 
     return output;
@@ -69,7 +72,7 @@ float4 PS(PS_INPUT input) : SV_Target
     
     // Sample : 쉐이더 내장함수, 파라미터에 따라 동작이 달라진다.
     // 여기서는 샘플러와 좌표로 보간을 해서 텍스쳐를 그리게 된다.
-    finalColor += txDiffuse.Sample(samLinear, input.Tex) * vMeshColor;
+    finalColor += txDiffuse.Sample(samLinear, input.Tex);
 
 	//do NdotL lighting for 2 lights
     /*
@@ -79,6 +82,7 @@ float4 PS(PS_INPUT input) : SV_Target
     }
     finalColor.a = 1;
     */
+    //finalColor = input.Color;
     
     return finalColor;
 }

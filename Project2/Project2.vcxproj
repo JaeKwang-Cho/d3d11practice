@@ -175,7 +175,7 @@
     <ClInclude Include="SimplePrimitives.h" />
     <ClInclude Include="struct.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="TextActor.h" />
+    <ClInclude Include="TestActor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CActor.cpp" />
@@ -193,7 +193,7 @@
     <None Include="Samples.cpp" />
     <ClCompile Include="SimplePrimitives.cpp" />
     <ClCompile Include="struct.cpp" />
-    <ClCompile Include="TextActor.cpp" />
+    <ClCompile Include="TestActor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project2.rc" />

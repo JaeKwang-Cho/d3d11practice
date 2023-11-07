@@ -289,5 +289,4 @@ struct CBChangeOnResize
 struct CBChangesEveryFrame
 {
     Matrix mWorld;
-    FLOAT4 vMeshColor;
 };

@@ -5,7 +5,8 @@ class CDefault_Scene :
 {
 
 public:
-    virtual void Enter() override;
+    virtual void EnterScene() override;
+    virtual void UpdateScene() override;
     virtual void Exit() override;
 
 public:

@@ -1,13 +1,14 @@
 #pragma once
 #include "CActor.h"
-class TextActor :
+
+class TestActor :
     public CActor
 {
 public:
 
     virtual void StartObject() override;
 public:
-    TextActor();
-    virtual ~TextActor();
+    TestActor();
+    virtual ~TestActor();
 };
 

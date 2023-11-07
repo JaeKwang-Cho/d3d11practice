@@ -17,10 +17,12 @@ public:
 	void SetSceneName(const wstring& _Name){m_Name = _Name;}
 	const wstring& GetSceneName(){return m_Name;}
 
+	void Enter();
 	void Update();
 	void Render();
 
-	virtual void Enter() = 0;
+	virtual void EnterScene() = 0;
+	virtual void UpdateScene() = 0;
 	virtual void Exit() = 0;
 
 public:

@@ -228,6 +228,7 @@ void RenderCube_Tex()
     g_pImmediateContext->ClearRenderTargetView(g_pRenderTargetView, ClearColor);
 
     // 뎁스 버퍼 지우기
+    // 뎁스 버퍼 지우기
     g_pImmediateContext->ClearDepthStencilView(g_pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
     // 매 프레임 마다 변하는 constant buffer 업데이트 하기

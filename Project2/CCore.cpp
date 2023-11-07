@@ -37,6 +37,7 @@ void CCore::Progress()
 	{
 		CTimeManager::GetInstance()->Update();
 		CKeyManager::GetInstance()->Update();
+		CSceneManager::GetInstance()->Update();
 	}
 	// 씬 업데이트 루프
 	{

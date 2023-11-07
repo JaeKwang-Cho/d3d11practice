@@ -1,18 +1,18 @@
 #include "pch.h"
-#include "TextActor.h"
+#include "TestActor.h"
 #include "CRenderAsset.h"
 
-void TextActor::StartObject()
+void TestActor::StartObject()
 {
 	CRenderAsset* pRA = new CRenderAsset();
 	pRA->SetOwnerObject(this);
 	AddComponent(pRA);
 }
 
-TextActor::TextActor()
+TestActor::TestActor()
 {
 }
 
-TextActor::~TextActor()
+TestActor::~TestActor()
 {
 }

@@ -140,7 +140,7 @@
     <ClInclude Include="CDefault_Scene.h">
       <Filter>Contents\Default\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="TextActor.h">
+    <ClInclude Include="TestActor.h">
       <Filter>Contents\Default\Actors</Filter>
     </ClInclude>
   </ItemGroup>
@@ -198,7 +198,7 @@
     <ClCompile Include="CDefault_Scene.cpp">
       <Filter>Contents\Default\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="TextActor.cpp">
+    <ClCompile Include="TestActor.cpp">
       <Filter>Contents\Default\Actors</Filter>
     </ClCompile>
   </ItemGroup>

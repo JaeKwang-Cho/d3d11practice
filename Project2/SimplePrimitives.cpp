@@ -96,7 +96,7 @@ bool GetSimpleCube(ID3D11Device* _d3dDevice,
     D3D11_INPUT_ELEMENT_DESC layout[] =
     {
         {"POSITION",0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-        {"COLOR", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+        {"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
         {"NORMAL",0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0},
         {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 40, D3D11_INPUT_PER_VERTEX_DATA, 0}
 
@@ -119,7 +119,7 @@ bool GetSimpleCube(ID3D11Device* _d3dDevice,
 
     // 픽셀 쉐이더 컴파일 해주기
     ID3DBlob* pPSBlob = nullptr;
-    Result = CompileShaderFromFile(L"Tutorial07.fx", "PS", "ps_4_0", &pPSBlob);
+    Result = CompileShaderFromFile(L"DefaultShader.fx", "PS", "ps_4_0", &pPSBlob);
     if (Result == false)
     {
         MessageBox(NULL,
@@ -184,7 +184,7 @@ bool GetSimpleCube(ID3D11Device* _d3dDevice,
     // DirectTex로 나중에 바꾸도록 하자.
 
     ScratchImage scratchImage = ScratchImage{};
-    hr = LoadFromDDSFile(_texFile, DirectX::DDS_FLAGS_NONE, nullptr, scratchImage);
+    hr = LoadFromDDSFile(L"seafloor.dds", DirectX::DDS_FLAGS_NONE, nullptr, scratchImage);
     //hr = D3DX11CreateShaderResourceViewFromFile(_d3dDevice, L"seafloor.dds", nullptr, nullptr, &g_pTextureRV, nullptr);
     if (FAILED(hr))
     {
