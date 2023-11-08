@@ -67,6 +67,13 @@ Matrix MatrixTranspose(const Matrix& _other)
         _other._14, _other._24, _other._34, _other._44);
 }
 
+
+
+Matrix MatrixInverse(const Matrix& _other)
+{
+    return Matrix();
+}
+
 Matrix MatrixIdentity()
 {
     return Matrix(
@@ -302,4 +309,165 @@ Matrix Matrix::operator*(const Matrix& _M) const
     mat.m[3] = v;
 
     return mat;
+}
+
+float Matrix::GetDeterminant()
+{
+    Matrix3X3 Minor11 = Matrix3X3(_22, _23, _24,
+                                  _32, _33, _34,
+                                  _42, _43, _44);
+    Matrix3X3 Minor12 = Matrix3X3(_21, _23, _24,
+                                  _31, _33, _34,
+                                  _41, _43, _44);
+    Matrix3X3 Minor13 = Matrix3X3(_21, _22, _24,
+                                  _31, _32, _34,
+                                  _41, _42, _44);
+    Matrix3X3 Minor14 = Matrix3X3(_21, _22, _23,
+                                  _31, _32, _33,
+                                  _41, _42, _43);
+
+    return _11 * Minor11.GetDeterminant() - _12 * Minor12.GetDeterminant() + _13 * Minor13.GetDeterminant() - _14 * Minor14.GetDeterminant();
+}
+
+Matrix Matrix::GetInverse()
+{
+    float det = GetDeterminant();
+    if (abs(det) <= FLOAT_NEAR_ZERO)
+    {
+        return Matrix();
+    }
+
+    Matrix TransposedMat = MatrixTranspose(*this);
+
+    Matrix3X3 Minor11 = Matrix3X3(TransposedMat._22, TransposedMat._23, TransposedMat._24,
+                                  TransposedMat._32, TransposedMat._33, TransposedMat._34,
+                                  TransposedMat._42, TransposedMat._43, TransposedMat._44);
+    Matrix3X3 Minor12 = Matrix3X3(TransposedMat._21, TransposedMat._23, TransposedMat._24,
+                                  TransposedMat._31, TransposedMat._33, TransposedMat._34,
+                                  TransposedMat._41, TransposedMat._43, TransposedMat._44);
+    Matrix3X3 Minor13 = Matrix3X3(TransposedMat._21, TransposedMat._22, TransposedMat._24,
+                                  TransposedMat._31, TransposedMat._32, TransposedMat._34,
+                                  TransposedMat._41, TransposedMat._42, TransposedMat._44);
+    Matrix3X3 Minor14 = Matrix3X3(TransposedMat._21, TransposedMat._22, TransposedMat._23,
+                                  TransposedMat._31, TransposedMat._32, TransposedMat._33,
+                                  TransposedMat._41, TransposedMat._42, TransposedMat._43);
+
+    Matrix3X3 Minor21 = Matrix3X3(TransposedMat._12, TransposedMat._13, TransposedMat._14,
+                                  TransposedMat._32, TransposedMat._33, TransposedMat._34,
+                                  TransposedMat._42, TransposedMat._43, TransposedMat._44);
+    Matrix3X3 Minor22 = Matrix3X3(TransposedMat._11, TransposedMat._13, TransposedMat._14,
+                                  TransposedMat._31, TransposedMat._33, TransposedMat._34,
+                                  TransposedMat._41, TransposedMat._43, TransposedMat._44);
+    Matrix3X3 Minor23 = Matrix3X3(TransposedMat._11, TransposedMat._12, TransposedMat._14,
+                                  TransposedMat._31, TransposedMat._32, TransposedMat._34,
+                                  TransposedMat._41, TransposedMat._42, TransposedMat._44);
+    Matrix3X3 Minor24 = Matrix3X3(TransposedMat._11, TransposedMat._12, TransposedMat._13,
+                                  TransposedMat._31, TransposedMat._32, TransposedMat._33,
+                                  TransposedMat._41, TransposedMat._42, TransposedMat._43);
+
+    Matrix3X3 Minor31 = Matrix3X3(TransposedMat._12, TransposedMat._13, TransposedMat._14,
+                                  TransposedMat._22, TransposedMat._23, TransposedMat._24,
+                                  TransposedMat._42, TransposedMat._43, TransposedMat._44);
+    Matrix3X3 Minor32 = Matrix3X3(TransposedMat._11, TransposedMat._13, TransposedMat._14,
+                                  TransposedMat._21, TransposedMat._23, TransposedMat._24,
+                                  TransposedMat._41, TransposedMat._43, TransposedMat._44);
+    Matrix3X3 Minor33 = Matrix3X3(TransposedMat._11, TransposedMat._12, TransposedMat._14,
+                                  TransposedMat._21, TransposedMat._22, TransposedMat._24,
+                                  TransposedMat._41, TransposedMat._42, TransposedMat._44);
+    Matrix3X3 Minor34 = Matrix3X3(TransposedMat._11, TransposedMat._12, TransposedMat._13,
+                                  TransposedMat._21, TransposedMat._22, TransposedMat._23,
+                                  TransposedMat._41, TransposedMat._42, TransposedMat._43);
+
+    Matrix3X3 Minor41 = Matrix3X3(TransposedMat._12, TransposedMat._13, TransposedMat._14,
+                                  TransposedMat._22, TransposedMat._23, TransposedMat._24,
+                                  TransposedMat._32, TransposedMat._33, TransposedMat._34);
+    Matrix3X3 Minor42 = Matrix3X3(TransposedMat._11, TransposedMat._13, TransposedMat._14,
+                                  TransposedMat._21, TransposedMat._23, TransposedMat._24,
+                                  TransposedMat._31, TransposedMat._33, TransposedMat._34);
+    Matrix3X3 Minor43 = Matrix3X3(TransposedMat._11, TransposedMat._12, TransposedMat._14,
+                                  TransposedMat._21, TransposedMat._22, TransposedMat._24,
+                                  TransposedMat._31, TransposedMat._32, TransposedMat._34);
+    Matrix3X3 Minor44 = Matrix3X3(TransposedMat._11, TransposedMat._12, TransposedMat._13,
+                                  TransposedMat._21, TransposedMat._22, TransposedMat._23,
+                                  TransposedMat._31, TransposedMat._32, TransposedMat._33);
+
+    float c11 = Minor11.GetDeterminant();
+    float c12 = Minor12.GetDeterminant() * -1.f;
+    float c13 = Minor13.GetDeterminant();
+    float c14 = Minor14.GetDeterminant() * -1.f;
+
+    float c21 = Minor21.GetDeterminant() * -1.f;
+    float c22 = Minor22.GetDeterminant();
+    float c23 = Minor23.GetDeterminant() * -1.f;
+    float c24 = Minor24.GetDeterminant();
+
+    float c31 = Minor31.GetDeterminant();
+    float c32 = Minor32.GetDeterminant() * -1.f;
+    float c33 = Minor33.GetDeterminant();
+    float c34 = Minor34.GetDeterminant() * -1.f;
+
+    float c41 = Minor41.GetDeterminant() * -1.f;
+    float c42 = Minor42.GetDeterminant();
+    float c43 = Minor43.GetDeterminant() * -1.f;
+    float c44 = Minor44.GetDeterminant();
+
+    return Matrix(c11 / det, c12 / det, c13 / det, c14 / det,
+                  c21 / det, c22 / det, c23 / det, c24 / det,
+                  c31 / det, c32 / det, c33 / det, c34 / det,
+                  c41 / det, c42 / det, c43 / det, c44 / det);
+}
+
+float Matrix3X3::GetDeterminant()
+{
+    Matrix2X2 minor11 = Matrix2X2(_22, _23, _32, _33);
+    Matrix2X2 minor12 = Matrix2X2(_21, _23, _31, _33);
+    Matrix2X2 minor13 = Matrix2X2(_21, _22, _31, _32);
+
+    return _11 * minor11.GetDeterminant() - _12 * minor12.GetDeterminant() + _13 * minor13.GetDeterminant();
+}
+
+Matrix3X3 Matrix3X3::GetInverse()
+{
+
+    float det = GetDeterminant();
+    if (abs(det) <= FLOAT_NEAR_ZERO)
+    {
+        return Matrix3X3();
+    }
+
+    Matrix3X3 MatTransePosed = GetTranspose();
+
+    Matrix2X2 minor11 = Matrix2X2(MatTransePosed._22, MatTransePosed._23, MatTransePosed._32, MatTransePosed._33);
+    Matrix2X2 minor12 = Matrix2X2(MatTransePosed._21, MatTransePosed._23, MatTransePosed._31, MatTransePosed._33);
+    Matrix2X2 minor13 = Matrix2X2(MatTransePosed._21, MatTransePosed._22, MatTransePosed._31, MatTransePosed._32);
+    Matrix2X2 minor21 = Matrix2X2(MatTransePosed._12, MatTransePosed._13, MatTransePosed._32, MatTransePosed._33);
+    Matrix2X2 minor22 = Matrix2X2(MatTransePosed._11, MatTransePosed._13, MatTransePosed._31, MatTransePosed._33);
+    Matrix2X2 minor23 = Matrix2X2(MatTransePosed._11, MatTransePosed._13, MatTransePosed._31, MatTransePosed._32);
+    Matrix2X2 minor31 = Matrix2X2(MatTransePosed._12, MatTransePosed._13, MatTransePosed._22, MatTransePosed._23);
+    Matrix2X2 minor32 = Matrix2X2(MatTransePosed._11, MatTransePosed._13, MatTransePosed._21, MatTransePosed._23);
+    Matrix2X2 minor33 = Matrix2X2(MatTransePosed._11, MatTransePosed._12, MatTransePosed._21, MatTransePosed._22);
+
+    float c11 = minor11.GetDeterminant();
+    float c12 = minor12.GetDeterminant() * -1.f;
+    float c13 = minor13.GetDeterminant();
+    float c21 = minor21.GetDeterminant() * -1.f;
+    float c22 = minor22.GetDeterminant();
+    float c23 = minor23.GetDeterminant() * -1.f;
+    float c31 = minor31.GetDeterminant();
+    float c32 = minor32.GetDeterminant() * -1.f;
+    float c33 = minor33.GetDeterminant();
+
+    return Matrix3X3(c11 / det, c12 / det, c13 / det,
+                     c21 / det, c22 / det, c23 / det,
+                     c31 / det, c32 / det, c33 / det);
+}
+
+Matrix2X2 Matrix2X2::GetInverse()
+{
+    float det = GetDeterminant();
+    if (abs(det) <= FLOAT_NEAR_ZERO)
+    {
+        return Matrix2X2();
+    }
+    return Matrix2X2(_22 / det, -12 / det, -21 / det, _11 / det);
 }

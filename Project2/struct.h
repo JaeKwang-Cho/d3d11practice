@@ -3,6 +3,8 @@
 #include <DirectXMath.h>
 #include "pch.h"
 
+#define FLOAT_NEAR_ZERO (0.00001f)
+
 float ConvertToRadians(float fDegrees);
 
 float ConvertToDegrees(float fRadians);
@@ -52,7 +54,7 @@ struct FLOAT4 {
     {
         double sumP = (double)x * (double)x + (double)y * (double)y + (double)z * (double)z + (double)a * (double)a;
         float sum = (float)sqrt(sumP);
-        if (sum <= 0.00001)
+        if (sum <= FLOAT_NEAR_ZERO)
         {
             return FLOAT4(0.f, 0.f, 0.f, 0.f);
         }
@@ -140,7 +142,7 @@ struct Vector4 {
     Vector4 Normalize3Vec()
     {
         float len = Length3Vec();
-        if (len <= 0.00001f)
+        if (len <= FLOAT_NEAR_ZERO)
         {
             return Vector4(0.f, 0.f, 0.f, 0.f);
         }
@@ -170,6 +172,78 @@ Vector4 CrossVector3Vec(const Vector4& v1, const Vector4& v2);
 Vector4 DotVector3Vec(const Vector4& v1, const Vector4& v2);
 
 float SumVectorElements(const Vector4& v);
+
+struct Matrix2X2 {
+    union {
+        FLOAT2 m[2];
+        struct {
+            float _11, _12;
+            float _21, _22;
+        };
+    };
+    Matrix2X2()
+    {
+        _11 = _12 = _21 = _22 = 0.f;
+    }
+
+    Matrix2X2(float m11, float m12, float m21, float m22)
+    {
+        _11 = m11;
+        _12 = m12;
+        _21 = m21;
+        _22 = m22;
+    }
+
+    float GetDeterminant()
+    {
+        return _11 * _22 - _21 * _12;
+    }
+
+    Matrix2X2 GetInverse();
+};
+
+struct Matrix3X3 {
+    union {
+        FLOAT3 m[3];
+        struct {
+            float _11, _12, _13;
+            float _21, _22, _23;
+            float _31, _32, _33;
+        };
+        float r[3][3];
+    };
+
+    Matrix3X3()
+    {
+        _11 = _12 = _13 = 0.f;
+        _21 = _22 = _23 = 0.f;
+        _31 = _32 = _33 = 0.f;
+    }
+
+    Matrix3X3(float m11, float m12, float m13,
+              float m21, float m22, float m23,
+              float m31, float m32, float m33)
+    {
+        _11 = m11;
+        _12 = m12;
+        _13 = m13;
+        _21 = m21;
+        _22 = m22;
+        _23 = m23;
+        _31 = m31;
+        _32 = m32;
+        _33 = m33;
+    }
+
+    float GetDeterminant();
+
+    Matrix3X3 GetTranspose()
+    {
+        return Matrix3X3(_11, _21, _31, _12, _22, _32, _13, _23, _33);
+    }
+
+    Matrix3X3 GetInverse();
+};
 
 struct Matrix {
     union
@@ -239,12 +313,18 @@ struct Matrix {
 
     Matrix operator*(const Matrix& _M) const;
 
+    float GetDeterminant();
+
+    Matrix GetInverse();
+
     friend struct Vector4;
 };
 
 Vector4 VectorTransform(const Vector4& _vec, const Matrix& _mat);
 
 Matrix MatrixTranspose(const Matrix& _other);
+
+Matrix MatrixInverse(const Matrix& _other);
 
 Matrix MatrixIdentity();
 
