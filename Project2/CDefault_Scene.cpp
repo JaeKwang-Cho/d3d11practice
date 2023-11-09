@@ -1,6 +1,12 @@
 #include "pch.h"
 #include "CDefault_Scene.h"
 #include "TestActor.h"
+#include "CKeyManager.h"
+#include "CTimeManager.h"
+
+static Vector4 Eye = Vector4(0.0f, 3.0f, -6.0f, 0.0f);
+static Vector4 At = Eye + Vector4(0.0f, -2.0f, 6.0f, 0.0f);
+static Vector4 Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
 
 void CDefault_Scene::EnterScene()
 {
@@ -12,9 +18,9 @@ void CDefault_Scene::EnterScene()
     g_WorldMat = MatrixIdentity();
 
     // 뷰 매트릭스 초기화
-    Vector4 Eye = Vector4(0.0f, 3.0f, -6.0f, 0.0f);
-    Vector4 At = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
-    Vector4 Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+    Eye = Vector4(0.0f, 3.0f, -6.0f, 0.0f);
+    At = Eye + Vector4(0.0f, -2.0f, 6.0f, 0.0f);
+    Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
     g_ViewMat = MatrixLookAtLH(Eye, At, Up);
 
     // Constant 버퍼 만들기
@@ -26,7 +32,7 @@ void CDefault_Scene::EnterScene()
     bd.CPUAccessFlags = 0;
 
     //  #1 
-    bd.ByteWidth = sizeof(CBNeverChanges);
+    bd.ByteWidth = sizeof(CBChangeOnInput);
     HRESULT hr = g_pd3dDevice->CreateBuffer(&bd, nullptr, &g_pCBNeverChanges);
     if (FAILED(hr))
     {
@@ -47,9 +53,9 @@ void CDefault_Scene::EnterScene()
         assert(false && "CreateBuffer Failed");
     }
     // 변할일이 없는 constant buffer 초기화
-    CBNeverChanges cbNeverChanges;
-    cbNeverChanges.mView = MatrixTranspose(g_ViewMat);
-    g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbNeverChanges, 0, 0);
+    CBChangeOnInput cbChangeOnInput;
+    cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
+    g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
 
     // 프로젝션 매트릭스 초기화
     RECT rc = {};
@@ -68,11 +74,83 @@ void CDefault_Scene::EnterScene()
 
 void CDefault_Scene::UpdateScene()
 {
+    if (KEYINPUTHOLD(KEY::W))
+    {
+        Eye = Eye + Vector4(0.f, 0.f, 3.f, 0.f) * DELTA_F;
 
+        At = Eye + Vector4(0.0f, -2.0f, 6.0f, 0.0f);
+        Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+        g_ViewMat = MatrixLookAtLH(Eye, At, Up);
+
+        CBChangeOnInput cbChangeOnInput;
+        cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
+        g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
+    }
+    if (KEYINPUTHOLD(KEY::A))
+    {
+        Eye = Eye + Vector4(-3.f, 0.f, 0.f, 0.f) * DELTA_F;
+
+        At = Eye + Vector4(0.0f, -2.0f, 6.0f, 0.0f);
+        Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+        g_ViewMat = MatrixLookAtLH(Eye, At, Up);
+
+        CBChangeOnInput cbChangeOnInput;
+        cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
+        g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
+    }
+    if (KEYINPUTHOLD(KEY::S))
+    {
+        Eye = Eye + Vector4(0.f, 0.f, -3.f, 0.f) * DELTA_F;
+
+        At = Eye + Vector4(0.0f, -2.0f, 6.0f, 0.0f);
+        Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+        g_ViewMat = MatrixLookAtLH(Eye, At, Up);
+
+        CBChangeOnInput cbChangeOnInput;
+        cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
+        g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
+    }
+    if (KEYINPUTHOLD(KEY::D))
+    {
+        Eye = Eye + Vector4(3.f, 0.f, 0.f, 0.f) * DELTA_F;
+
+        At = Eye + Vector4(0.0f, -2.0f, 6.0f, 0.0f);
+        Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+        g_ViewMat = MatrixLookAtLH(Eye, At, Up);
+
+        CBChangeOnInput cbChangeOnInput;
+        cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
+        g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
+    }
+    if (KEYINPUTHOLD(KEY::Q))
+    {
+        Eye = Eye + Vector4(0.f, 3.f, 0.f, 0.f) * DELTA_F;
+
+        At = Eye + Vector4(0.0f, -2.0f, 6.0f, 0.0f);
+        Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+        g_ViewMat = MatrixLookAtLH(Eye, At, Up);
+
+        CBChangeOnInput cbChangeOnInput;
+        cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
+        g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
+    }
+    if (KEYINPUTHOLD(KEY::E))
+    {
+        Eye = Eye + Vector4(0.f, -3.f, 0.f, 0.f) * DELTA_F;
+
+        At = Eye + Vector4(0.0f, -2.0f, 6.0f, 0.0f);
+        Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+        g_ViewMat = MatrixLookAtLH(Eye, At, Up);
+
+        CBChangeOnInput cbChangeOnInput;
+        cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
+        g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
+    }
 }
 
 void CDefault_Scene::Exit()
 {
+    
 }
 
 CDefault_Scene::CDefault_Scene()

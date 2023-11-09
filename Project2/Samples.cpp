@@ -901,7 +901,7 @@ bool SetCubeWithTex()
     bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
     bd.CPUAccessFlags = 0;
     //  #1 
-    bd.ByteWidth = sizeof(CBNeverChanges);
+    bd.ByteWidth = sizeof(CBChangeOnInput);
     hr = g_pd3dDevice->CreateBuffer(&bd, nullptr, &g_pCBNeverChanges);
     if (FAILED(hr))
     {
@@ -964,7 +964,7 @@ bool SetCubeWithTex()
     g_ViewMat = MatrixLookAtLH(Eye, At, Up);
 
     // 변할일이 없는 constant buffer 초기화
-    CBNeverChanges cbNeverChanges;
+    CBChangeOnInput cbNeverChanges;
     cbNeverChanges.mView = MatrixTranspose(g_ViewMat);
     g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbNeverChanges, 0, 0);
 

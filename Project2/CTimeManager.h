@@ -25,7 +25,7 @@ public:
 	{
 		return m_dDT;
 	}
-	float GetfDelTa()
+	float GetfDelta()
 	{
 		return static_cast<float>(m_dDT);
 	}

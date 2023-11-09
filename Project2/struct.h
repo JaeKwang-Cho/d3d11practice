@@ -98,6 +98,14 @@ struct Vector4 {
         return vec;
     }
 
+    Vector4 operator+(const Vector4& _other)
+    {
+        Vector4 vec;
+        vec.m = _mm_add_ps(m, _other.m);
+
+        return vec;
+    }
+
     Vector4 operator*(float _other) const
     {
         Vector4 vec;
@@ -356,7 +364,7 @@ struct DefaultVertex {
     FLOAT2 TEX;
 };
 
-struct CBNeverChanges
+struct CBChangeOnInput
 {
     Matrix mView;
 };

@@ -30,7 +30,7 @@
 
 #define DELTA_F CTimeManager::GetInstance()->GetfDelta()
 
-#define DELTA_D CTimeManager::GetInstance()->GetDelTa()
+#define DELTA_D CTimeManager::GetInstance()->GetDelta()
 
 #define MOUSE_POS CKeyManager::GetInstance()->GetMousePos()
 

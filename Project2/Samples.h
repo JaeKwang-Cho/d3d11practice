@@ -36,7 +36,7 @@ struct ConstantBuffer_Norm
     FLOAT4 vOutputColor;
 };
 
-struct CBNeverChanges
+struct CBChangeOnInput
 {
     Matrix mView;
 };
