@@ -143,6 +143,9 @@
     <ClInclude Include="TestActor.h">
       <Filter>Contents\Default\Actors</Filter>
     </ClInclude>
+    <ClInclude Include="CMouseManager.h">
+      <Filter>Engine\03.Manager\InputManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project2.rc">
@@ -200,6 +203,9 @@
     </ClCompile>
     <ClCompile Include="TestActor.cpp">
       <Filter>Contents\Default\Actors</Filter>
+    </ClCompile>
+    <ClCompile Include="CMouseManager.cpp">
+      <Filter>Engine\03.Manager\InputManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -159,6 +159,7 @@
     <ClInclude Include="CCore.h" />
     <ClInclude Include="CDefault_Scene.h" />
     <ClInclude Include="CKeyManager.h" />
+    <ClInclude Include="CMouseManager.h" />
     <ClInclude Include="CObject.h" />
     <ClInclude Include="CRenderAsset.h" />
     <ClInclude Include="CScene.h" />
@@ -183,6 +184,7 @@
     <ClCompile Include="CCore.cpp" />
     <ClCompile Include="CDefault_Scene.cpp" />
     <ClCompile Include="CKeyManager.cpp" />
+    <ClCompile Include="CMouseManager.cpp" />
     <ClCompile Include="CObject.cpp" />
     <ClCompile Include="CRenderAsset.cpp" />
     <ClCompile Include="CScene.cpp" />
