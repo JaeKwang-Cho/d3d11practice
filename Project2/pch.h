@@ -3,6 +3,8 @@
 // #1 Window provide
 #include <Windows.h>
 #include <windef.h>
+#include <WinUser.h>
+#include <hidusage.h>
 
 #include <cassert>
 #include <cmath>
@@ -18,7 +20,8 @@ using std::wstring;
 
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "d3d11.lib")
-#pragma comment(lib, "DirectXTexd.lib")
+#pragma comment(lib, "DirectXTexd.lib") // DirectX Tex
+#pragma comment(lib, "User32.lib") // RegisterRawInputDevices
 
 // #2 Project provide
 #include "Resource.h"

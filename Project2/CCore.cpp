@@ -3,6 +3,7 @@
 
 #include "CTimeManager.h"
 #include "CKeyManager.h"
+#include "CMouseManager.h"
 #include "CSceneManager.h"
 
 int CCore::Init(HWND _hWnd, POINT _ptResolution)
@@ -22,6 +23,7 @@ int CCore::Init(HWND _hWnd, POINT _ptResolution)
 	{
 		CTimeManager::GetInstance()->Init();
 		CKeyManager::GetInstance()->Init();
+		CMouseManager::GetInstance()->Init();
 		CSceneManager::GetInstance()->Init();
 	}
 
@@ -37,12 +39,15 @@ void CCore::Progress()
 	{
 		CTimeManager::GetInstance()->Update();
 		CKeyManager::GetInstance()->Update();
+		CMouseManager::GetInstance()->Update();
 		CSceneManager::GetInstance()->Update();
 	}
 	// 씬 업데이트 루프
 	{
-		CTimeManager::GetInstance()->Render();
+		//CTimeManager::GetInstance()->Render();
+		//CMouseManager::GetInstance()->Render();
 		CSceneManager::GetInstance()->Render();
+		
 	}
 
 	// =============
@@ -53,6 +58,35 @@ void CCore::Progress()
 	}
 
 	return;
+}
+
+void CCore::CheckMessage(_In_ const MSG* lpMsg)
+{
+	UINT message = lpMsg->message;
+	WPARAM wParam = lpMsg->wParam;
+	LPARAM lParam = lpMsg->lParam;
+
+	switch (message)
+	{
+	case WM_INPUT:
+	{
+		UINT dwSize = sizeof(RAWINPUT);
+		static BYTE lpb[sizeof(RAWINPUT)];
+
+		GetRawInputData((HRAWINPUT)lParam, RID_INPUT, lpb, &dwSize, sizeof(RAWINPUTHEADER));
+
+		RAWINPUT* raw = (RAWINPUT*)lpb;
+		if (raw->header.dwType == RIM_TYPEMOUSE)
+		{
+			CMouseManager::GetInstance()->MouseMoved(lpb);
+		}
+	}
+	break;
+	default:
+	{
+	}
+	break;
+	}
 }
 
 void CCore::update()

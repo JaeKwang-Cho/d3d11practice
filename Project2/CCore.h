@@ -40,6 +40,7 @@ public:
 	int Init(HWND _hWnd, POINT _ptResolution);
 
 	void Progress();
+	void CheckMessage(_In_ const MSG* lpMsg);
 
 private:
 	void update();

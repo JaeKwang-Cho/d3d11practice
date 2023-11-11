@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CKeyManager.h"
+#include "CMouseManager.h"
 
 // 이렇게 실제 
 int g_VirtualKeyArr[(int)KEY::last] = {
@@ -106,15 +107,4 @@ void CKeyManager::Update()
 			}
 		}
 	}
-
-	// Mouse 위치 계산
-	// Window 제공 함수를 사용하면 된다.
-
-	POINT ptPos = {};
-	// 윈도우 기준이 아니라, 모니터 전체 기준이다.
-	GetCursorPos(&ptPos);
-	// 그래서 이것을 윈도우 기준으로 바꿔줘야 한다.
-	ScreenToClient(CCore::GetInstance()->GetMainHwnd(), &ptPos);
-
-	m_vMousePos = FLOAT2(ptPos);
 }

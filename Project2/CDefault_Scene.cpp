@@ -3,9 +3,11 @@
 #include "TestActor.h"
 #include "CKeyManager.h"
 #include "CTimeManager.h"
+#include "CMouseManager.h"
 
 static Vector4 Eye = Vector4(0.0f, 3.0f, -6.0f, 0.0f);
-static Vector4 At = Eye + Vector4(0.0f, -2.0f, 6.0f, 0.0f);
+static Vector4 Direction = Vector4(0.0f, -2.0f, 6.0f, 0.0f);
+static Vector4 At = Eye + Direction;
 static Vector4 Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
 
 void CDefault_Scene::EnterScene()
@@ -19,7 +21,7 @@ void CDefault_Scene::EnterScene()
 
     // 뷰 매트릭스 초기화
     Eye = Vector4(0.0f, 3.0f, -6.0f, 0.0f);
-    At = Eye + Vector4(0.0f, -2.0f, 6.0f, 0.0f);
+    At = Eye + Direction;
     Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
     g_ViewMat = MatrixLookAtLH(Eye, At, Up);
 
@@ -62,7 +64,7 @@ void CDefault_Scene::EnterScene()
     GetClientRect(g_hWnd, &rc);
     UINT width = rc.right - rc.left;
     UINT height = rc.bottom - rc.top;
-    g_ViewMat;
+
     g_ProjectionMat = MatrixPerspectiveFovLH(PIDiv4, width / (float)height, 0.01f, 100.f);
 
     // 윈도우 크기 변환 시에 변하는 Constant buffer 초기화
@@ -78,7 +80,7 @@ void CDefault_Scene::UpdateScene()
     {
         Eye = Eye + Vector4(0.f, 0.f, 3.f, 0.f) * DELTA_F;
 
-        At = Eye + Vector4(0.0f, -2.0f, 6.0f, 0.0f);
+        At = Eye + Direction;
         Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
         g_ViewMat = MatrixLookAtLH(Eye, At, Up);
 
@@ -90,7 +92,7 @@ void CDefault_Scene::UpdateScene()
     {
         Eye = Eye + Vector4(-3.f, 0.f, 0.f, 0.f) * DELTA_F;
 
-        At = Eye + Vector4(0.0f, -2.0f, 6.0f, 0.0f);
+        At = Eye + Direction;
         Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
         g_ViewMat = MatrixLookAtLH(Eye, At, Up);
 
@@ -102,7 +104,7 @@ void CDefault_Scene::UpdateScene()
     {
         Eye = Eye + Vector4(0.f, 0.f, -3.f, 0.f) * DELTA_F;
 
-        At = Eye + Vector4(0.0f, -2.0f, 6.0f, 0.0f);
+        At = Eye + Direction;
         Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
         g_ViewMat = MatrixLookAtLH(Eye, At, Up);
 
@@ -114,7 +116,7 @@ void CDefault_Scene::UpdateScene()
     {
         Eye = Eye + Vector4(3.f, 0.f, 0.f, 0.f) * DELTA_F;
 
-        At = Eye + Vector4(0.0f, -2.0f, 6.0f, 0.0f);
+        At = Eye + Direction;
         Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
         g_ViewMat = MatrixLookAtLH(Eye, At, Up);
 
@@ -126,7 +128,7 @@ void CDefault_Scene::UpdateScene()
     {
         Eye = Eye + Vector4(0.f, 3.f, 0.f, 0.f) * DELTA_F;
 
-        At = Eye + Vector4(0.0f, -2.0f, 6.0f, 0.0f);
+        At = Eye + Direction;
         Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
         g_ViewMat = MatrixLookAtLH(Eye, At, Up);
 
@@ -138,7 +140,38 @@ void CDefault_Scene::UpdateScene()
     {
         Eye = Eye + Vector4(0.f, -3.f, 0.f, 0.f) * DELTA_F;
 
-        At = Eye + Vector4(0.0f, -2.0f, 6.0f, 0.0f);
+        At = Eye + Direction;
+        Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+        g_ViewMat = MatrixLookAtLH(Eye, At, Up);
+
+        CBChangeOnInput cbChangeOnInput;
+        cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
+        g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
+    }
+
+    FLOAT2 vMouseMov = CMouseManager::GetInstance()->GetRelativePos();
+
+    if (KEYINPUTHOLD(KEY::RMOUSE) && (vMouseMov.u != 0.f || vMouseMov.v != 0.f))
+    {
+        RECT rc = {};
+        GetClientRect(g_hWnd, &rc);
+        UINT width = rc.right - rc.left;
+        UINT height = rc.bottom - rc.top;
+
+        float Ratio = (float)width / (float)height;
+
+
+        float Yaw = vMouseMov.u * DELTA_F * 1.f * Ratio;
+        float Pitch = vMouseMov.v * DELTA_F * 1.f;
+
+        Matrix YawMatrix = MatrixRotationZ(Yaw);
+        Matrix PitchMatrix = MatrixRotationY(Pitch);
+
+        Direction = VectorTransform(Direction, YawMatrix);
+        //PitchMatrix = PitchMatrix * YawMatrix;
+        //Direction = VectorTransform(Direction, PitchMatrix);
+
+        At = Eye + Direction;
         Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
         g_ViewMat = MatrixLookAtLH(Eye, At, Up);
 
