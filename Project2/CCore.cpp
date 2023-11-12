@@ -44,7 +44,7 @@ void CCore::Progress()
 	}
 	// 씬 업데이트 루프
 	{
-		//CTimeManager::GetInstance()->Render();
+		CTimeManager::GetInstance()->Render();
 		//CMouseManager::GetInstance()->Render();
 		CSceneManager::GetInstance()->Render();
 		

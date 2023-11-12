@@ -39,7 +39,7 @@ void CRenderAsset::UpdateObject()
     }
 
     // 자전 시키기
-    g_WorldMat = MatrixRotationY(t);
+    //g_WorldMat = MatrixRotationY(t);
 }
 
 void CRenderAsset::RenderObject()

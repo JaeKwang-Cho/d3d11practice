@@ -40,10 +40,6 @@ void CMouseManager::MouseMoved(_In_ const BYTE* lpb)
 	int yPosRelative = raw->data.mouse.lLastY;
 
 	m_vRelativeMouseMov = FLOAT2((float)xPosRelative, (float)yPosRelative);
-
-	wchar_t szBuffer[255] = {};
-	swprintf_s(szBuffer, L"MousePos (x, y) = (%d, %d)", xPosRelative, yPosRelative);
-	SetWindowText(CCore::GetInstance()->GetMainHwnd(), szBuffer);
 }
 
 CMouseManager::CMouseManager()

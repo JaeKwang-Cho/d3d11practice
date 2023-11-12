@@ -6,7 +6,7 @@
 #include "CMouseManager.h"
 
 static Vector4 Eye = Vector4(0.0f, 3.0f, -6.0f, 0.0f);
-static Vector4 Direction = Vector4(0.0f, -2.0f, 6.0f, 0.0f);
+static Vector4 Direction =  Vector4(0.0f, -2.0f, 6.0f, 0.0f).Normalize3Vec();
 static Vector4 At = Eye + Direction;
 static Vector4 Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
 
@@ -160,24 +160,32 @@ void CDefault_Scene::UpdateScene()
 
         float Ratio = (float)width / (float)height;
 
-
+        float Pitch = vMouseMov.v * DELTA_F * -1.f;
         float Yaw = vMouseMov.u * DELTA_F * 1.f * Ratio;
-        float Pitch = vMouseMov.v * DELTA_F * 1.f;
 
-        Matrix YawMatrix = MatrixRotationZ(Yaw);
-        Matrix PitchMatrix = MatrixRotationY(Pitch);
+        bool bChanged = false;
+        if (abs(Pitch) > MOUSE_THRESHOLD)
+        {
+            Pitch *= 10.f;
+            Direction = VectorLocalPitchRotate(Direction, Pitch);
+            bChanged = true;
+        }
+        if(abs(Yaw) > MOUSE_THRESHOLD)
+        {
+            Direction = VectorLocalYawRotate(Direction, Yaw);
+            bChanged = true;
+        }
 
-        Direction = VectorTransform(Direction, YawMatrix);
-        //PitchMatrix = PitchMatrix * YawMatrix;
-        //Direction = VectorTransform(Direction, PitchMatrix);
+        if (bChanged)
+        {
+            At = Eye + Direction;
+            Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+            g_ViewMat = MatrixLookAtLH(Eye, At, Up);
 
-        At = Eye + Direction;
-        Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
-        g_ViewMat = MatrixLookAtLH(Eye, At, Up);
-
-        CBChangeOnInput cbChangeOnInput;
-        cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
-        g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
+            CBChangeOnInput cbChangeOnInput;
+            cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
+            g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
+        }  
     }
 }
 

@@ -201,13 +201,13 @@ Matrix MatrixLookAtLH(Vector4 CameraPosition, Vector4 LookAtPosition, Vector4 Up
 
     R1 = CrossVector3Vec(R2, R0); // 카메라의 정수리 벡터 R1
 
-    // 물체에 대한 카메라의 상대 위치
+    // 월드 원점 대한 카메라의 상대 위치
     NegEyePosition = CameraPosition * Vector4(-1.f, -1.f, -1.f, -1.f);
 
-    // 물체에 대한 카메라의 상대 위치를 각 축에 대해서 도트
-    D0 = DotVector3Vec(R0, NegEyePosition);
-    D1 = DotVector3Vec(R1, NegEyePosition);
-    D2 = DotVector3Vec(R2, NegEyePosition);
+    // 월드 원점에 대한 카메라의 상대 위치를 각 축에 대해서 도트
+    D0 = DotVector3Vec(R0, NegEyePosition); // 카메라의 왼쪽 
+    D1 = DotVector3Vec(R1, NegEyePosition); // 카메라의 정수리
+    D2 = DotVector3Vec(R2, NegEyePosition); // 카메라의 방향
 
     Mat.m[0] = Vector4(R0.x, R0.y, R0.z, D0.w);
     Mat.m[1] = Vector4(R1.x, R1.y, R1.z, D1.w);
@@ -217,6 +217,54 @@ Matrix MatrixLookAtLH(Vector4 CameraPosition, Vector4 LookAtPosition, Vector4 Up
     Mat = MatrixTranspose(Mat);
 
     return Mat;
+}
+
+Vector4 VectorLocalPitchRotate(const Vector4& _vec, float _rad)
+{
+    Vector4 result;
+    float vecLen = _vec.Length3Vec();
+
+    float Xcomp = _vec.x;
+    float Ycomp = _vec.y;
+    float Zcomp = _vec.z;
+
+    float LocalXZPlaneCast = sqrtf(Zcomp*Zcomp + Xcomp*Xcomp);
+
+    float CosToX = Xcomp / LocalXZPlaneCast;
+    float CosToZ = Zcomp / LocalXZPlaneCast;
+
+    float FormalRad = acosf(LocalXZPlaneCast / vecLen);
+    float NewRad = FormalRad + _rad;
+
+    if (NewRad >= PIDiv2)
+    {
+        result = Vector4(0.f, 0.f, 1.f, 0.f);
+    }
+    else
+    {
+        float newXZPlaneCast = vecLen * cosf(NewRad);
+        float newXcomp = CosToX * newXZPlaneCast;
+        float newZcomp = CosToZ * newXZPlaneCast;
+        float newYcomp = Ycomp >= 0.f ? vecLen * sinf(NewRad) : vecLen * sinf(NewRad) * -1.f;
+
+        result = Vector4(newXcomp, newYcomp, newZcomp, 0.f);
+    }
+
+    return result.Normalize3Vec();
+}
+
+Vector4 VectorLocalYawRotate(const Vector4& _vec, float _rad)
+{
+    Vector4 result;
+    float CosVal = cosf(_rad);
+    float SinVal = sinf(_rad);
+
+    float newXcomp = _vec.x * CosVal - _vec.z * SinVal;
+    float newZcomp = _vec.x * SinVal + _vec.z * CosVal;
+
+    result = Vector4(newXcomp, _vec.y, newZcomp, 0.f);
+
+    return result.Normalize3Vec();
 }
 
 Matrix& Matrix::operator=(const Matrix& _M)

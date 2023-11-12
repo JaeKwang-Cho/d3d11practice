@@ -356,6 +356,12 @@ Matrix MatrixLookAtLH(Vector4 CameraPosition, Vector4 LookAtPosition, Vector4 Up
  
 // Local Space rotation order : ZYX
 
+//Vector4 VectorLocalRollRotate(const Vector4& _vec, float _rad);
+
+Vector4 VectorLocalPitchRotate(const Vector4& _vec, float _rad);
+
+Vector4 VectorLocalYawRotate(const Vector4& _vec, float _rad);
+
 struct DefaultVertex {
     FLOAT3 Pos;
     FLOAT4 Color;

@@ -1,5 +1,7 @@
 #pragma once
 
+#define MOUSE_THRESHOLD (0.001f)
+
 class CMouseManager
 {
 	SINGLETON(CMouseManager)
