@@ -26,10 +26,18 @@ void CMouseManager::Update()
 	m_vMousePos = FLOAT2(ptPos);
 }
 
-void CMouseManager::Render()
+void CMouseManager::Render(bool _bRelative)
 {
 	wchar_t szBuffer[255] = {};
-	swprintf_s(szBuffer, L"MousePos (x, y) = (%f, %f)", m_vMousePos.u, m_vMousePos.v);
+
+	if (_bRelative)
+	{
+		swprintf_s(szBuffer, L"MousePos (x, y) = (%f, %f)", m_vRelativeMouseMov.u, m_vRelativeMouseMov.v);
+	}
+	else
+	{
+		swprintf_s(szBuffer, L"MousePos (x, y) = (%f, %f)", m_vMousePos.u, m_vMousePos.v);		
+	}
 	SetWindowText(CCore::GetInstance()->GetMainHwnd(), szBuffer);
 }
 
@@ -40,6 +48,11 @@ void CMouseManager::MouseMoved(_In_ const BYTE* lpb)
 	int yPosRelative = raw->data.mouse.lLastY;
 
 	m_vRelativeMouseMov = FLOAT2((float)xPosRelative, (float)yPosRelative);
+}
+
+void CMouseManager::RezeroRelativePos()
+{
+	m_vRelativeMouseMov = FLOAT2(0.f, 0.f);
 }
 
 void CMouseManager::SetCursorMiddle()

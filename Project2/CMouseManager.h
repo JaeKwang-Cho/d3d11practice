@@ -13,9 +13,10 @@ private:
 public:
 	void Init();
 	void Update();
-	void Render();
+	void Render(bool _bRelative);
 
 	void MouseMoved(_In_ const BYTE* lpb);
+	void RezeroRelativePos();
 
 	FLOAT2 GetMousePos()
 	{

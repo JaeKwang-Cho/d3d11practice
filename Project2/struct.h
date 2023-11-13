@@ -176,7 +176,36 @@ struct Vector4 {
 };
 
 struct Quat4 {
-    Vector4 vec;
+    union {
+        Vector4 vec;
+        struct
+        {
+            float sinX;
+            float sinY;
+            float sinZ;
+            float cosW;
+        };
+    };
+    Quat4(const Quat4& _quat)
+        :vec(_quat.vec)
+    {}
+
+    Quat4(const Vector4& _vec)
+        :vec(_vec)
+    {}
+    Quat4()
+        :vec()
+    {}
+
+    Quat4& operator=(const Quat4& _quat)
+    {
+        if (this == &_quat)
+        {
+
+        }
+        vec = _quat.vec;
+        return *this;
+    }
 };
 
 Vector4 CrossVector3Vec(const Vector4& v1, const Vector4& v2);
@@ -360,7 +389,13 @@ Matrix MatrixLookAtLH(Vector4 _CameraPosition, Vector4 _LookAtPosition, Vector4 
  
 // Local Space rotation order : ZYX
 
+Vector4 RotateVectorAroundLocalAxis(const Vector4& _vec, const Vector4& _axis, float _rad);
+
 Quat4 GetQuatLocalAxisRotate(const Vector4& _vec, const Vector4& _localAxis, float _rad);
+
+Quat4 GetQuatConjugate(const Quat4& _quat);
+
+Matrix GetRotationMatrixFromQuat(const Quat4& _quat);
 
 Vector4 VectorLocalPitchRotate(const Vector4& _vec, const Vector4& _localXAxis, float _rad);
 

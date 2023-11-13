@@ -170,19 +170,19 @@ void CDefault_Scene::UpdateScene()
             float Ratio = (float)width / (float)height;
 
             float Pitch = vMouseMov.v * DELTA_F * -1.f;
-            float Yaw = vMouseMov.u * DELTA_F * 1.f * Ratio;
+            float Yaw = vMouseMov.u * DELTA_F * -1.f * Ratio;
 
             bool bChanged = false;
             if (abs(Pitch) > MOUSE_THRESHOLD)
             {
-                Pitch *= 10.f;
-                Direction = VectorLocalAxisRotate(Direction, CameraLeft, Pitch);
+                //Pitch *= 10.f;
+                Direction = RotateVectorAroundLocalAxis(Direction, CameraLeft, Pitch);
                 bChanged = true;
             }
             if (abs(Yaw) > MOUSE_THRESHOLD)
             {
-                Yaw *= 10.f;
-                Direction = VectorLocalAxisRotate(Direction, CameraUp, Yaw);
+                //Yaw *= 10.f;
+                Direction = RotateVectorAroundLocalAxis(Direction, CameraUp, Yaw);
                 bChanged = true;
             }
 
@@ -198,50 +198,19 @@ void CDefault_Scene::UpdateScene()
 
                 CMouseManager::GetInstance()->SetCursorMiddle();
             }
+
+            CMouseManager::GetInstance()->RezeroRelativePos();
         }
     }
     if (KEYINPUTTAP(KEY::RMOUSE))
     {
-        //ShowCursor(false);
+        ShowCursor(false);
     }
 
     if (KEYINPUTAWAY(KEY::RMOUSE) || KEYINPUTCHECK(KEY::RMOUSE, KEY_STATE::KS_NONE))
     {
-        //ShowCursor(true);
+        ShowCursor(true);
     }
-
-    {
-        // Update our time
-        static float t = 0.0f;
-        if (g_driverType == D3D_DRIVER_TYPE_REFERENCE)
-        {
-            t += (float)PI * 0.0125f;
-        }
-        else
-        {
-            static ULONGLONG dwTimeStart = 0;
-            ULONGLONG dwTimeCur = GetTickCount64();
-            if (dwTimeStart == 0)
-                dwTimeStart = dwTimeCur;
-            t = (dwTimeCur - dwTimeStart) / 1000.0f;
-        }
-
-        if (t > PIDiv2)
-        {
-            t = FLOAT_NEAR_ZERO - PIDiv2;
-        }
-
-        Direction = VectorLocalAxisRotate(Direction, CameraUp, t);
-
-        At = Eye + Direction;
-        Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
-        g_ViewMat = MatrixLookAtLH(Eye, At, Up, CameraLeft, CameraUp);
-
-        CBChangeOnInput cbChangeOnInput;
-        cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
-        g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
-    }
-
 }
 
 void CDefault_Scene::Exit()

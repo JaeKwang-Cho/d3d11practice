@@ -221,6 +221,14 @@ Matrix MatrixLookAtLH(Vector4 _CameraPosition, Vector4 _LookAtPosition, Vector4 
     return Mat;
 }
 
+Vector4 RotateVectorAroundLocalAxis(const Vector4& _vec, const Vector4& _axis, float _rad)
+{
+    Quat4 quat = GetQuatLocalAxisRotate(_vec, _axis, _rad);
+    Matrix RotMat = MatrixTranspose(GetRotationMatrixFromQuat(quat));
+
+    return VectorTransform(_vec, RotMat);
+}
+
 Quat4 GetQuatLocalAxisRotate(const Vector4& _vec, const Vector4& _localAxis, float _rad)
 {
     Vector4 axis = _localAxis.Normalize3Vec();
@@ -230,7 +238,49 @@ Quat4 GetQuatLocalAxisRotate(const Vector4& _vec, const Vector4& _localAxis, flo
     float CosVal = cosf(_rad / 2.f);
 
     Vector4 Scale = Vector4(SinVal, SinVal, SinVal, CosVal);
-    return Quat4{ axis * Scale };
+    Quat4 result = { axis * Scale };
+    return result;
+}
+
+Quat4 GetQuatConjugate(const Quat4& _quat)
+{
+    Vector4 vec = _quat.vec * Vector4(-1.f, - 1.f, -1.f, 1.f);
+    return Quat4{ vec };
+}
+
+Matrix GetRotationMatrixFromQuat(const Quat4& _quat)
+{
+    float sx = _quat.sinX;
+    float sy = _quat.sinY;
+    float sz = _quat.sinZ;
+    float cw = _quat.cosW;
+
+    Vector4 m1 = Vector4(
+        1.f - 2.f * (sy * sy + sz * sz),
+        2.f * (sx * sy + cw * sz),
+        2.f * (sx * sz - cw * sy), 
+        0.f
+    );
+
+    Vector4 m2 = Vector4(
+        2.f * (sx * sy - cw * sz),
+        1.f - 2.f * (sx * sx + sz * sz),
+        2.f * (sy * sz + cw * sx),
+        0.f
+    );
+
+    Vector4 m3 = Vector4(
+        2.f * (sx * sz + cw * sy),
+        2.f * (sy * sz - cw * sx),
+        1.f - 2.f * (sx * sx * + sy * sy),
+        1.f
+    );
+
+    Vector4 m4 = Vector4(0.f, 0.f, 0.f, 1.f);
+
+    Matrix mat(m1, m2, m3, m4);
+
+    return MatrixTranspose(mat);
 }
 
 Vector4 VectorLocalPitchRotate(const Vector4& _vec, const Vector4& _localXAxis, float _rad)
