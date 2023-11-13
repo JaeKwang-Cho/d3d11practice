@@ -179,11 +179,11 @@ Matrix MatrixPerspectiveFovLH(float FovRadianY, float AspectRatio, float NearZ, 
     return Mat;
 }
 
-Matrix MatrixLookAtLH(Vector4 CameraPosition, Vector4 LookAtPosition, Vector4 UpDirection)
+Matrix MatrixLookAtLH(Vector4 _CameraPosition, Vector4 _LookAtPosition, Vector4 _UpDirection, Vector4& _CameraLeft, Vector4& _CameraUp)
 {
     Matrix Mat;
 
-    Vector4 CameraDirection = LookAtPosition - CameraPosition;
+    Vector4 CameraDirection = _LookAtPosition - _CameraPosition;
 
     Vector4 NegEyePosition;
     Vector4 D0, D1, D2;
@@ -192,17 +192,19 @@ Matrix MatrixLookAtLH(Vector4 CameraPosition, Vector4 LookAtPosition, Vector4 Up
 
     Vector4 ZeroVector(0.f, 0.f, 0.f, 0.f);
     assert(CameraDirection != ZeroVector);
-    assert(UpDirection != ZeroVector);
+    assert(_UpDirection != ZeroVector);
 
     R2 = CameraDirection.Normalize3Vec(); // 카메라가 바라보는 방향 벡터 R2
 
-    R0 = CrossVector3Vec(UpDirection, R2); // 카메라의 위쪽 백터와 카메라가 바라보는 벡터(R2)의 외적 -> 카메라의 왼쪽 R0
+    R0 = CrossVector3Vec(_UpDirection, R2); // 카메라의 위쪽 백터와 카메라가 바라보는 벡터(R2)의 외적 -> 카메라의 왼쪽 R0
     R0 = R0.Normalize3Vec();
+    _CameraLeft = R0;
 
     R1 = CrossVector3Vec(R2, R0); // 카메라의 정수리 벡터 R1
+    _CameraUp = R1.Normalize3Vec();
 
     // 월드 원점 대한 카메라의 상대 위치
-    NegEyePosition = CameraPosition * Vector4(-1.f, -1.f, -1.f, -1.f);
+    NegEyePosition = _CameraPosition * Vector4(-1.f, -1.f, -1.f, -1.f);
 
     // 월드 원점에 대한 카메라의 상대 위치를 각 축에 대해서 도트
     D0 = DotVector3Vec(R0, NegEyePosition); // 카메라의 왼쪽 
@@ -219,7 +221,19 @@ Matrix MatrixLookAtLH(Vector4 CameraPosition, Vector4 LookAtPosition, Vector4 Up
     return Mat;
 }
 
-Vector4 VectorLocalPitchRotate(const Vector4& _vec, float _rad)
+Quat4 GetQuatLocalAxisRotate(const Vector4& _vec, const Vector4& _localAxis, float _rad)
+{
+    Vector4 axis = _localAxis.Normalize3Vec();
+    axis = Vector4(axis.x, axis.y, axis.z, _vec.w);
+
+    float SinVal = sinf(_rad / 2.f);
+    float CosVal = cosf(_rad / 2.f);
+
+    Vector4 Scale = Vector4(SinVal, SinVal, SinVal, CosVal);
+    return Quat4{ axis * Scale };
+}
+
+Vector4 VectorLocalPitchRotate(const Vector4& _vec, const Vector4& _localXAxis, float _rad)
 {
     Vector4 result;
     float vecLen = _vec.Length3Vec();
@@ -236,24 +250,22 @@ Vector4 VectorLocalPitchRotate(const Vector4& _vec, float _rad)
     float FormalRad = acosf(LocalXZPlaneCast / vecLen);
     float NewRad = FormalRad + _rad;
 
-    if (NewRad >= PIDiv2)
+    if (abs(NewRad) >= PIDiv2)
     {
-        result = Vector4(0.f, 0.f, 1.f, 0.f);
+        NewRad = NewRad > 0.f ? PIDiv2 - FLOAT_NEAR_ZERO : FLOAT_NEAR_ZERO - PIDiv2;
     }
-    else
-    {
-        float newXZPlaneCast = vecLen * cosf(NewRad);
-        float newXcomp = CosToX * newXZPlaneCast;
-        float newZcomp = CosToZ * newXZPlaneCast;
-        float newYcomp = Ycomp >= 0.f ? vecLen * sinf(NewRad) : vecLen * sinf(NewRad) * -1.f;
 
-        result = Vector4(newXcomp, newYcomp, newZcomp, 0.f);
-    }
+    float newXZPlaneCast = vecLen * cosf(NewRad);
+    float newXcomp = CosToX * newXZPlaneCast;
+    float newZcomp = CosToZ * newXZPlaneCast;
+    float newYcomp = Ycomp >= 0.f ? vecLen * sinf(NewRad) : vecLen * sinf(NewRad) * -1.f;
+
+    result = Vector4(newXcomp, newYcomp, newZcomp, 0.f);
 
     return result.Normalize3Vec();
 }
 
-Vector4 VectorLocalYawRotate(const Vector4& _vec, float _rad)
+Vector4 VectorLocalYawRotate(const Vector4& _vec, const Vector4& _localYAxis, float _rad)
 {
     Vector4 result;
     float CosVal = cosf(_rad);

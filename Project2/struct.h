@@ -147,7 +147,7 @@ struct Vector4 {
         return (float)sqrt(sum);
     }
 
-    Vector4 Normalize3Vec()
+    Vector4 Normalize3Vec() const
     {
         float len = Length3Vec();
         if (len <= FLOAT_NEAR_ZERO)
@@ -173,6 +173,10 @@ struct Vector4 {
     }
 
     friend struct Matrix;
+};
+
+struct Quat4 {
+    Vector4 vec;
 };
 
 Vector4 CrossVector3Vec(const Vector4& v1, const Vector4& v2);
@@ -350,17 +354,17 @@ Matrix MatrixTranslation(FLOAT4 _fNum);
 
 Matrix MatrixPerspectiveFovLH(float FovRadianY, float AspectRatio, float NearZ, float FarZ);
 
-Matrix MatrixLookAtLH(Vector4 CameraPosition, Vector4 LookAtPosition, Vector4 UpDirection);
+Matrix MatrixLookAtLH(Vector4 _CameraPosition, Vector4 _LookAtPosition, Vector4 _UpDirection, Vector4& _CameraLeft, Vector4& _CameraUp);
 
 // World Space rotation order : XYZ
  
 // Local Space rotation order : ZYX
 
-//Vector4 VectorLocalRollRotate(const Vector4& _vec, float _rad);
+Quat4 GetQuatLocalAxisRotate(const Vector4& _vec, const Vector4& _localAxis, float _rad);
 
-Vector4 VectorLocalPitchRotate(const Vector4& _vec, float _rad);
+Vector4 VectorLocalPitchRotate(const Vector4& _vec, const Vector4& _localXAxis, float _rad);
 
-Vector4 VectorLocalYawRotate(const Vector4& _vec, float _rad);
+Vector4 VectorLocalYawRotate(const Vector4& _vec, const Vector4& _localYAxis, float _rad);
 
 struct DefaultVertex {
     FLOAT3 Pos;

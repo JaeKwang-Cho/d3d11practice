@@ -27,6 +27,8 @@ public:
 		return m_vRelativeMouseMov;
 	}
 
+	void SetCursorMiddle();
+
 	friend class CKeyManager;
 };
 

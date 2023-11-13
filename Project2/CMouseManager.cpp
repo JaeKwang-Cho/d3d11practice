@@ -42,6 +42,17 @@ void CMouseManager::MouseMoved(_In_ const BYTE* lpb)
 	m_vRelativeMouseMov = FLOAT2((float)xPosRelative, (float)yPosRelative);
 }
 
+void CMouseManager::SetCursorMiddle()
+{
+	RECT rc = {};
+	GetClientRect(CCore::GetInstance()->GetMainHwnd(), &rc);
+
+	POINT ptPos = { (rc.right - rc.left) / 2, (rc.bottom - rc.top) / 2 };
+	ScreenToClient(CCore::GetInstance()->GetMainHwnd(), &ptPos);
+
+	SetCursorPos(ptPos.x, ptPos.y);
+}
+
 CMouseManager::CMouseManager()
 	: m_vMousePos(0.f,0.f)
 	, m_vRelativeMouseMov(0.f,0.f)

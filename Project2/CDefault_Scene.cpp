@@ -9,6 +9,8 @@ static Vector4 Eye = Vector4(0.0f, 3.0f, -6.0f, 0.0f);
 static Vector4 Direction =  Vector4(0.0f, -2.0f, 6.0f, 0.0f).Normalize3Vec();
 static Vector4 At = Eye + Direction;
 static Vector4 Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+static Vector4 CameraLeft;
+static Vector4 CameraUp;
 
 void CDefault_Scene::EnterScene()
 {
@@ -23,7 +25,7 @@ void CDefault_Scene::EnterScene()
     Eye = Vector4(0.0f, 3.0f, -6.0f, 0.0f);
     At = Eye + Direction;
     Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
-    g_ViewMat = MatrixLookAtLH(Eye, At, Up);
+    g_ViewMat = MatrixLookAtLH(Eye, At, Up, CameraLeft, CameraUp);
 
     // Constant 버퍼 만들기
     D3D11_BUFFER_DESC bd;
@@ -65,7 +67,7 @@ void CDefault_Scene::EnterScene()
     UINT width = rc.right - rc.left;
     UINT height = rc.bottom - rc.top;
 
-    g_ProjectionMat = MatrixPerspectiveFovLH(PIDiv4, width / (float)height, 0.01f, 100.f);
+    g_ProjectionMat = MatrixPerspectiveFovLH(PIDiv2, width / (float)height, 0.01f, 100.f);
 
     // 윈도우 크기 변환 시에 변하는 Constant buffer 초기화
     CBChangeOnResize cbChangeOnResize;
@@ -76,117 +78,170 @@ void CDefault_Scene::EnterScene()
 
 void CDefault_Scene::UpdateScene()
 {
-    if (KEYINPUTHOLD(KEY::W))
+    if (GetFocus() != CCore::GetInstance()->GetMainHwnd())
     {
-        Eye = Eye + Vector4(0.f, 0.f, 3.f, 0.f) * DELTA_F;
-
-        At = Eye + Direction;
-        Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
-        g_ViewMat = MatrixLookAtLH(Eye, At, Up);
-
-        CBChangeOnInput cbChangeOnInput;
-        cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
-        g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
+        return;
     }
-    if (KEYINPUTHOLD(KEY::A))
+    if (KEYINPUTHOLD(KEY::RMOUSE))
     {
-        Eye = Eye + Vector4(-3.f, 0.f, 0.f, 0.f) * DELTA_F;
 
-        At = Eye + Direction;
-        Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
-        g_ViewMat = MatrixLookAtLH(Eye, At, Up);
-
-        CBChangeOnInput cbChangeOnInput;
-        cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
-        g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
-    }
-    if (KEYINPUTHOLD(KEY::S))
-    {
-        Eye = Eye + Vector4(0.f, 0.f, -3.f, 0.f) * DELTA_F;
-
-        At = Eye + Direction;
-        Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
-        g_ViewMat = MatrixLookAtLH(Eye, At, Up);
-
-        CBChangeOnInput cbChangeOnInput;
-        cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
-        g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
-    }
-    if (KEYINPUTHOLD(KEY::D))
-    {
-        Eye = Eye + Vector4(3.f, 0.f, 0.f, 0.f) * DELTA_F;
-
-        At = Eye + Direction;
-        Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
-        g_ViewMat = MatrixLookAtLH(Eye, At, Up);
-
-        CBChangeOnInput cbChangeOnInput;
-        cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
-        g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
-    }
-    if (KEYINPUTHOLD(KEY::Q))
-    {
-        Eye = Eye + Vector4(0.f, 3.f, 0.f, 0.f) * DELTA_F;
-
-        At = Eye + Direction;
-        Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
-        g_ViewMat = MatrixLookAtLH(Eye, At, Up);
-
-        CBChangeOnInput cbChangeOnInput;
-        cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
-        g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
-    }
-    if (KEYINPUTHOLD(KEY::E))
-    {
-        Eye = Eye + Vector4(0.f, -3.f, 0.f, 0.f) * DELTA_F;
-
-        At = Eye + Direction;
-        Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
-        g_ViewMat = MatrixLookAtLH(Eye, At, Up);
-
-        CBChangeOnInput cbChangeOnInput;
-        cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
-        g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
-    }
-
-    FLOAT2 vMouseMov = CMouseManager::GetInstance()->GetRelativePos();
-
-    if (KEYINPUTHOLD(KEY::RMOUSE) && (vMouseMov.u != 0.f || vMouseMov.v != 0.f))
-    {
-        RECT rc = {};
-        GetClientRect(g_hWnd, &rc);
-        UINT width = rc.right - rc.left;
-        UINT height = rc.bottom - rc.top;
-
-        float Ratio = (float)width / (float)height;
-
-        float Pitch = vMouseMov.v * DELTA_F * -1.f;
-        float Yaw = vMouseMov.u * DELTA_F * 1.f * Ratio;
-
-        bool bChanged = false;
-        if (abs(Pitch) > MOUSE_THRESHOLD)
+        if (KEYINPUTHOLD(KEY::W))
         {
-            Pitch *= 10.f;
-            Direction = VectorLocalPitchRotate(Direction, Pitch);
-            bChanged = true;
-        }
-        if(abs(Yaw) > MOUSE_THRESHOLD)
-        {
-            Direction = VectorLocalYawRotate(Direction, Yaw);
-            bChanged = true;
-        }
+            Eye = Eye + Vector4(0.f, 0.f, 3.f, 0.f) * DELTA_F;
 
-        if (bChanged)
-        {
             At = Eye + Direction;
             Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
-            g_ViewMat = MatrixLookAtLH(Eye, At, Up);
+            g_ViewMat = MatrixLookAtLH(Eye, At, Up, CameraLeft, CameraUp);
 
             CBChangeOnInput cbChangeOnInput;
             cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
             g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
-        }  
+        }
+        if (KEYINPUTHOLD(KEY::A))
+        {
+            Eye = Eye + Vector4(-3.f, 0.f, 0.f, 0.f) * DELTA_F;
+
+            At = Eye + Direction;
+            Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+            g_ViewMat = MatrixLookAtLH(Eye, At, Up, CameraLeft, CameraUp);
+
+            CBChangeOnInput cbChangeOnInput;
+            cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
+            g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
+        }
+        if (KEYINPUTHOLD(KEY::S))
+        {
+            Eye = Eye + Vector4(0.f, 0.f, -3.f, 0.f) * DELTA_F;
+
+            At = Eye + Direction;
+            Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+            g_ViewMat = MatrixLookAtLH(Eye, At, Up, CameraLeft, CameraUp);
+
+            CBChangeOnInput cbChangeOnInput;
+            cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
+            g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
+        }
+        if (KEYINPUTHOLD(KEY::D))
+        {
+            Eye = Eye + Vector4(3.f, 0.f, 0.f, 0.f) * DELTA_F;
+
+            At = Eye + Direction;
+            Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+            g_ViewMat = MatrixLookAtLH(Eye, At, Up, CameraLeft, CameraUp);
+
+            CBChangeOnInput cbChangeOnInput;
+            cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
+            g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
+        }
+        if (KEYINPUTHOLD(KEY::Q))
+        {
+            Eye = Eye + Vector4(0.f, 3.f, 0.f, 0.f) * DELTA_F;
+
+            At = Eye + Direction;
+            Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+            g_ViewMat = MatrixLookAtLH(Eye, At, Up, CameraLeft, CameraUp);
+
+            CBChangeOnInput cbChangeOnInput;
+            cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
+            g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
+        }
+        if (KEYINPUTHOLD(KEY::E))
+        {
+            Eye = Eye + Vector4(0.f, -3.f, 0.f, 0.f) * DELTA_F;
+
+            At = Eye + Direction;
+            Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+            g_ViewMat = MatrixLookAtLH(Eye, At, Up, CameraLeft, CameraUp);
+
+            CBChangeOnInput cbChangeOnInput;
+            cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
+            g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
+        }
+
+        FLOAT2 vMouseMov = CMouseManager::GetInstance()->GetRelativePos();
+
+        if (vMouseMov.u != 0.f || vMouseMov.v != 0.f)
+        {
+            RECT rc = {};
+            GetClientRect(g_hWnd, &rc);
+            UINT width = rc.right - rc.left;
+            UINT height = rc.bottom - rc.top;
+
+            float Ratio = (float)width / (float)height;
+
+            float Pitch = vMouseMov.v * DELTA_F * -1.f;
+            float Yaw = vMouseMov.u * DELTA_F * 1.f * Ratio;
+
+            bool bChanged = false;
+            if (abs(Pitch) > MOUSE_THRESHOLD)
+            {
+                Pitch *= 10.f;
+                Direction = VectorLocalAxisRotate(Direction, CameraLeft, Pitch);
+                bChanged = true;
+            }
+            if (abs(Yaw) > MOUSE_THRESHOLD)
+            {
+                Yaw *= 10.f;
+                Direction = VectorLocalAxisRotate(Direction, CameraUp, Yaw);
+                bChanged = true;
+            }
+
+            if (bChanged)
+            {
+                At = Eye + Direction;
+                Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+                g_ViewMat = MatrixLookAtLH(Eye, At, Up, CameraLeft, CameraUp);
+
+                CBChangeOnInput cbChangeOnInput;
+                cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
+                g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
+
+                CMouseManager::GetInstance()->SetCursorMiddle();
+            }
+        }
     }
+    if (KEYINPUTTAP(KEY::RMOUSE))
+    {
+        //ShowCursor(false);
+    }
+
+    if (KEYINPUTAWAY(KEY::RMOUSE) || KEYINPUTCHECK(KEY::RMOUSE, KEY_STATE::KS_NONE))
+    {
+        //ShowCursor(true);
+    }
+
+    {
+        // Update our time
+        static float t = 0.0f;
+        if (g_driverType == D3D_DRIVER_TYPE_REFERENCE)
+        {
+            t += (float)PI * 0.0125f;
+        }
+        else
+        {
+            static ULONGLONG dwTimeStart = 0;
+            ULONGLONG dwTimeCur = GetTickCount64();
+            if (dwTimeStart == 0)
+                dwTimeStart = dwTimeCur;
+            t = (dwTimeCur - dwTimeStart) / 1000.0f;
+        }
+
+        if (t > PIDiv2)
+        {
+            t = FLOAT_NEAR_ZERO - PIDiv2;
+        }
+
+        Direction = VectorLocalAxisRotate(Direction, CameraUp, t);
+
+        At = Eye + Direction;
+        Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+        g_ViewMat = MatrixLookAtLH(Eye, At, Up, CameraLeft, CameraUp);
+
+        CBChangeOnInput cbChangeOnInput;
+        cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
+        g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
+    }
+
 }
 
 void CDefault_Scene::Exit()
