@@ -195,8 +195,6 @@ void CDefault_Scene::UpdateScene()
                 CBChangeOnInput cbChangeOnInput;
                 cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
                 g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
-
-                CMouseManager::GetInstance()->SetCursorMiddle();
             }
 
             CMouseManager::GetInstance()->RezeroRelativePos();

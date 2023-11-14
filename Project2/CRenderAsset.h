@@ -5,6 +5,9 @@ class CRenderAsset :
     public CObject
 {
 private:
+	Matrix m_WorldMat;
+
+private:
 	ID3D11VertexShader* m_VS;
 	ID3D11Buffer* m_VertexBuff;
 	ID3D11InputLayout* m_Layout;
@@ -25,6 +28,9 @@ public:
 	{
 		return nullptr;
 	};
+
+private:
+	void SetWorldMat();
 
 public:
 	CRenderAsset();

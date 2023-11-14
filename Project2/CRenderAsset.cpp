@@ -19,6 +19,8 @@ void CRenderAsset::StartObject()
     {
         assert(false && "GetSimpleCube Failed");
     }
+
+    SetWorldMat();
 }
 
 void CRenderAsset::UpdateObject()
@@ -38,6 +40,7 @@ void CRenderAsset::UpdateObject()
         t = (dwTimeCur - dwTimeStart) / 1000.0f;
     }
 
+    SetWorldMat();
     // 자전 시키기
     //g_WorldMat = MatrixRotationY(t);
 }
@@ -46,7 +49,7 @@ void CRenderAsset::RenderObject()
 {
     // 매 프레임 마다 변하는 constant buffer 업데이트 하기
     CBChangesEveryFrame cb;
-    cb.mWorld = MatrixTranspose(g_WorldMat);
+    cb.mWorld = MatrixTranspose(m_WorldMat);
     // 쉐이더에서 사용할 Constant buffer 객체에 시스템 메모리 값을 카피해준다.
     g_pImmediateContext->UpdateSubresource(g_pCBChangesEveryFrame, 0, nullptr, &cb, 0, 0);
 
@@ -67,6 +70,22 @@ void CRenderAsset::RenderObject()
     g_pImmediateContext->DrawIndexed(36, 0, 0);
 }
 
+void CRenderAsset::SetWorldMat()
+{
+    // 행렬 곱 순서는 스케일 -> 자전 -> 공전 (이동 + 회전) 순서로 곱하면 된다.
+    m_WorldMat = MatrixIdentity();
+
+    Matrix ScaleMat = MatrixScale(GetWorldTransform().Scale);
+
+    Matrix RotMat = MatrixRotationZ(GetWorldTransform().Rotation.z);
+    RotMat *= MatrixRotationX(GetWorldTransform().Rotation.x);
+    RotMat *= MatrixRotationX(GetWorldTransform().Rotation.y);
+
+    Matrix TransMat = MatrixTranslation(GetWorldTransform().Position);
+
+    m_WorldMat = ScaleMat * RotMat * TransMat;
+}
+
 CRenderAsset::CRenderAsset()
     :CObject()
     , m_VS(nullptr)
@@ -77,6 +96,7 @@ CRenderAsset::CRenderAsset()
     , m_texFile(nullptr)
     , m_texRV(nullptr)
     , m_SamplerLinear(nullptr)
+    , m_WorldMat(MatrixIdentity())
 {
 }
 

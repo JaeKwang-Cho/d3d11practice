@@ -137,6 +137,18 @@ Matrix MatrixScale(float _sx, float _sy, float _sz)
     return Mat;
 }
 
+Matrix MatrixScale(FLOAT3 _fNum)
+{
+    Matrix Mat;
+
+    Mat.m[0] = Vector4(_fNum.x, 0.f, 0.f, 0.f);
+    Mat.m[1] = Vector4(0.f, _fNum.y, 0.f, 0.f);
+    Mat.m[2] = Vector4(0.f, 0.f, _fNum.z, 0.f);
+    Mat.m[3] = Vector4(0.f, 0.f, 0.f, 1.f);
+
+    return Mat;
+}
+
 Matrix MatrixTranslation(float _sx, float _sy, float _sz)
 {
     Matrix Mat;
@@ -149,7 +161,7 @@ Matrix MatrixTranslation(float _sx, float _sy, float _sz)
     return Mat;
 }
 
-Matrix MatrixTranslation(FLOAT4 _fNum)
+Matrix MatrixTranslation(FLOAT3 _fNum)
 {
     Matrix Mat;
 
@@ -281,52 +293,6 @@ Matrix GetRotationMatrixFromQuat(const Quat4& _quat)
     Matrix mat(m1, m2, m3, m4);
 
     return MatrixTranspose(mat);
-}
-
-Vector4 VectorLocalPitchRotate(const Vector4& _vec, const Vector4& _localXAxis, float _rad)
-{
-    Vector4 result;
-    float vecLen = _vec.Length3Vec();
-
-    float Xcomp = _vec.x;
-    float Ycomp = _vec.y;
-    float Zcomp = _vec.z;
-
-    float LocalXZPlaneCast = sqrtf(Zcomp*Zcomp + Xcomp*Xcomp);
-
-    float CosToX = Xcomp / LocalXZPlaneCast;
-    float CosToZ = Zcomp / LocalXZPlaneCast;
-
-    float FormalRad = acosf(LocalXZPlaneCast / vecLen);
-    float NewRad = FormalRad + _rad;
-
-    if (abs(NewRad) >= PIDiv2)
-    {
-        NewRad = NewRad > 0.f ? PIDiv2 - FLOAT_NEAR_ZERO : FLOAT_NEAR_ZERO - PIDiv2;
-    }
-
-    float newXZPlaneCast = vecLen * cosf(NewRad);
-    float newXcomp = CosToX * newXZPlaneCast;
-    float newZcomp = CosToZ * newXZPlaneCast;
-    float newYcomp = Ycomp >= 0.f ? vecLen * sinf(NewRad) : vecLen * sinf(NewRad) * -1.f;
-
-    result = Vector4(newXcomp, newYcomp, newZcomp, 0.f);
-
-    return result.Normalize3Vec();
-}
-
-Vector4 VectorLocalYawRotate(const Vector4& _vec, const Vector4& _localYAxis, float _rad)
-{
-    Vector4 result;
-    float CosVal = cosf(_rad);
-    float SinVal = sinf(_rad);
-
-    float newXcomp = _vec.x * CosVal - _vec.z * SinVal;
-    float newZcomp = _vec.x * SinVal + _vec.z * CosVal;
-
-    result = Vector4(newXcomp, _vec.y, newZcomp, 0.f);
-
-    return result.Normalize3Vec();
 }
 
 Matrix& Matrix::operator=(const Matrix& _M)

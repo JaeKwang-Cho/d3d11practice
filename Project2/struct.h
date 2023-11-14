@@ -35,6 +35,52 @@ struct FLOAT3 {
     FLOAT3() :x(0.f), y(0.f), z(0.f)
     {
     }
+
+    FLOAT3 operator+(const FLOAT3& _other) const
+    {
+        return FLOAT3(x + _other.x, y + _other.y, z + _other.z);
+    }
+
+    FLOAT3& operator+=(const FLOAT3& _other)
+    {
+        x += _other.x;
+        y += _other.y;
+        z += _other.z;
+
+        return *this;
+    }
+
+    FLOAT3 operator*(const FLOAT3& _other) const
+    {
+        return FLOAT3(x * _other.x, y * _other.y, z * _other.z);
+    }
+
+    FLOAT3& operator*=(const FLOAT3& _other)
+    {
+        x *= _other.x;
+        y *= _other.y;
+        z *= _other.z;
+
+        return *this;
+    }
+};
+
+struct Transform {
+    FLOAT3 Position;
+    FLOAT3 Rotation;
+    FLOAT3 Scale;
+
+    Transform()
+        :Position(0.f,0.f,0.f),Rotation(0.f,0.f,0.f),Scale(1.f,1.f,1.f)
+    {}
+    Transform(FLOAT3 _Pos, FLOAT3 _Rot, FLOAT3 _SCL)
+        :Position(_Pos),Rotation(_Rot),Scale(_SCL)
+    {}
+    Transform(const Transform& _other)
+        :Position(_other.Position)
+        ,Rotation(_other.Rotation)
+        ,Scale(_other.Scale)
+    { }
 };
 
 struct FLOAT4 {
@@ -377,9 +423,11 @@ Matrix MatrixRotationZ(float Radian);
 
 Matrix MatrixScale(float _sx, float _sy, float _sz);
 
+Matrix MatrixScale(FLOAT3 _fNum);
+
 Matrix MatrixTranslation(float _sx, float _sy, float _sz);
 
-Matrix MatrixTranslation(FLOAT4 _fNum);
+Matrix MatrixTranslation(FLOAT3 _fNum);
 
 Matrix MatrixPerspectiveFovLH(float FovRadianY, float AspectRatio, float NearZ, float FarZ);
 
@@ -396,10 +444,6 @@ Quat4 GetQuatLocalAxisRotate(const Vector4& _vec, const Vector4& _localAxis, flo
 Quat4 GetQuatConjugate(const Quat4& _quat);
 
 Matrix GetRotationMatrixFromQuat(const Quat4& _quat);
-
-Vector4 VectorLocalPitchRotate(const Vector4& _vec, const Vector4& _localXAxis, float _rad);
-
-Vector4 VectorLocalYawRotate(const Vector4& _vec, const Vector4& _localYAxis, float _rad);
 
 struct DefaultVertex {
     FLOAT3 Pos;

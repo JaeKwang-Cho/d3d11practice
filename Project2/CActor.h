@@ -8,24 +8,33 @@ private:
 
 
 private:
-	Matrix m_PosMat;
-	Matrix m_RotMat;
-	Matrix m_ScalMat;
-
-	FLOAT4 m_vPosition;
-	FLOAT3 m_vRotation;
-	FLOAT3 m_vScale;
 
 public:
-	void SetPos(float _x, float _y, float _z);
-	void SetPos(FLOAT4 _pos);
+	void SetWorldPosition(float _x, float _y, float _z)
+	{
+		m_WorldTransform.Position = FLOAT3(_x, _y, _z);
+	}
+	void SetWorldPosition(FLOAT3 _pos)
+	{
+		m_WorldTransform.Position = _pos;
+	}
 
-	void SetRotation(float _xAxis, float _yAxis, float _zAxis, ROT_ORDER _order = ROT_ORDER::ZYX);
-	void SetRotation(FLOAT3 _Rot, ROT_ORDER _order = ROT_ORDER::ZYX);
-
-	void SetScale(float _xs, float _ys, float _zs);
-	void SetScale(FLOAT3 _Scale);
-
+	void SetWorldRotation(float _xAxis, float _yAxis, float _zAxis)
+	{
+		m_WorldTransform.Rotation = FLOAT3(_xAxis, _yAxis, _zAxis);
+	}
+	void SetWorldRotation(FLOAT3 _Rot)
+	{
+		m_WorldTransform.Rotation = _Rot;
+	}
+	void SetWorldScale(float _xs, float _ys, float _zs)
+	{
+		m_WorldTransform.Scale = FLOAT3(_xs, _ys, _zs);
+	}
+	void SetWorldScale(FLOAT3 _Scale)
+	{
+		m_WorldTransform.Scale = _Scale;
+	}
 
 public:
 	virtual void StartObject() override;
@@ -35,6 +44,8 @@ public:
 	virtual void RenderObject() override;
 
 	virtual CObject* Clone()  override;
+
+private:
 
 public:
 	CActor();
