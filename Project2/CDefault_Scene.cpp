@@ -87,7 +87,7 @@ void CDefault_Scene::UpdateScene()
 
         if (KEYINPUTHOLD(KEY::W))
         {
-            Eye = Eye + Vector4(0.f, 0.f, 3.f, 0.f) * DELTA_F;
+            Eye = Eye + Direction * 3.f * DELTA_F;
 
             At = Eye + Direction;
             Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
@@ -99,7 +99,7 @@ void CDefault_Scene::UpdateScene()
         }
         if (KEYINPUTHOLD(KEY::A))
         {
-            Eye = Eye + Vector4(-3.f, 0.f, 0.f, 0.f) * DELTA_F;
+            Eye = Eye + CameraLeft * -3.f * DELTA_F;
 
             At = Eye + Direction;
             Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
@@ -111,7 +111,7 @@ void CDefault_Scene::UpdateScene()
         }
         if (KEYINPUTHOLD(KEY::S))
         {
-            Eye = Eye + Vector4(0.f, 0.f, -3.f, 0.f) * DELTA_F;
+            Eye = Eye + Direction * -3.f * DELTA_F;
 
             At = Eye + Direction;
             Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
@@ -123,7 +123,7 @@ void CDefault_Scene::UpdateScene()
         }
         if (KEYINPUTHOLD(KEY::D))
         {
-            Eye = Eye + Vector4(3.f, 0.f, 0.f, 0.f) * DELTA_F;
+            Eye = Eye + CameraLeft * 3.f * DELTA_F;
 
             At = Eye + Direction;
             Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
@@ -135,7 +135,7 @@ void CDefault_Scene::UpdateScene()
         }
         if (KEYINPUTHOLD(KEY::Q))
         {
-            Eye = Eye + Vector4(0.f, 3.f, 0.f, 0.f) * DELTA_F;
+            Eye = Eye + CameraUp * 3.f * DELTA_F;
 
             At = Eye + Direction;
             Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
@@ -147,7 +147,7 @@ void CDefault_Scene::UpdateScene()
         }
         if (KEYINPUTHOLD(KEY::E))
         {
-            Eye = Eye + Vector4(0.f, -3.f, 0.f, 0.f) * DELTA_F;
+            Eye = Eye + CameraUp * -3.f * DELTA_F;
 
             At = Eye + Direction;
             Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
@@ -169,8 +169,8 @@ void CDefault_Scene::UpdateScene()
 
             float Ratio = (float)width / (float)height;
 
-            float Pitch = vMouseMov.v * DELTA_F * -1.f;
-            float Yaw = vMouseMov.u * DELTA_F * -1.f * Ratio;
+            float Pitch = vMouseMov.v * DELTA_F;
+            float Yaw = vMouseMov.u * DELTA_F;
 
             bool bChanged = false;
             if (abs(Pitch) > MOUSE_THRESHOLD)
@@ -188,6 +188,7 @@ void CDefault_Scene::UpdateScene()
 
             if (bChanged)
             {
+                Direction = Direction.Normalize3Vec();
                 At = Eye + Direction;
                 Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
                 g_ViewMat = MatrixLookAtLH(Eye, At, Up, CameraLeft, CameraUp);
@@ -209,6 +210,13 @@ void CDefault_Scene::UpdateScene()
     {
         ShowCursor(true);
     }
+
+    wchar_t szBuffer[255] = {};
+    swprintf_s(szBuffer, L"UP (%.3f, %.3f, %.3f, %.3f) LEFT (%.3f, %.3f, %.3f, %.3f) FORWARD (%.3f, %.3f, %.3f, %.3f)",
+               CameraUp.x, CameraUp.y, CameraUp.z, CameraUp.w,
+               CameraLeft.x, CameraLeft.y, CameraLeft.z, CameraLeft.w,
+               Direction.x, Direction.y, Direction.z, Direction.w);
+    SetWindowText(CCore::GetInstance()->GetMainHwnd(), szBuffer);
 }
 
 void CDefault_Scene::Exit()

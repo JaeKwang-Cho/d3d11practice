@@ -285,7 +285,7 @@ Matrix GetRotationMatrixFromQuat(const Quat4& _quat)
         2.f * (sx * sz + cw * sy),
         2.f * (sy * sz - cw * sx),
         1.f - 2.f * (sx * sx * + sy * sy),
-        1.f
+        0.f
     );
 
     Vector4 m4 = Vector4(0.f, 0.f, 0.f, 1.f);

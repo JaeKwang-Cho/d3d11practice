@@ -7,7 +7,7 @@ class TestActor :
     public CActor
 {
 private:
-    CRenderAsset* pRA;
+    CRenderAsset* pRAs[1000];
 public:
 
     virtual void StartObject() override;

@@ -200,7 +200,7 @@ struct Vector4 {
         {
             return Vector4(0.f, 0.f, 0.f, 0.f);
         }
-        return Vector4(x / len, y / len, z / len, 0);
+        return Vector4(x / len, y / len, z / len, w);
     }
 
     static __m128 SetVector4(const Vector4& _other)
