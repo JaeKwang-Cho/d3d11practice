@@ -4,6 +4,7 @@
 #include "pch.h"
 
 #define FLOAT_NEAR_ZERO (0.00001f)
+#define FLOAT_NEAR_ONE (0.99f)
 
 float ConvertToRadians(float fDegrees);
 

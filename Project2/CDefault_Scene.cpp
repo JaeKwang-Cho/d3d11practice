@@ -173,17 +173,27 @@ void CDefault_Scene::UpdateScene()
             float Yaw = vMouseMov.u * DELTA_F;
 
             bool bChanged = false;
+
             if (abs(Pitch) > MOUSE_THRESHOLD)
             {
                 //Pitch *= 10.f;
+
+                Vector4 Formal = Direction;
                 Direction = RotateVectorAroundLocalAxis(Direction, CameraLeft, Pitch);
-                bChanged = true;
+                if (abs(Direction.y) >= FLOAT_NEAR_ONE)
+                {
+                    Direction = Formal;
+                }
+                else
+                {
+                    bChanged = true;
+                }
             }
             if (abs(Yaw) > MOUSE_THRESHOLD)
             {
                 //Yaw *= 10.f;
                 Direction = RotateVectorAroundLocalAxis(Direction, CameraUp, Yaw);
-                bChanged = true;
+                bChanged = true;            
             }
 
             if (bChanged)
