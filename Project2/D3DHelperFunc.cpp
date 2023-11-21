@@ -68,8 +68,6 @@ bool InitDevice()
         return false;
     }
 
-
-
     // 렌더 타겟 뷰, 쉐이더 리소스 뷰 둘 중 하나로 가능하다.(읽기 전용)
     // 이런 뷰 들은 리소스를 사용하기 위한 파생 인터페이스로
     // 만들어진 친구이다. (근원은 텍스쳐이다. 텍스쳐는 쓰기가 가능하다.)
@@ -164,7 +162,7 @@ bool InitDevice()
     descDepth.SampleDesc.Quality = 0;
     descDepth.Usage = D3D11_USAGE_DEFAULT;
     descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-    descDepth.CPUAccessFlags = 0;
+    descDepth.CPUAccessFlags = 0; 
     descDepth.MiscFlags = 0;
     // 뎁스 버퍼도 텍스쳐를 일단 만들어서 사용하는 것이다.
     hr = g_pd3dDevice->CreateTexture2D(&descDepth, nullptr, &g_pDepthStencil);
@@ -172,6 +170,8 @@ bool InitDevice()
     {
         return false;
     }
+    
+
 
     // depth stencil view를 만든다.
     D3D11_DEPTH_STENCIL_VIEW_DESC descDSv;
@@ -310,6 +310,7 @@ HRESULT ResizeWindow()
 
         return g_pSwapChain->ResizeTarget(&gd);
     }
+    return S_OK;
 }
 
 void CallbackResizeWindow()
@@ -328,5 +329,73 @@ void CallbackResizeWindow()
         CBChangeOnResize cbChangeOnResize;
         cbChangeOnResize.mProjection = MatrixTranspose(g_ProjectionMat);
         g_pImmediateContext->UpdateSubresource(g_pCBChangeOnResize, 0, nullptr, &cbChangeOnResize, 0, 0);
+    }
+}
+
+void GetShaderResourceFromViewToFile(ID3D11ShaderResourceView* _texResourceView)
+{
+    // 셰이더 리소스 뷰를 통해 리소스를 얻기
+    ID3D11Resource* pResource = nullptr;
+    _texResourceView->GetResource(&pResource);
+
+    // 텍스쳐 차원 인터페이스 얻기
+    D3D11_RESOURCE_DIMENSION resourceType;
+    pResource->GetType(&resourceType);
+
+    switch (resourceType)
+    {
+    case D3D11_RESOURCE_DIMENSION_TEXTURE1D:
+    {
+        ID3D11Texture1D* pTexture1D = (ID3D11Texture1D*)pResource;
+    }
+    break;
+    case D3D11_RESOURCE_DIMENSION_TEXTURE2D:
+    {
+        ID3D11Texture2D* pTexture2D = (ID3D11Texture2D*)pResource;
+        ScratchImage scratchImage = ScratchImage{};
+        CaptureTexture(g_pd3dDevice, g_pImmediateContext, pTexture2D, scratchImage);
+        SaveToDDSFile(scratchImage.GetImages(), scratchImage.GetImageCount(), scratchImage.GetMetadata(), DDS_FLAGS_NONE, L"Test.dds");
+    }
+    break;
+    case D3D11_RESOURCE_DIMENSION_TEXTURE3D:
+    {
+        ID3D11Texture3D* pTexture3D = (ID3D11Texture3D*)pResource;
+    }
+    break;
+    default:
+        assert("pResource is not Texture Resources" && false);
+    }
+
+    if (pResource) pResource->Release();
+}
+
+void GetShaderResourceFromViewToFile(ID3D11Resource* pResource)
+{
+    // 텍스쳐 차원 인터페이스 얻기
+    D3D11_RESOURCE_DIMENSION resourceType;
+    pResource->GetType(&resourceType);
+
+    switch (resourceType)
+    {
+    case D3D11_RESOURCE_DIMENSION_TEXTURE1D:
+    {
+        ID3D11Texture1D* pTexture1D = (ID3D11Texture1D*)pResource;
+    }
+    break;
+    case D3D11_RESOURCE_DIMENSION_TEXTURE2D:
+    {
+        ID3D11Texture2D* pTexture2D = (ID3D11Texture2D*)pResource;
+        ScratchImage scratchImage = ScratchImage{};
+        CaptureTexture(g_pd3dDevice, g_pImmediateContext, pTexture2D, scratchImage);
+        SaveToDDSFile(scratchImage.GetImages(), scratchImage.GetImageCount(), scratchImage.GetMetadata(), DDS_FLAGS_NONE, L"Test.dds");
+    }
+    break;
+    case D3D11_RESOURCE_DIMENSION_TEXTURE3D:
+    {
+        ID3D11Texture3D* pTexture3D = (ID3D11Texture3D*)pResource;
+    }
+    break;
+    default:
+        assert("pResource is not Texture Resources" && false);
     }
 }

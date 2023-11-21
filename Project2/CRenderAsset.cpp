@@ -13,7 +13,7 @@ void CRenderAsset::StartObject()
                   &m_PS,
                   &m_IndexBuff,
                   L"seafloor.dds",
-                  &m_texRV,
+                  &m_texResourceView,
                   &m_SamplerLinear);
     if (Result == false)
     {
@@ -67,7 +67,7 @@ void CRenderAsset::RenderObject()
     {
         g_pImmediateContext->PSSetShader(m_PS, NULL, 0);
         g_pImmediateContext->PSSetConstantBuffers(3, 1, &g_pCBChangesEveryFrame);
-        g_pImmediateContext->PSSetShaderResources(0, 1, &m_texRV);
+        g_pImmediateContext->PSSetShaderResources(0, 1, &m_texResourceView);
         // 그리고 sampler state도 설정을 해준다.
         g_pImmediateContext->PSSetSamplers(0, 1, &m_SamplerLinear);
     }
@@ -100,7 +100,7 @@ CRenderAsset::CRenderAsset()
     , m_PS(nullptr)
     , m_IndexBuff(nullptr)
     , m_texFile(nullptr)
-    , m_texRV(nullptr)
+    , m_texResourceView(nullptr)
     , m_SamplerLinear(nullptr)
     , m_WorldMat(MatrixIdentity())
 {
@@ -113,6 +113,6 @@ CRenderAsset::~CRenderAsset()
     if( m_Layout) m_Layout->Release();
     if( m_PS) m_PS->Release();
     if( m_IndexBuff) m_IndexBuff->Release();
-    if( m_texRV) m_texRV->Release();
+    if( m_texResourceView) m_texResourceView->Release();
     if( m_SamplerLinear) m_SamplerLinear->Release();
 }

@@ -14,7 +14,7 @@ private:
 	ID3D11PixelShader* m_PS;
 	ID3D11Buffer* m_IndexBuff;
 	const wchar_t* m_texFile;
-	ID3D11ShaderResourceView* m_texRV;
+	ID3D11ShaderResourceView* m_texResourceView;
 	ID3D11SamplerState* m_SamplerLinear;
 public:
 

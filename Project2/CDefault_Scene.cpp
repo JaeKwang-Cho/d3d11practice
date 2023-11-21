@@ -223,12 +223,13 @@ void CDefault_Scene::UpdateScene()
         ShowCursor(true);
     }
 
-    wchar_t szBuffer[255] = {};
-    swprintf_s(szBuffer, L"UP (%.3f, %.3f, %.3f, %.3f) LEFT (%.3f, %.3f, %.3f, %.3f) FORWARD (%.3f, %.3f, %.3f, %.3f)",
-               CameraUp.x, CameraUp.y, CameraUp.z, CameraUp.w,
-               CameraLeft.x, CameraLeft.y, CameraLeft.z, CameraLeft.w,
-               Direction.x, Direction.y, Direction.z, Direction.w);
-    SetWindowText(CCore::GetInstance()->GetMainHwnd(), szBuffer);
+    if (KEYINPUTAWAY(KEY::LMOUSE))
+    {
+        ID3D11Resource* pResource = nullptr;
+        g_pRenderTargetView->GetResource(&pResource);
+        GetShaderResourceFromView(pResource);
+        if(pResource) pResource->Release();
+    }
 }
 
 void CDefault_Scene::Exit()

@@ -181,8 +181,6 @@ bool GetSimpleCube(ID3D11Device* _d3dDevice,
     _d3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     // Load the Texture
-    // DirectTex로 나중에 바꾸도록 하자.
-
     ScratchImage scratchImage = ScratchImage{};
     hr = LoadFromDDSFile(L"seafloor.dds", DirectX::DDS_FLAGS_NONE, nullptr, scratchImage);
     //hr = D3DX11CreateShaderResourceViewFromFile(_d3dDevice, L"seafloor.dds", nullptr, nullptr, &g_pTextureRV, nullptr);
