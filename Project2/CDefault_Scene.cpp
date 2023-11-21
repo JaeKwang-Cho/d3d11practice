@@ -61,6 +61,8 @@ void CDefault_Scene::EnterScene()
     cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
     g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
 
+    ResizeWindow();
+
     // 프로젝션 매트릭스 초기화
     RECT rc = {};
     GetClientRect(g_hWnd, &rc);

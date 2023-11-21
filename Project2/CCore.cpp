@@ -32,30 +32,9 @@ int CCore::Init(HWND _hWnd, POINT _ptResolution)
 
 void CCore::Progress()
 {
-	// ===========
-	// ===Update==
-	// ===========
-	// 메니저 업데이트 루프
-	{
-		CTimeManager::GetInstance()->Update();
-		CKeyManager::GetInstance()->Update();
-		CMouseManager::GetInstance()->Update();
-		CSceneManager::GetInstance()->Update();
-	}
-	// 씬 업데이트 루프
-	{
-		//CTimeManager::GetInstance()->Render();
-		//CMouseManager::GetInstance()->Render(true);
-		CSceneManager::GetInstance()->Render();
-		
-	}
+	update();
 
-	// =============
-	// ==Rendering==
-	// =============
-	{
-
-	}
+	render();
 
 	return;
 }
@@ -91,10 +70,32 @@ void CCore::CheckMessage(_In_ const MSG* lpMsg)
 
 void CCore::update()
 {
+	// ===========
+	// ===Update==
+	// ===========
+	// 메니저 업데이트 루프
+	
+	CTimeManager::GetInstance()->Update();
+	CKeyManager::GetInstance()->Update();
+	CMouseManager::GetInstance()->Update();
+	CSceneManager::GetInstance()->Update();
+	
 }
 
 void CCore::render()
 {
+	// 최소화시 렌더링 안하기
+	if (g_pSwapChain->Present(0, DXGI_PRESENT_TEST) == DXGI_STATUS_OCCLUDED)
+	{
+		return;
+	}
+	CTimeManager::GetInstance()->Render();
+
+	// ===================
+	// ==Scene Rendering==
+	// ===================
+
+	CSceneManager::GetInstance()->Render();
 }
 
 CCore::CCore() :

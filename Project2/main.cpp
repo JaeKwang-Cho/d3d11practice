@@ -179,20 +179,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     break;
     case WM_SIZE:
     {
-        //// 윈도우 사이즈가 변할 때, projection matrix를 바꿔 준다.
-        //if (g_pImmediateContext != nullptr)
-        //{
-        //    RECT rc;
-        //    GetClientRect(g_hWnd, &rc);
-        //    UINT width = rc.right - rc.left;
-        //    UINT height = rc.bottom - rc.top;
-        //    g_ProjectionMat = MatrixPerspectiveFovLH(PIDiv4, width / (float)height, 0.01f, 100.f);
-
-        //    // 윈도우 크기 변환 시에 변하는 Constant buffer 초기화
-        //    CBChangeOnResize cbChangeOnResize;
-        //    cbChangeOnResize.mProjection = MatrixTranspose(g_ProjectionMat);
-        //    g_pImmediateContext->UpdateSubresource(g_pCBChangeOnResize, 0, nullptr, &cbChangeOnResize, 0, 0);
-        //}
+       // 윈도우 사이즈가 변할 때, projection matrix를 바꿔 준다.
+        ResizeWindow();
     }
     break;
     case WM_DESTROY:

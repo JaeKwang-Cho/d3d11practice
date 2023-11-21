@@ -76,7 +76,7 @@ bool GetSimpleCube(ID3D11Device* _d3dDevice,
 
     // Shader를 컴파일 해서 Binary Large Object file로 만들기
     ID3DBlob* pVSBlob = nullptr;
-    bool Result = CompileShaderFromFile(L"DefaultShader.fx", "VS", "vs_4_0", &pVSBlob);
+    bool Result = CompileShaderFromFile(L"DefaultShader.fx", "VS", "vs_5_0", &pVSBlob);
     if (Result == false)
     {
         MessageBox(nullptr,
@@ -119,7 +119,7 @@ bool GetSimpleCube(ID3D11Device* _d3dDevice,
 
     // 픽셀 쉐이더 컴파일 해주기
     ID3DBlob* pPSBlob = nullptr;
-    Result = CompileShaderFromFile(L"DefaultShader.fx", "PS", "ps_4_0", &pPSBlob);
+    Result = CompileShaderFromFile(L"DefaultShader.fx", "PS", "ps_5_0", &pPSBlob);
     if (Result == false)
     {
         MessageBox(NULL,

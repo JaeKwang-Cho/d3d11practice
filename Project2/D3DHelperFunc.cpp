@@ -147,6 +147,8 @@ bool InitDevice()
 
     // Render Target View와 Depth Stencil View를 Output-Merge 상태로 바인딩 한다.
     g_pImmediateContext->OMSetRenderTargets(1, &g_pRenderTargetView, g_pDepthStencilView);
+    // 렌더 타겟을 해제하는 방법은 다음과 같다.
+    // g_pImmediateContext->OMSetRenderTargets(0, nullptr, nullptr);
 
     // 뷰포트를 설정한다.
     D3D11_VIEWPORT vp;
@@ -213,12 +215,14 @@ void CleanupDevice()
     // 얘네는 다 COM 객체 들이여서 이렇게 해제를 해줘야 한다.
     // 해제하는 순서는 잘 모르겠다.
     // Common
+    if (g_pRasterizerState) g_pRasterizerState->Release();
     if (g_pDepthStencil) g_pDepthStencil->Release();
     if (g_pDepthStencilView) g_pDepthStencilView->Release();
     if (g_pRenderTargetView) g_pRenderTargetView->Release();
     if (g_pSwapChain) g_pSwapChain->Release();
     if (g_pImmediateContext) g_pImmediateContext->Release();
     if (g_pd3dDevice) g_pd3dDevice->Release();
+
 }
 
 void CleanupSamples()
@@ -232,6 +236,7 @@ void CleanupSamples()
     // 얘네는 다 COM 객체 들이여서 이렇게 해제를 해줘야 한다.
     // 해제하는 순서는 잘 모르겠다.
     // Common
+    if (g_pRasterizerState) g_pRasterizerState->Release();
     if (g_pDepthStencil) g_pDepthStencil->Release();
     if (g_pDepthStencilView) g_pDepthStencilView->Release();
     if (g_pRenderTargetView) g_pRenderTargetView->Release();
@@ -239,4 +244,41 @@ void CleanupSamples()
     if (g_pImmediateContext) g_pImmediateContext->Release();
     if (g_pd3dDevice) g_pd3dDevice->Release();
 
+}
+
+// 코드에서 윈도우 사이즈를 바꾸고 싶을때 호출하는 것
+HRESULT ResizeWindow()
+{
+    if (g_pSwapChain)
+    {
+        DXGI_MODE_DESC gd;
+        gd.Width = 800;
+        gd.Height = 600;
+        gd.RefreshRate.Numerator = 60;
+        gd.RefreshRate.Denominator = 1;
+        gd.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+        gd.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+        gd.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+
+        return g_pSwapChain->ResizeTarget(&gd);
+    }
+}
+
+void CallbackResizeWindow()
+{
+    if (g_pImmediateContext && g_pSwapChain && g_pCBChangeOnResize)
+    {
+        g_pSwapChain->ResizeBuffers(1, 0, 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
+
+        RECT rc = {};
+        GetClientRect(g_hWnd, &rc);
+        UINT width = rc.right - rc.left;
+        UINT height = rc.bottom - rc.top;
+        g_ProjectionMat = MatrixPerspectiveFovLH(PIDiv2, width / (float)height, 0.01f, 100.f);
+
+        // 윈도우 크기 변환 시에 변하는 Constant buffer 초기화
+        CBChangeOnResize cbChangeOnResize;
+        cbChangeOnResize.mProjection = MatrixTranspose(g_ProjectionMat);
+        g_pImmediateContext->UpdateSubresource(g_pCBChangeOnResize, 0, nullptr, &cbChangeOnResize, 0, 0);
+    }
 }

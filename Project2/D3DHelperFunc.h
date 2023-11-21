@@ -25,6 +25,8 @@ extern ID3D11DepthStencilView*		g_pDepthStencilView;
 bool                InitDevice();
 void                CleanupDevice();
 void				CleanupSamples();
+HRESULT				ResizeWindow();// 코드에서 윈도우 사이즈를 바꾸고 싶을때 호출하는 것
+void				CallbackResizeWindow();
 
 // Helper
 bool                CompileShaderFromFile(const wchar_t* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
