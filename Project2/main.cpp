@@ -14,7 +14,11 @@ D3D_FEATURE_LEVEL           g_featureLevel = D3D_FEATURE_LEVEL_11_1; // 사용�
 ID3D11Device* g_pd3dDevice = nullptr; // 리소스를 만들고, 디스플레이 어뎁터 기능을 사용하게 하는 것
 ID3D11DeviceContext* g_pImmediateContext = nullptr; // 디바이스로 하여금 파이프라인 상태를 제어하여, 렌더링 명령을 내리는데 사용한다.
 IDXGISwapChain* g_pSwapChain = nullptr; // 더블 버퍼링을 위한 Surface(IDXGISurface)를 구성하는데 사용한다.
-ID3D11RasterizerState* g_pRasterizerState = nullptr;
+
+// States
+ID3D11RasterizerState* g_pRasterizerState = nullptr; // 레스터라이즈를 할 때 동작을 정의하는데 사용한다.
+ID3D11BlendState* g_pBlendState = nullptr; // 픽셀값과 렌더타겟값에 각각 계수를 곱한 값에 대해 지정된 계산을 수행하여, 렌더 타겟에 그림을 그리게 된다.
+ID3D11DepthStencilState* g_pDepthStencilState = nullptr; // 뎁스 스텐실 뷰에서 사용하는 속성값을 정의하는데 사용한다.
 
 // Buffers
 ID3D11RenderTargetView* g_pRenderTargetView = nullptr;

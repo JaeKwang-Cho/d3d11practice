@@ -88,9 +88,10 @@ bool InitDevice()
         return false;
     }
 
-    // 레스터라이저 모드를 설정한다.
+    // rasterizer 모드를 설정한다.
     // https://learn.microsoft.com/ko-kr/windows/win32/api/d3d11/ns-d3d11-d3d11_rasterizer_desc
     D3D11_RASTERIZER_DESC rd;
+    memset(&rd, 0, sizeof(rd));
     rd.FillMode = D3D11_FILL_WIREFRAME; // 그냥 렌더링 (나머지는 와이어프레임)
     rd.CullMode = D3D11_CULL_BACK; // 뒤 삼각형을 짜른다.
     rd.FrontCounterClockwise = false; // 반시계 방향이 앞쪽임 ( +z가 뒤쪽이니깐)
@@ -110,6 +111,46 @@ bool InitDevice()
     }
     g_pImmediateContext->RSSetState(g_pRasterizerState);
 
+    // Blend 모드를 설정한다.
+    // https://learn.microsoft.com/ko-kr/windows/win32/api/d3d11/ns-d3d11-d3d11_blend_desc
+    D3D11_BLEND_DESC bd;
+    memset(&bd, 0, sizeof(bd));
+    bd.AlphaToCoverageEnable = false;
+    bd.IndependentBlendEnable = false;
+    bd.RenderTarget[0].BlendEnable = false; // 최대 8개 까지 있다.
+    bd.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+    // 일단은 기본 상태이다.
+    g_pd3dDevice->CreateBlendState(&bd, &g_pBlendState);
+
+    float blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
+    g_pImmediateContext->OMSetBlendState(g_pBlendState, blendFactor, 0xffffffff);
+
+    // depth / stencil 모드를 설정한다.
+    // https://learn.microsoft.com/en-us/windows/win32/api/d3d11/ns-d3d11-d3d11_depth_stencil_desc
+    D3D11_DEPTH_STENCIL_DESC dsd;
+    memset(&dsd, 0, sizeof(dsd));
+    dsd.DepthEnable = true;
+    dsd.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+    dsd.DepthFunc = D3D11_COMPARISON_LESS;
+    dsd.StencilEnable = false;
+    dsd.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
+    dsd.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
+
+    // depth-stencil 면이 앞을 보고 있을 때
+    dsd.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+    dsd.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+    dsd.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+    dsd.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+    // depth-stencil 면이 뒤를 보고 있을 때
+    dsd.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+    dsd.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+    dsd.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+    dsd.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+    // 일단은 기본 상태이다.
+    g_pd3dDevice->CreateDepthStencilState(&dsd, &g_pDepthStencilState);
+    g_pImmediateContext->OMSetDepthStencilState(g_pDepthStencilState, 0);
 
     // depth stencil texture 를 만든다.
     D3D11_TEXTURE2D_DESC descDepth;
@@ -145,7 +186,10 @@ bool InitDevice()
         return false;
     }
 
+    // BlendState 를 만든다.
+
     // Render Target View와 Depth Stencil View를 Output-Merge 상태로 바인딩 한다.
+    // OM의 기능 : 렌더타겟에다가 렌더링 파이프라인에서 계산된 픽셀 값을 그리는 것
     g_pImmediateContext->OMSetRenderTargets(1, &g_pRenderTargetView, g_pDepthStencilView);
     // 렌더 타겟을 해제하는 방법은 다음과 같다.
     // g_pImmediateContext->OMSetRenderTargets(0, nullptr, nullptr);
@@ -216,6 +260,8 @@ void CleanupDevice()
     // 해제하는 순서는 잘 모르겠다.
     // Common
     if (g_pRasterizerState) g_pRasterizerState->Release();
+    if (g_pBlendState) g_pBlendState->Release();
+    if (g_pDepthStencilState) g_pDepthStencilState->Release();
     if (g_pDepthStencil) g_pDepthStencil->Release();
     if (g_pDepthStencilView) g_pDepthStencilView->Release();
     if (g_pRenderTargetView) g_pRenderTargetView->Release();
@@ -237,6 +283,8 @@ void CleanupSamples()
     // 해제하는 순서는 잘 모르겠다.
     // Common
     if (g_pRasterizerState) g_pRasterizerState->Release();
+    if (g_pBlendState) g_pBlendState->Release();
+    if (g_pDepthStencilState) g_pDepthStencilState->Release();
     if (g_pDepthStencil) g_pDepthStencil->Release();
     if (g_pDepthStencilView) g_pDepthStencilView->Release();
     if (g_pRenderTargetView) g_pRenderTargetView->Release();
@@ -252,8 +300,8 @@ HRESULT ResizeWindow()
     if (g_pSwapChain)
     {
         DXGI_MODE_DESC gd;
-        gd.Width = 800;
-        gd.Height = 600;
+        gd.Width = 1280;
+        gd.Height = 768;
         gd.RefreshRate.Numerator = 60;
         gd.RefreshRate.Denominator = 1;
         gd.Format = DXGI_FORMAT_B8G8R8A8_UNORM;

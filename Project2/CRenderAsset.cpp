@@ -55,16 +55,22 @@ void CRenderAsset::RenderObject()
 
     // 이제 GPU로 하여금 셰이더에 적힌, 레지스터 번호로 Contant buffer가 어디로 들어가야 하는지 알려주고
     // 계산을 돌리고 인덱스를 따라 삼각형을 그리도록 시킨다.
-    g_pImmediateContext->VSSetShader(m_VS, NULL, 0);
-    g_pImmediateContext->VSSetConstantBuffers(1, 1, &g_pCBNeverChanges);
-    g_pImmediateContext->VSSetConstantBuffers(2, 1, &g_pCBChangeOnResize);
-    g_pImmediateContext->VSSetConstantBuffers(3, 1, &g_pCBChangesEveryFrame);
+    {
+        g_pImmediateContext->VSSetShader(m_VS, NULL, 0);
+        g_pImmediateContext->VSSetConstantBuffers(1, 1, &g_pCBNeverChanges);
+        g_pImmediateContext->VSSetConstantBuffers(2, 1, &g_pCBChangeOnResize);
+        g_pImmediateContext->VSSetConstantBuffers(3, 1, &g_pCBChangesEveryFrame);
+    }
+
+
     // Vectex shader에 constant buffer를 세팅을 했어도, Pixel Shader에도 따로 세팅을 해야 한다.
-    g_pImmediateContext->PSSetShader(m_PS, NULL, 0);
-    g_pImmediateContext->PSSetConstantBuffers(3, 1, &g_pCBChangesEveryFrame);
-    g_pImmediateContext->PSSetShaderResources(0, 1, &m_texRV);
-    // 그리고 sampler state도 설정을 해준다.
-    g_pImmediateContext->PSSetSamplers(0, 1, &m_SamplerLinear);
+    {
+        g_pImmediateContext->PSSetShader(m_PS, NULL, 0);
+        g_pImmediateContext->PSSetConstantBuffers(3, 1, &g_pCBChangesEveryFrame);
+        g_pImmediateContext->PSSetShaderResources(0, 1, &m_texRV);
+        // 그리고 sampler state도 설정을 해준다.
+        g_pImmediateContext->PSSetSamplers(0, 1, &m_SamplerLinear);
+    }
 
     // 마저 그린다.
     g_pImmediateContext->DrawIndexed(36, 0, 0);
