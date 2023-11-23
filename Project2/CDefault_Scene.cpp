@@ -227,7 +227,7 @@ void CDefault_Scene::UpdateScene()
     {
         ID3D11Resource* pResource = nullptr;
         g_pRenderTargetView->GetResource(&pResource);
-        GetShaderResourceFromView(pResource);
+        GetShaderResourceFromViewToFile(pResource);
         if(pResource) pResource->Release();
     }
 }

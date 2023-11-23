@@ -20,8 +20,10 @@ using std::wstring;
 
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "d3d11.lib")
+
 #pragma comment(lib, "DirectXTexd.lib") // DirectX Tex
 #pragma comment(lib, "User32.lib") // RegisterRawInputDevices
+#pragma comment(lib, "assimp-vc142-mtd.lib")
 
 // #2 Project provide
 #include "Resource.h"
@@ -36,4 +38,5 @@ using std::wstring;
 // #4 many use class
 #include "CCore.h"
 #include "DirectXTex.h"
+
 using namespace DirectX;

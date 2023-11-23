@@ -73,8 +73,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ExecutablePath>$(VC_ExecutablePath_x64);$(CommonExecutablePath);$(ExecutablePath)</ExecutablePath>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)DirectTex\include;</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)DirectTex</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)DirectTex\include;$(SolutionDir)assimp\include</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)DirectTex\lib\;$(SolutionDir)assimp\lib\</LibraryPath>
     <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -133,8 +133,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);DirectXTexd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)DirectTex</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(CoreLibraryDependencies);DirectXTexd.lib;assimp-vc142-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)DirectTex\lib;$(SolutionDir)assimp\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -159,6 +159,7 @@
     <ClInclude Include="CCore.h" />
     <ClInclude Include="CDefault_Scene.h" />
     <ClInclude Include="CKeyManager.h" />
+    <ClInclude Include="CMesh.h" />
     <ClInclude Include="CMouseManager.h" />
     <ClInclude Include="CObject.h" />
     <ClInclude Include="CRenderAsset.h" />
@@ -172,7 +173,11 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="project2.h" />
     <ClInclude Include="Resource.h" />
-    <None Include="Samples.h" />
+    <None Include="SampleCode\Samples.h" />
+    <None Include="SampleCode\Mesh.h" />
+    <None Include="SampleCode\ModelLoader.h" />
+    <None Include="SampleCode\SafeRelease.hpp" />
+    <None Include="SampleCode\TextureLoader.h" />
     <ClInclude Include="SimplePrimitives.h" />
     <ClInclude Include="struct.h" />
     <ClInclude Include="targetver.h" />
@@ -184,6 +189,7 @@
     <ClCompile Include="CCore.cpp" />
     <ClCompile Include="CDefault_Scene.cpp" />
     <ClCompile Include="CKeyManager.cpp" />
+    <ClCompile Include="CMesh.cpp" />
     <ClCompile Include="CMouseManager.cpp" />
     <ClCompile Include="CObject.cpp" />
     <ClCompile Include="CRenderAsset.cpp" />
@@ -192,7 +198,9 @@
     <ClCompile Include="CTimeManager.cpp" />
     <ClCompile Include="D3DHelperFunc.cpp" />
     <ClCompile Include="main.cpp" />
-    <None Include="Samples.cpp" />
+    <None Include="SampleCode\Samples.cpp" />
+    <None Include="SampleCode\ModelLoader.cpp" />
+    <None Include="SampleCode\TextureLoader.cpp" />
     <ClCompile Include="SimplePrimitives.cpp" />
     <ClCompile Include="struct.cpp" />
     <ClCompile Include="TestActor.cpp" />
@@ -205,24 +213,40 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Tutorial02.fx">
-      <FileType>Document</FileType>
-    </None>
-    <None Include="Tutorial04.fx">
-      <FileType>Document</FileType>
-    </None>
-    <None Include="Tutorial05.fx">
-      <FileType>Document</FileType>
-    </None>
-    <None Include="Tutorial06.fx">
-      <FileType>Document</FileType>
-    </None>
-    <None Include="Tutorial07.fx">
+    <None Include="DefaultShader.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="DefaultShader.fx">
+    <None Include="SampleCode\Tutorial02.fx">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="SampleCode\Tutorial04.fx">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="SampleCode\Tutorial05.fx">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="SampleCode\Tutorial06.fx">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="SampleCode\Tutorial07.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SampleCode\PixelShader.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="SampleCode\VertexShader.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PixelShader.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="VertexShader.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

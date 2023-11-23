@@ -56,9 +56,6 @@
     <Filter Include="Engine\06.Scene">
       <UniqueIdentifier>{e9e51c58-08ba-4be1-9c43-995140729882}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Defauit\Samples">
-      <UniqueIdentifier>{848dfd4c-9c28-4e47-bfb4-526d8f2fa414}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\10.DefaultProperty">
       <UniqueIdentifier>{5c08496e-1a5c-44e0-ba2f-3116868ab32d}</UniqueIdentifier>
     </Filter>
@@ -79,6 +76,18 @@
     </Filter>
     <Filter Include="Contents\Default\Actors">
       <UniqueIdentifier>{1bedf24d-1b19-4694-a533-561fa3a5c60f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\04.Object\RenderAsset\Mesh">
+      <UniqueIdentifier>{509d7a45-3825-4750-8773-350b5e8cf149}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Defauit\Samples">
+      <UniqueIdentifier>{848dfd4c-9c28-4e47-bfb4-526d8f2fa414}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Defauit\Samples\D3DSamples">
+      <UniqueIdentifier>{aa7fc503-a89b-48ad-b9e3-ee76cb3d486b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Defauit\Samples\AssimpSamples">
+      <UniqueIdentifier>{68c332f1-d9aa-41fe-8bde-688e35815fdc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -146,6 +155,9 @@
     <ClInclude Include="CMouseManager.h">
       <Filter>Engine\03.Manager\InputManager</Filter>
     </ClInclude>
+    <ClInclude Include="CMesh.h">
+      <Filter>Engine\04.Object\RenderAsset\Mesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project2.rc">
@@ -207,31 +219,64 @@
     <ClCompile Include="CMouseManager.cpp">
       <Filter>Engine\03.Manager\InputManager</Filter>
     </ClCompile>
+    <ClCompile Include="CMesh.cpp">
+      <Filter>Engine\04.Object\RenderAsset\Mesh</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Tutorial02.fx">
-      <Filter>Defauit\Samples</Filter>
-    </None>
-    <None Include="Tutorial04.fx">
-      <Filter>Defauit\Samples</Filter>
-    </None>
-    <None Include="Tutorial05.fx">
-      <Filter>Defauit\Samples</Filter>
-    </None>
-    <None Include="Tutorial06.fx">
-      <Filter>Defauit\Samples</Filter>
-    </None>
-    <None Include="Tutorial07.fx">
-      <Filter>Defauit\Samples</Filter>
-    </None>
     <None Include="DefaultShader.fx">
       <Filter>Shader</Filter>
     </None>
-    <None Include="Samples.h">
-      <Filter>Defauit\Samples</Filter>
+    <None Include="SampleCode\Samples.cpp">
+      <Filter>Defauit\Samples\D3DSamples</Filter>
     </None>
-    <None Include="Samples.cpp">
-      <Filter>Defauit\Samples</Filter>
+    <None Include="SampleCode\Samples.h">
+      <Filter>Defauit\Samples\D3DSamples</Filter>
+    </None>
+    <None Include="SampleCode\Tutorial02.fx">
+      <Filter>Defauit\Samples\D3DSamples</Filter>
+    </None>
+    <None Include="SampleCode\Tutorial04.fx">
+      <Filter>Defauit\Samples\D3DSamples</Filter>
+    </None>
+    <None Include="SampleCode\Tutorial05.fx">
+      <Filter>Defauit\Samples\D3DSamples</Filter>
+    </None>
+    <None Include="SampleCode\Tutorial06.fx">
+      <Filter>Defauit\Samples\D3DSamples</Filter>
+    </None>
+    <None Include="SampleCode\Tutorial07.fx">
+      <Filter>Defauit\Samples\D3DSamples</Filter>
+    </None>
+    <None Include="SampleCode\Mesh.h">
+      <Filter>Defauit\Samples\AssimpSamples</Filter>
+    </None>
+    <None Include="SampleCode\ModelLoader.cpp">
+      <Filter>Defauit\Samples\AssimpSamples</Filter>
+    </None>
+    <None Include="SampleCode\ModelLoader.h">
+      <Filter>Defauit\Samples\AssimpSamples</Filter>
+    </None>
+    <None Include="SampleCode\PixelShader.hlsl">
+      <Filter>Defauit\Samples\AssimpSamples</Filter>
+    </None>
+    <None Include="SampleCode\SafeRelease.hpp">
+      <Filter>Defauit\Samples\AssimpSamples</Filter>
+    </None>
+    <None Include="SampleCode\TextureLoader.cpp">
+      <Filter>Defauit\Samples\AssimpSamples</Filter>
+    </None>
+    <None Include="SampleCode\TextureLoader.h">
+      <Filter>Defauit\Samples\AssimpSamples</Filter>
+    </None>
+    <None Include="SampleCode\VertexShader.hlsl">
+      <Filter>Defauit\Samples\AssimpSamples</Filter>
+    </None>
+    <None Include="VertexShader.hlsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="PixelShader.hlsl">
+      <Filter>Shader</Filter>
     </None>
   </ItemGroup>
 </Project>
