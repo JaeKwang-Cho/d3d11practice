@@ -446,12 +446,29 @@ Quat4 GetQuatConjugate(const Quat4& _quat);
 
 Matrix GetRotationMatrixFromQuat(const Quat4& _quat);
 
-struct DefaultVertex {
+struct SampleVertex {
     FLOAT3 Pos;
     FLOAT4 Color;
 
     FLOAT3 Normal;
     FLOAT2 TEX;
+};
+
+struct DefaultVertex {
+    FLOAT3 Pos;
+    FLOAT2 Tex;
+
+    //FLOAT3 Normal;
+    //FLOAT4 Color;
+
+    DefaultVertex(){ }
+    DefaultVertex(float x, float y, float z, float u, float v)
+        :Pos(x,y,z),Tex(u,v)
+    { }
+
+    DefaultVertex(FLOAT3 _Pos, FLOAT2 _Tex)
+        :Pos(_Pos), Tex(_Tex)
+    { }
 };
 
 struct CBChangeOnInput

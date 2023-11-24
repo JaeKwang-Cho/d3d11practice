@@ -29,17 +29,19 @@ cbuffer cbChangesEveryFrame : register(b3)
 struct VS_INPUT
 {
     float4 Pos : POSITION;
-    float4 Color : COLOR;
-    float3 Normal : NORMAL;
     float2 Tex : TEXCOORD;
+    
+    //float3 Normal : NORMAL;
+    //float4 Color : COLOR;
 };
 
 struct PS_INPUT
 {
     float4 Pos : SV_POSITION;
-    float4 Color : COLOR;
-    float3 Norm : NORMAL;
     float2 Tex : TEXCOORD;
+     
+    //float3 Norm : NORMAL;
+    //float4 Color : COLOR;
 };
 
 
@@ -53,8 +55,8 @@ PS_INPUT VS(VS_INPUT input)
     output.Pos = mul(output.Pos, View);
     output.Pos = mul(output.Pos, Projection);
     
-    output.Color = input.Color;
-    output.Norm = mul(input.Normal, World);
+    //output.Color = input.Color;
+    //output.Norm = mul(input.Normal, World);
     
     output.Tex = input.Tex;
 

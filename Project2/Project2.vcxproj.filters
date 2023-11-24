@@ -89,6 +89,15 @@
     <Filter Include="Defauit\Samples\AssimpSamples">
       <UniqueIdentifier>{68c332f1-d9aa-41fe-8bde-688e35815fdc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\01.Header\RenderComps">
+      <UniqueIdentifier>{c95ec346-a5c3-45c1-9829-d2f8641aa677}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\01.Header\RenderComps\GraphicComps_Scene">
+      <UniqueIdentifier>{6e841ba9-0d78-442a-9d2a-76a52c3e63e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\01.Header\RenderComps\RenderComps_Objects">
+      <UniqueIdentifier>{c47f9ca0-662a-4ccf-883d-cbe0dc42d294}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -158,6 +167,21 @@
     <ClInclude Include="CMesh.h">
       <Filter>Engine\04.Object\RenderAsset\Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBuffer.h">
+      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureComp.h">
+      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectRenderComp.h">
+      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project2.rc">
@@ -221,6 +245,21 @@
     </ClCompile>
     <ClCompile Include="CMesh.cpp">
       <Filter>Engine\04.Object\RenderAsset\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexBuffer.cpp">
+      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureComp.cpp">
+      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
+      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectRenderComp.cpp">
+      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

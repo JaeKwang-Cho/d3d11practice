@@ -170,9 +170,14 @@
     <ClInclude Include="define.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="function.h" />
+    <ClInclude Include="IndexBuffer.h" />
+    <ClInclude Include="ObjectRenderComp.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="project2.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="TextureComp.h" />
+    <ClInclude Include="VertexBuffer.h" />
     <None Include="SampleCode\Samples.h" />
     <None Include="SampleCode\Mesh.h" />
     <None Include="SampleCode\ModelLoader.h" />
@@ -197,7 +202,12 @@
     <ClCompile Include="CSceneManager.cpp" />
     <ClCompile Include="CTimeManager.cpp" />
     <ClCompile Include="D3DHelperFunc.cpp" />
+    <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ObjectRenderComp.cpp" />
+    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="TextureComp.cpp" />
+    <ClCompile Include="VertexBuffer.cpp" />
     <None Include="SampleCode\Samples.cpp" />
     <None Include="SampleCode\ModelLoader.cpp" />
     <None Include="SampleCode\TextureLoader.cpp" />
