@@ -1,14 +1,17 @@
 #pragma once
 #include "CObject.h"
 
-struct ObjectRenderComp;
+extern D3D11_INPUT_ELEMENT_DESC DefaultLayout[];
+extern UINT DefaultLayoutNumElements;
+
+class CMesh;
 
 class CRenderAsset :
     public CObject
 {
-private:
+protected:
 	Matrix m_WorldMat;
-	ObjectRenderComp* m_cube;
+	//ObjectRenderComp* m_cube;
 private:
 
 public:
@@ -19,12 +22,7 @@ public:
 	virtual void UpdateObject() override;
 	virtual void RenderObject() override;
 
-	virtual CRenderAsset* Clone()
-	{
-		return nullptr;
-	};
-
-private:
+protected:
 	void SetWorldMat();
 
 public:

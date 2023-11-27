@@ -14,6 +14,7 @@ using std::vector;
 
 #include <string>
 using std::wstring;
+using std::string;
 
 #include <d3d11.h>
 #include <d3dcompiler.h>

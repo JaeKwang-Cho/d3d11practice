@@ -42,7 +42,9 @@ public:
 	HRESULT CreateDefaultTextureSampler();
 
 public:
-	void Update();
+	void StartRender();
+
+	void Render(Matrix _WorldMat);
 
 	ID3D11VertexShader* GetVertexShader()
 	{

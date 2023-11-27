@@ -1,7 +1,5 @@
 #include "pch.h"
 #include "CRenderAsset.h"
-#include "SimplePrimitives.h"
-#include "ObjectRenderComp.h"
 
 DefaultVertex DefaultCube[] =
 {
@@ -67,8 +65,11 @@ D3D11_INPUT_ELEMENT_DESC DefaultLayout[] =
 
 };
 
+UINT DefaultLayoutNumElements = ARRAYSIZE(DefaultLayout);
+
 void CRenderAsset::StartObject()
 {
+    /*
     m_cube = new ObjectRenderComp;
 
     HRESULT hr;
@@ -93,8 +94,9 @@ void CRenderAsset::StartObject()
         assert("Initialize m_cube failed" && false);
         return;
     }
-
+    
     SetWorldMat();
+    */
 }
 
 void CRenderAsset::UpdateObject()
@@ -114,8 +116,6 @@ void CRenderAsset::UpdateObject()
         t = (dwTimeCur - dwTimeStart) / 1000.0f;
     }
 
-    m_cube->Update();
-
     SetWorldMat();
     // 자전 시키기
     //g_WorldMat = MatrixRotationY(t);
@@ -123,6 +123,10 @@ void CRenderAsset::UpdateObject()
 
 void CRenderAsset::RenderObject()
 {
+    /*
+    m_cube->StartRender();
+    */
+
     // 매 프레임 마다 변하는 constant buffer 업데이트 하기
     CBChangesEveryFrame cb;
     cb.mWorld = MatrixTranspose(m_WorldMat);
@@ -133,7 +137,7 @@ void CRenderAsset::RenderObject()
     // 계산을 돌리고 인덱스를 따라 삼각형을 그리도록 시킨다.
 
     // m_cube
-
+    /*
     {
         {
             g_pImmediateContext->VSSetShader(m_cube->GetVertexShader(), NULL, 0);
@@ -153,6 +157,7 @@ void CRenderAsset::RenderObject()
         // 마저 그린다.
         g_pImmediateContext->DrawIndexed(m_cube->GetNumOfIndices(), 0, 0);
     }
+    */
 }
 
 void CRenderAsset::SetWorldMat()
@@ -173,19 +178,19 @@ void CRenderAsset::SetWorldMat()
 
 CRenderAsset::CRenderAsset()
     :CObject()
-    , m_cube(nullptr)
+    //, m_cube(nullptr)
     , m_WorldMat(MatrixIdentity())
 {
 }
 
 CRenderAsset::CRenderAsset(const CRenderAsset& _other)
     :CObject(_other)
-    ,m_cube(nullptr)
+    //,m_cube(nullptr)
     ,m_WorldMat(MatrixIdentity())
 {
 }
 
 CRenderAsset::~CRenderAsset()
 {
-    if (m_cube) delete m_cube;
+    //if (m_cube) delete m_cube;
 }

@@ -2,12 +2,14 @@
 #include "CActor.h"
 
 class CRenderAsset;
+class CMesh;
 
 class TestActor :
     public CActor
 {
 private:
-    CRenderAsset* pRAs[1000];
+    CMesh* m_mesh;
+    //CRenderAsset* pRAs[1000];
 public:
 
     virtual void StartObject() override;

@@ -1,11 +1,12 @@
 #include "pch.h"
 #include "TestActor.h"
-#include "CRenderAsset.h"
+#include "CMesh.h"
 #include "CKeyManager.h"
 #include "CTimeManager.h"
 
 void TestActor::StartObject()
 {
+	/*
 	for (int i = 0; i < 1000; i++)
 	{
 		pRAs[i] = new CRenderAsset();
@@ -20,6 +21,11 @@ void TestActor::StartObject()
 
 		AddComponent(pRAs[i]);
 	}
+	*/
+
+	m_mesh = new CMesh;
+	m_mesh->Initialize("fbx\\eyeball.fbx");
+	AddComponent(m_mesh);
 }
 
 void TestActor::UpdateObject()
@@ -72,7 +78,8 @@ void TestActor::UpdateObject()
 }
 
 TestActor::TestActor()
-	:pRAs{}
+	:m_mesh(nullptr)
+	//,pRAs{}
 {
 }
 

@@ -98,6 +98,9 @@
     <Filter Include="Engine\01.Header\RenderComps\RenderComps_Scene">
       <UniqueIdentifier>{6e841ba9-0d78-442a-9d2a-76a52c3e63e2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\01.Header\RenderComps\RenderComps_Objects\BasicComps">
+      <UniqueIdentifier>{dd1d20e6-a946-487c-9ac9-fbd1935283df}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\targetver.h">
@@ -167,19 +170,22 @@
     <ClInclude Include="Header Files\CMesh.h">
       <Filter>Engine\04.Object\RenderAsset\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="Header Files\Shader.h">
-      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Header Files\VertexBuffer.h">
-      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Header Files\IndexBuffer.h">
-      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
-    </ClInclude>
     <ClInclude Include="Header Files\TextureComp.h">
       <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\ObjectRenderComp.h">
+      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\IndexBuffer.h">
+      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects\BasicComps</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Shader.h">
+      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects\BasicComps</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\VertexBuffer.h">
+      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects\BasicComps</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\MeshComp.h">
       <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
     </ClInclude>
   </ItemGroup>
@@ -246,19 +252,22 @@
     <ClCompile Include="Source Files\CMesh.cpp">
       <Filter>Engine\04.Object\RenderAsset\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\IndexBuffer.cpp">
-      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
-    </ClCompile>
     <ClCompile Include="Source Files\TextureComp.cpp">
       <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\VertexBuffer.cpp">
+    <ClCompile Include="Source Files\ObjectRenderComp.cpp">
       <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\ObjectRenderComp.cpp">
+    <ClCompile Include="Source Files\IndexBuffer.cpp">
+      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects\BasicComps</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Shader.cpp">
+      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects\BasicComps</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\VertexBuffer.cpp">
+      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects\BasicComps</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\MeshComp.cpp">
       <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
     </ClCompile>
   </ItemGroup>

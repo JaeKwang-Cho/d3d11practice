@@ -178,6 +178,7 @@
     <ClInclude Include="Header Files\Shader.h" />
     <ClInclude Include="Header Files\TextureComp.h" />
     <ClInclude Include="Header Files\VertexBuffer.h" />
+    <ClInclude Include="Header Files\MeshComp.h" />
     <None Include="SampleCode\Samples.h" />
     <None Include="SampleCode\Mesh.h" />
     <None Include="SampleCode\ModelLoader.h" />
@@ -189,6 +190,7 @@
     <ClInclude Include="Header Files\TestActor.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source Files\MeshComp.cpp" />
     <ClCompile Include="Source Files\CActor.cpp" />
     <ClCompile Include="Source Files\CActorComponent.cpp" />
     <ClCompile Include="Source Files\CCore.cpp" />
@@ -205,7 +207,7 @@
     <ClCompile Include="Source Files\IndexBuffer.cpp" />
     <ClCompile Include="Source Files\main.cpp" />
     <ClCompile Include="Source Files\ObjectRenderComp.cpp" />
-    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Source Files\Shader.cpp" />
     <ClCompile Include="Source Files\TextureComp.cpp" />
     <ClCompile Include="Source Files\VertexBuffer.cpp" />
     <None Include="SampleCode\Samples.cpp" />
