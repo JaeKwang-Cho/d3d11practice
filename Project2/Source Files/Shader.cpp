@@ -24,6 +24,7 @@ HRESULT VertexShader::CreateVertexShader(LPCWSTR _ShaderName, LPCSTR _EntryPoint
         m_pVSBlob = nullptr;
         return hr;
     }
+    m_pVertexShader->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("VertexShader::CreateVertexShader") - 1, "VertexShader::CreateVertexShader");
     return hr;
 }
 
@@ -32,6 +33,7 @@ HRESULT VertexShader::SetInputLayout(const D3D11_INPUT_ELEMENT_DESC* _layoutDesc
     HRESULT hr = g_pd3dDevice->CreateInputLayout(
         _layoutDesc, _numElements, m_pVSBlob->GetBufferPointer(),
         m_pVSBlob->GetBufferSize(), &m_pLayout);
+    m_pLayout->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("VertexShader::SetInputLayout") - 1, "VertexShader::SetInputLayout");
     return hr;
 }
 
@@ -62,6 +64,7 @@ HRESULT PixelShader::CreatePixelShader(LPCWSTR _ShaderName, LPCSTR _EntryPoint, 
 
     // ÇÈ¼¿ ½¦ÀÌ´õ ¸¸µé±â
     HRESULT hr = g_pd3dDevice->CreatePixelShader(m_pPSBlob->GetBufferPointer(), m_pPSBlob->GetBufferSize(), nullptr, &m_pPixelShader);
+    m_pPixelShader->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("PixelShader::CreatePixelShader") - 1, "PixelShader::CreatePixelShader");
     return hr;
 }
 

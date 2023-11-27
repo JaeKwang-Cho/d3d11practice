@@ -26,6 +26,8 @@ using std::string;
 #pragma comment(lib, "User32.lib") // RegisterRawInputDevices
 #pragma comment(lib, "assimp-vc142-mtd.lib")
 
+#pragma comment(lib, "dxguid.lib")
+
 // #2 Project provide
 #include "Resource.h"
 

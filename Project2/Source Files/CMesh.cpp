@@ -3,7 +3,6 @@
 
 void CMesh::Initialize(const string _FilePath)
 {
-    m_RenderComp = new ObjectRenderComp;
     if (!LoadModelFromFile(_FilePath))
     {
         assert("LoadModelFromFile Failed" && false);
@@ -12,7 +11,6 @@ void CMesh::Initialize(const string _FilePath)
 
 void CMesh::StartObject()
 {
-
 }
 
 void CMesh::UpdateObject()
@@ -109,7 +107,7 @@ MeshComp* CMesh::ProcessMesh(aiMesh* mesh, const aiScene* scene)
     }
 
     meshComp = new MeshComp;
-    meshComp->Initialize(m_RenderComp, vertices, indices);
+    meshComp->Initialize(vertices, indices);
     return meshComp;
 }
 
@@ -120,26 +118,18 @@ CObject* CMesh::Clone()
 
 
 CMesh::CMesh()
-    : m_RenderComp(nullptr)
-    , m_Meshes()
+    : m_Meshes()
 {
 }
 
 CMesh::CMesh(const CMesh& _other)
 	:CRenderAsset(_other)
-    , m_RenderComp(nullptr)
     , m_Meshes()
 {
 }
 
 CMesh::~CMesh()
 {
-    if (m_RenderComp)
-    {
-        delete m_RenderComp;
-        m_RenderComp = nullptr;
-    }
-
     auto iter = m_Meshes.begin();
     for (; iter != m_Meshes.end();)
     {

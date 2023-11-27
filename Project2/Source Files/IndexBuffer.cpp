@@ -19,7 +19,7 @@ HRESULT IndexBuffer::CreateIndexBuffer(WORD* _IndiceData, UINT _numIndices)
 
     // 인덱스 버퍼 만들어주기
     HRESULT hr = g_pd3dDevice->CreateBuffer(&ibd, &InitData, &m_IndexBuffer);
-
+    m_IndexBuffer->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("IndexBuffer::CreateIndexBuffer") - 1, "IndexBuffer::CreateIndexBuffer");
     return hr;
 }
 

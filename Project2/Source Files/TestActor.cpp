@@ -6,23 +6,6 @@
 
 void TestActor::StartObject()
 {
-	/*
-	for (int i = 0; i < 1000; i++)
-	{
-		pRAs[i] = new CRenderAsset();
-		pRAs[i]->SetOwnerObject(this);
-
-		int x = i % 10 - 5;
-		int y = (i % 100) / 10 - 5;
-		int z = i / 100 - 5;
-
-		FLOAT3 pos = FLOAT3((float)x * 10.f, (float)y * 10.f, (float)z * 10.f);
-		pRAs[i]->SetRelativePosition(pos);
-
-		AddComponent(pRAs[i]);
-	}
-	*/
-
 	m_mesh = new CMesh;
 	m_mesh->Initialize("fbx\\eyeball.fbx");
 	AddComponent(m_mesh);

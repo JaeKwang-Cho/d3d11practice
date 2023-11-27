@@ -5,12 +5,12 @@
 
 struct MeshComp
 {
-    ObjectRenderComp* m_RenderComp; // 이거 shared_ptr로 바꾸기
+    ObjectRenderComp* m_RenderComp; 
     vector<DefaultVertex> m_Vertices;
     vector<WORD> m_Indices;
 
 public:
-    void Initialize(ObjectRenderComp* const _RenderComp, vector<DefaultVertex>& _vertices, vector<WORD>& _indices);
+    void Initialize(vector<DefaultVertex>& _vertices, vector<WORD>& _indices);
 
     void StartRender();
 

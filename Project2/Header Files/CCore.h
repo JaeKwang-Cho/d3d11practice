@@ -1,5 +1,6 @@
 #pragma once
 
+/*
 // Win32
 extern HINSTANCE                   g_hInst;  // 현재 인스턴스
 extern HWND                        g_hWnd;   // 윈도우 핸들
@@ -14,6 +15,7 @@ extern IDXGISwapChain* g_pSwapChain; // 더블 버퍼링을 위한 Surface(IDXGISurface)
 extern ID3D11RenderTargetView* g_pRenderTargetView;
 extern ID3D11Texture2D* g_pDepthStencil;
 extern ID3D11DepthStencilView* g_pDepthStencilView;
+*/
 
 // Temp Matrix
 extern Matrix                      g_WorldMat;

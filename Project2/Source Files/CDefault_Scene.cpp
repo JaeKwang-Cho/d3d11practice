@@ -42,6 +42,7 @@ void CDefault_Scene::EnterScene()
     {
         assert(false && "CreateBuffer Failed");
     }
+    g_pCBNeverChanges->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("CDefault_Scene::EnterScene - g_pCBNeverChanges") - 1, "CDefault_Scene::EnterScene - g_pCBNeverChanges");
     // #2
     bd.ByteWidth = sizeof(CBChangeOnResize);
     hr = g_pd3dDevice->CreateBuffer(&bd, nullptr, &g_pCBChangeOnResize);
@@ -49,6 +50,7 @@ void CDefault_Scene::EnterScene()
     {
         assert(false && "CreateBuffer Failed");
     }
+    g_pCBChangeOnResize->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("CDefault_Scene::EnterScene - g_pCBChangeOnResize") - 1, "CDefault_Scene::EnterScene - g_pCBChangeOnResize");
     // #3
     bd.ByteWidth = sizeof(CBChangesEveryFrame);
     hr = g_pd3dDevice->CreateBuffer(&bd, nullptr, &g_pCBChangesEveryFrame);
@@ -56,6 +58,7 @@ void CDefault_Scene::EnterScene()
     {
         assert(false && "CreateBuffer Failed");
     }
+    g_pCBChangesEveryFrame->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("CDefault_Scene::EnterScene - g_pCBChangesEveryFrame") - 1, "CDefault_Scene::EnterScene - g_pCBChangesEveryFrame");
     // 변할일이 없는 constant buffer 초기화
     CBChangeOnInput cbChangeOnInput;
     cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);

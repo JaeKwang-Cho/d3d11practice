@@ -105,6 +105,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     }
 
     CleanupDevice();
+#ifdef _DEBUG
+    //FindD3DComObjLeak();
+#endif
 
     return (int)msg.wParam;
 }

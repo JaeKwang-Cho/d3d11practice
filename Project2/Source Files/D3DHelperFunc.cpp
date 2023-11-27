@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "D3DHelperFunc.h"
+#include "dxgidebug.h"
 
 // Init ID3D11Device
 bool InitDevice()
@@ -68,6 +69,11 @@ bool InitDevice()
         return false;
     }
 
+    g_pSwapChain->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("g_pSwapChain") - 1, "g_pSwapChain");
+    g_pd3dDevice->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("g_pd3dDevice") - 1, "g_pd3dDevice");
+    g_pImmediateContext->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("g_pImmediateContext") - 1, "g_pImmediateContext");
+
+
     // 렌더 타겟 뷰, 쉐이더 리소스 뷰 둘 중 하나로 가능하다.(읽기 전용)
     // 이런 뷰 들은 리소스를 사용하기 위한 파생 인터페이스로
     // 만들어진 친구이다. (근원은 텍스쳐이다. 텍스쳐는 쓰기가 가능하다.)
@@ -85,12 +91,13 @@ bool InitDevice()
     {
         return false;
     }
+    g_pRenderTargetView->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("g_pRenderTargetView") - 1, "g_pRenderTargetView");
 
     // rasterizer 모드를 설정한다.
     // https://learn.microsoft.com/ko-kr/windows/win32/api/d3d11/ns-d3d11-d3d11_rasterizer_desc
     D3D11_RASTERIZER_DESC rd;
     memset(&rd, 0, sizeof(rd));
-    rd.FillMode = D3D11_FILL_SOLID; // 그냥 렌더링 (나머지는 와이어프레임)
+    rd.FillMode = D3D11_FILL_WIREFRAME; // 그냥 렌더링 (나머지는 와이어프레임)
     rd.CullMode = D3D11_CULL_BACK; // 뒤 삼각형을 짜른다.
     rd.FrontCounterClockwise = false; // 반시계 방향이 앞쪽임 ( +z가 뒤쪽이니깐)
     rd.DepthBias = 0; // 깊이 바이어스 (동일한 Z 가 있을때, 좀 더 앞쪽으로(렌더링이 더 잘되게) 하는 친구이다.
@@ -108,6 +115,7 @@ bool InitDevice()
         return false;
     }
     g_pImmediateContext->RSSetState(g_pRasterizerState);
+    g_pRasterizerState->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("g_pRasterizerState") - 1, "g_pRasterizerState");
 
     // Blend 모드를 설정한다.
     // https://learn.microsoft.com/ko-kr/windows/win32/api/d3d11/ns-d3d11-d3d11_blend_desc
@@ -119,6 +127,7 @@ bool InitDevice()
     bd.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
     // 일단은 기본 상태이다.
     g_pd3dDevice->CreateBlendState(&bd, &g_pBlendState);
+    g_pBlendState->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("g_pBlendState") - 1, "g_pBlendState");
 
     float blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
     g_pImmediateContext->OMSetBlendState(g_pBlendState, blendFactor, 0xffffffff);
@@ -150,6 +159,8 @@ bool InitDevice()
     g_pd3dDevice->CreateDepthStencilState(&dsd, &g_pDepthStencilState);
     g_pImmediateContext->OMSetDepthStencilState(g_pDepthStencilState, 0);
 
+    g_pDepthStencilState->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("g_pDepthStencilState") - 1, "g_pDepthStencilState");
+
     // depth stencil texture 를 만든다.
     D3D11_TEXTURE2D_DESC descDepth;
     memset(&descDepth, 0, sizeof(descDepth));
@@ -170,8 +181,7 @@ bool InitDevice()
     {
         return false;
     }
-    
-
+    g_pDepthStencil->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("g_pDepthStencil") - 1, "g_pDepthStencil");
 
     // depth stencil view를 만든다.
     D3D11_DEPTH_STENCIL_VIEW_DESC descDSv;
@@ -185,8 +195,7 @@ bool InitDevice()
     {
         return false;
     }
-
-    // BlendState 를 만든다.
+    g_pDepthStencilView->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("g_pDepthStencilView") - 1, "g_pDepthStencilView");
 
     // Render Target View와 Depth Stencil View를 Output-Merge 상태로 바인딩 한다.
     // OM의 기능 : 렌더타겟에다가 렌더링 파이프라인에서 계산된 픽셀 값을 그리는 것
@@ -399,3 +408,21 @@ void GetShaderResourceFromViewToFile(ID3D11Resource* pResource)
         assert("pResource is not Texture Resources" && false);
     }
 }
+
+#ifdef _DEBUG
+void FindD3DComObjLeak()
+{
+    HMODULE dxgidebugdll = GetModuleHandleW(L"dxgidebug.dll");
+    decltype(&DXGIGetDebugInterface) GetDebugInterface = reinterpret_cast<decltype(&DXGIGetDebugInterface)>(GetProcAddress(dxgidebugdll, "DXGIGetDebugInterface"));
+
+    IDXGIDebug* debug;
+
+    GetDebugInterface(IID_PPV_ARGS(&debug));
+
+    OutputDebugStringW(L"============== D3D Object ref count : COM leak check ==============");
+    debug->ReportLiveObjects(DXGI_DEBUG_D3D11, DXGI_DEBUG_RLO_DETAIL);
+    OutputDebugStringW(L"================ End of IUnKnown Object leaked ... ================");
+
+    debug->Release();
+}
+#endif

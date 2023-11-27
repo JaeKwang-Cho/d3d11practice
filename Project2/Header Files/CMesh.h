@@ -10,7 +10,6 @@ class CMesh :
     public CRenderAsset
 {
 private:
-    ObjectRenderComp* m_RenderComp;
     vector<MeshComp*> m_Meshes;
 
 public:

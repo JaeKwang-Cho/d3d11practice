@@ -23,6 +23,7 @@ HRESULT TextureComp::CreateDefaultTextureSampler()
 
 
 	HRESULT hr = g_pd3dDevice->CreateSamplerState(&sampDesc, &m_TextureSampler);
+	m_TextureSampler->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("TextureComp::CreateDefaultTextureSampler") - 1, "TextureComp::CreateDefaultTextureSampler");
 	return hr;
 }
 
@@ -38,6 +39,7 @@ HRESULT TextureComp::CreateTextureResourceViewFromdds(LPCWSTR _TextureName)
 	}
 
 	hr = CreateShaderResourceView(g_pd3dDevice, scratchImage.GetImages(), scratchImage.GetImageCount(), scratchImage.GetMetadata(), &m_TextureResourceView);
+	m_TextureResourceView->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("extureComp::CreateTextureResourceViewFromdds") - 1, "extureComp::CreateTextureResourceViewFromdds");
 	return hr;
 }
 

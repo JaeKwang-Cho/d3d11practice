@@ -32,6 +32,9 @@ HRESULT				ResizeWindow();// 코드에서 윈도우 사이즈를 바꾸고 싶을때 호출하는 것
 void				CallbackResizeWindow();
 void				GetShaderResourceFromViewToFile(ID3D11ShaderResourceView* _texResourceView);
 void				GetShaderResourceFromViewToFile(ID3D11Resource* _texResource);
+#ifdef _DEBUG
+void				FindD3DComObjLeak();
+#endif
 
 // Helper
 bool                CompileShaderFromFile(const wchar_t* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);

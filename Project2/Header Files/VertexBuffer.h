@@ -27,7 +27,7 @@ private:
         InitData.pSysMem = _VertexData;
 
         HRESULT hr = g_pd3dDevice->CreateBuffer(&vbd, &InitData, &m_pVertexBuffer);
-
+        m_pVertexBuffer->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("VertexBuffer::CreateVertexBuffer") - 1, "VertexBuffer::CreateVertexBuffer");
         return hr;
 	}
 public:

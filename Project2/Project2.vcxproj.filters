@@ -170,9 +170,6 @@
     <ClInclude Include="Header Files\CMesh.h">
       <Filter>Engine\04.Object\RenderAsset\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="Header Files\TextureComp.h">
-      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
-    </ClInclude>
     <ClInclude Include="Header Files\ObjectRenderComp.h">
       <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
     </ClInclude>
@@ -187,6 +184,9 @@
     </ClInclude>
     <ClInclude Include="Header Files\MeshComp.h">
       <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\TextureComp.h">
+      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects\BasicComps</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -252,9 +252,6 @@
     <ClCompile Include="Source Files\CMesh.cpp">
       <Filter>Engine\04.Object\RenderAsset\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\TextureComp.cpp">
-      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
-    </ClCompile>
     <ClCompile Include="Source Files\ObjectRenderComp.cpp">
       <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
     </ClCompile>
@@ -269,6 +266,9 @@
     </ClCompile>
     <ClCompile Include="Source Files\MeshComp.cpp">
       <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\TextureComp.cpp">
+      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects\BasicComps</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
