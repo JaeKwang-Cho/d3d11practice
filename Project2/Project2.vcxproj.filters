@@ -92,94 +92,94 @@
     <Filter Include="Engine\01.Header\RenderComps">
       <UniqueIdentifier>{c95ec346-a5c3-45c1-9829-d2f8641aa677}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\01.Header\RenderComps\GraphicComps_Scene">
-      <UniqueIdentifier>{6e841ba9-0d78-442a-9d2a-76a52c3e63e2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\01.Header\RenderComps\RenderComps_Objects">
       <UniqueIdentifier>{c47f9ca0-662a-4ccf-883d-cbe0dc42d294}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\01.Header\RenderComps\RenderComps_Scene">
+      <UniqueIdentifier>{6e841ba9-0d78-442a-9d2a-76a52c3e63e2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="targetver.h">
+    <ClInclude Include="Header Files\targetver.h">
       <Filter>Defauit</Filter>
     </ClInclude>
-    <ClInclude Include="Resource.h">
+    <ClInclude Include="Header Files\Resource.h">
       <Filter>Defauit</Filter>
     </ClInclude>
-    <ClInclude Include="framework.h">
+    <ClInclude Include="Header Files\framework.h">
       <Filter>Defauit</Filter>
     </ClInclude>
-    <ClInclude Include="project2.h">
+    <ClInclude Include="Header Files\project2.h">
       <Filter>Engine\01.Header</Filter>
     </ClInclude>
-    <ClInclude Include="pch.h" />
-    <ClInclude Include="CKeyManager.h">
+    <ClInclude Include="Header Files\pch.h" />
+    <ClInclude Include="Header Files\CKeyManager.h">
       <Filter>Engine\03.Manager\InputManager</Filter>
     </ClInclude>
-    <ClInclude Include="define.h">
+    <ClInclude Include="Header Files\define.h">
       <Filter>Engine\01.Header</Filter>
     </ClInclude>
-    <ClInclude Include="CCore.h">
+    <ClInclude Include="Header Files\CCore.h">
       <Filter>Engine\02.Core</Filter>
     </ClInclude>
-    <ClInclude Include="D3DHelperFunc.h">
+    <ClInclude Include="Header Files\D3DHelperFunc.h">
       <Filter>Engine\01.Header\functions</Filter>
     </ClInclude>
-    <ClInclude Include="function.h">
+    <ClInclude Include="Header Files\function.h">
       <Filter>Engine\01.Header</Filter>
     </ClInclude>
-    <ClInclude Include="struct.h">
+    <ClInclude Include="Header Files\struct.h">
       <Filter>Engine\01.Header\struct</Filter>
     </ClInclude>
-    <ClInclude Include="CTimeManager.h">
+    <ClInclude Include="Header Files\CTimeManager.h">
       <Filter>Engine\03.Manager\TimeManager</Filter>
     </ClInclude>
-    <ClInclude Include="SimplePrimitives.h">
+    <ClInclude Include="Header Files\SimplePrimitives.h">
       <Filter>Engine\10.DefaultProperty\Primitives</Filter>
     </ClInclude>
-    <ClInclude Include="CObject.h">
+    <ClInclude Include="Header Files\CObject.h">
       <Filter>Engine\04.Object</Filter>
     </ClInclude>
-    <ClInclude Include="CActor.h">
+    <ClInclude Include="Header Files\CActor.h">
       <Filter>Engine\04.Object\Actor</Filter>
     </ClInclude>
-    <ClInclude Include="CActorComponent.h">
+    <ClInclude Include="Header Files\CActorComponent.h">
       <Filter>Engine\04.Object\Component\ActorComponent</Filter>
     </ClInclude>
-    <ClInclude Include="CRenderAsset.h">
+    <ClInclude Include="Header Files\CRenderAsset.h">
       <Filter>Engine\04.Object\RenderAsset</Filter>
     </ClInclude>
-    <ClInclude Include="CScene.h">
+    <ClInclude Include="Header Files\CScene.h">
       <Filter>Engine\06.Scene</Filter>
     </ClInclude>
-    <ClInclude Include="CSceneManager.h">
+    <ClInclude Include="Header Files\CSceneManager.h">
       <Filter>Engine\03.Manager\SceneManager</Filter>
     </ClInclude>
-    <ClInclude Include="CDefault_Scene.h">
+    <ClInclude Include="Header Files\CDefault_Scene.h">
       <Filter>Contents\Default\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="TestActor.h">
+    <ClInclude Include="Header Files\TestActor.h">
       <Filter>Contents\Default\Actors</Filter>
     </ClInclude>
-    <ClInclude Include="CMouseManager.h">
+    <ClInclude Include="Header Files\CMouseManager.h">
       <Filter>Engine\03.Manager\InputManager</Filter>
     </ClInclude>
-    <ClInclude Include="CMesh.h">
+    <ClInclude Include="Header Files\CMesh.h">
       <Filter>Engine\04.Object\RenderAsset\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="Shader.h">
+    <ClInclude Include="Header Files\Shader.h">
       <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
     </ClInclude>
-    <ClInclude Include="VertexBuffer.h">
+    <ClInclude Include="Header Files\VertexBuffer.h">
       <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
     </ClInclude>
-    <ClInclude Include="IndexBuffer.h">
+    <ClInclude Include="Header Files\IndexBuffer.h">
       <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
     </ClInclude>
-    <ClInclude Include="TextureComp.h">
+    <ClInclude Include="Header Files\TextureComp.h">
       <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectRenderComp.h">
+    <ClInclude Include="Header Files\ObjectRenderComp.h">
       <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
     </ClInclude>
   </ItemGroup>
@@ -197,68 +197,68 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="CKeyManager.cpp">
+    <ClCompile Include="Source Files\main.cpp" />
+    <ClCompile Include="Source Files\CKeyManager.cpp">
       <Filter>Engine\03.Manager\InputManager</Filter>
     </ClCompile>
-    <ClCompile Include="CCore.cpp">
+    <ClCompile Include="Source Files\CCore.cpp">
       <Filter>Engine\02.Core</Filter>
     </ClCompile>
-    <ClCompile Include="struct.cpp">
+    <ClCompile Include="Source Files\struct.cpp">
       <Filter>Engine\01.Header\struct</Filter>
     </ClCompile>
-    <ClCompile Include="D3DHelperFunc.cpp">
+    <ClCompile Include="Source Files\D3DHelperFunc.cpp">
       <Filter>Engine\01.Header\functions</Filter>
     </ClCompile>
-    <ClCompile Include="CTimeManager.cpp">
+    <ClCompile Include="Source Files\CTimeManager.cpp">
       <Filter>Engine\03.Manager\TimeManager</Filter>
     </ClCompile>
-    <ClCompile Include="SimplePrimitives.cpp">
+    <ClCompile Include="Source Files\SimplePrimitives.cpp">
       <Filter>Engine\10.DefaultProperty\Primitives</Filter>
     </ClCompile>
-    <ClCompile Include="CObject.cpp">
+    <ClCompile Include="Source Files\CObject.cpp">
       <Filter>Engine\04.Object</Filter>
     </ClCompile>
-    <ClCompile Include="CActor.cpp">
+    <ClCompile Include="Source Files\CActor.cpp">
       <Filter>Engine\04.Object\Actor</Filter>
     </ClCompile>
-    <ClCompile Include="CActorComponent.cpp">
+    <ClCompile Include="Source Files\CActorComponent.cpp">
       <Filter>Engine\04.Object\Component\ActorComponent</Filter>
     </ClCompile>
-    <ClCompile Include="CRenderAsset.cpp">
+    <ClCompile Include="Source Files\CRenderAsset.cpp">
       <Filter>Engine\04.Object\RenderAsset</Filter>
     </ClCompile>
-    <ClCompile Include="CScene.cpp">
+    <ClCompile Include="Source Files\CScene.cpp">
       <Filter>Engine\06.Scene</Filter>
     </ClCompile>
-    <ClCompile Include="CSceneManager.cpp">
+    <ClCompile Include="Source Files\CSceneManager.cpp">
       <Filter>Engine\03.Manager\SceneManager</Filter>
     </ClCompile>
-    <ClCompile Include="CDefault_Scene.cpp">
+    <ClCompile Include="Source Files\CDefault_Scene.cpp">
       <Filter>Contents\Default\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="TestActor.cpp">
+    <ClCompile Include="Source Files\TestActor.cpp">
       <Filter>Contents\Default\Actors</Filter>
     </ClCompile>
-    <ClCompile Include="CMouseManager.cpp">
+    <ClCompile Include="Source Files\CMouseManager.cpp">
       <Filter>Engine\03.Manager\InputManager</Filter>
     </ClCompile>
-    <ClCompile Include="CMesh.cpp">
+    <ClCompile Include="Source Files\CMesh.cpp">
       <Filter>Engine\04.Object\RenderAsset\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="Shader.cpp">
       <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
     </ClCompile>
-    <ClCompile Include="IndexBuffer.cpp">
+    <ClCompile Include="Source Files\IndexBuffer.cpp">
       <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
     </ClCompile>
-    <ClCompile Include="TextureComp.cpp">
+    <ClCompile Include="Source Files\TextureComp.cpp">
       <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
     </ClCompile>
-    <ClCompile Include="VertexBuffer.cpp">
+    <ClCompile Include="Source Files\VertexBuffer.cpp">
       <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
     </ClCompile>
-    <ClCompile Include="ObjectRenderComp.cpp">
+    <ClCompile Include="Source Files\ObjectRenderComp.cpp">
       <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
     </ClCompile>
   </ItemGroup>

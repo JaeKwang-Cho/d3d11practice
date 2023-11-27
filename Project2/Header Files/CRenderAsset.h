@@ -29,6 +29,7 @@ private:
 
 public:
 	CRenderAsset();
+	CRenderAsset(const CRenderAsset& _other);
 	virtual ~CRenderAsset();
 };
 

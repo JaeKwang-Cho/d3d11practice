@@ -178,6 +178,13 @@ CRenderAsset::CRenderAsset()
 {
 }
 
+CRenderAsset::CRenderAsset(const CRenderAsset& _other)
+    :CObject(_other)
+    ,m_cube(nullptr)
+    ,m_WorldMat(MatrixIdentity())
+{
+}
+
 CRenderAsset::~CRenderAsset()
 {
     if (m_cube) delete m_cube;

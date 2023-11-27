@@ -73,7 +73,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ExecutablePath>$(VC_ExecutablePath_x64);$(CommonExecutablePath);$(ExecutablePath)</ExecutablePath>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)DirectTex\include;$(SolutionDir)assimp\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)DirectTex\include;$(SolutionDir)assimp\include;$(ProjectDir)Header Files</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)DirectTex\lib\;$(SolutionDir)assimp\lib\</LibraryPath>
     <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
   </PropertyGroup>
@@ -154,66 +154,66 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CActor.h" />
-    <ClInclude Include="CActorComponent.h" />
-    <ClInclude Include="CCore.h" />
-    <ClInclude Include="CDefault_Scene.h" />
-    <ClInclude Include="CKeyManager.h" />
-    <ClInclude Include="CMesh.h" />
-    <ClInclude Include="CMouseManager.h" />
-    <ClInclude Include="CObject.h" />
-    <ClInclude Include="CRenderAsset.h" />
-    <ClInclude Include="CScene.h" />
-    <ClInclude Include="CSceneManager.h" />
-    <ClInclude Include="CTimeManager.h" />
-    <ClInclude Include="D3DHelperFunc.h" />
-    <ClInclude Include="define.h" />
-    <ClInclude Include="framework.h" />
-    <ClInclude Include="function.h" />
-    <ClInclude Include="IndexBuffer.h" />
-    <ClInclude Include="ObjectRenderComp.h" />
-    <ClInclude Include="pch.h" />
-    <ClInclude Include="project2.h" />
-    <ClInclude Include="Resource.h" />
-    <ClInclude Include="Shader.h" />
-    <ClInclude Include="TextureComp.h" />
-    <ClInclude Include="VertexBuffer.h" />
+    <ClInclude Include="Header Files\CActor.h" />
+    <ClInclude Include="Header Files\CActorComponent.h" />
+    <ClInclude Include="Header Files\CCore.h" />
+    <ClInclude Include="Header Files\CDefault_Scene.h" />
+    <ClInclude Include="Header Files\CKeyManager.h" />
+    <ClInclude Include="Header Files\CMesh.h" />
+    <ClInclude Include="Header Files\CMouseManager.h" />
+    <ClInclude Include="Header Files\CObject.h" />
+    <ClInclude Include="Header Files\CRenderAsset.h" />
+    <ClInclude Include="Header Files\CScene.h" />
+    <ClInclude Include="Header Files\CSceneManager.h" />
+    <ClInclude Include="Header Files\CTimeManager.h" />
+    <ClInclude Include="Header Files\D3DHelperFunc.h" />
+    <ClInclude Include="Header Files\define.h" />
+    <ClInclude Include="Header Files\framework.h" />
+    <ClInclude Include="Header Files\function.h" />
+    <ClInclude Include="Header Files\IndexBuffer.h" />
+    <ClInclude Include="Header Files\ObjectRenderComp.h" />
+    <ClInclude Include="Header Files\pch.h" />
+    <ClInclude Include="Header Files\project2.h" />
+    <ClInclude Include="Header Files\Resource.h" />
+    <ClInclude Include="Header Files\Shader.h" />
+    <ClInclude Include="Header Files\TextureComp.h" />
+    <ClInclude Include="Header Files\VertexBuffer.h" />
     <None Include="SampleCode\Samples.h" />
     <None Include="SampleCode\Mesh.h" />
     <None Include="SampleCode\ModelLoader.h" />
     <None Include="SampleCode\SafeRelease.hpp" />
     <None Include="SampleCode\TextureLoader.h" />
-    <ClInclude Include="SimplePrimitives.h" />
-    <ClInclude Include="struct.h" />
-    <ClInclude Include="targetver.h" />
-    <ClInclude Include="TestActor.h" />
+    <ClInclude Include="Header Files\SimplePrimitives.h" />
+    <ClInclude Include="Header Files\struct.h" />
+    <ClInclude Include="Header Files\targetver.h" />
+    <ClInclude Include="Header Files\TestActor.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CActor.cpp" />
-    <ClCompile Include="CActorComponent.cpp" />
-    <ClCompile Include="CCore.cpp" />
-    <ClCompile Include="CDefault_Scene.cpp" />
-    <ClCompile Include="CKeyManager.cpp" />
-    <ClCompile Include="CMesh.cpp" />
-    <ClCompile Include="CMouseManager.cpp" />
-    <ClCompile Include="CObject.cpp" />
-    <ClCompile Include="CRenderAsset.cpp" />
-    <ClCompile Include="CScene.cpp" />
-    <ClCompile Include="CSceneManager.cpp" />
-    <ClCompile Include="CTimeManager.cpp" />
-    <ClCompile Include="D3DHelperFunc.cpp" />
-    <ClCompile Include="IndexBuffer.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="ObjectRenderComp.cpp" />
+    <ClCompile Include="Source Files\CActor.cpp" />
+    <ClCompile Include="Source Files\CActorComponent.cpp" />
+    <ClCompile Include="Source Files\CCore.cpp" />
+    <ClCompile Include="Source Files\CDefault_Scene.cpp" />
+    <ClCompile Include="Source Files\CKeyManager.cpp" />
+    <ClCompile Include="Source Files\CMesh.cpp" />
+    <ClCompile Include="Source Files\CMouseManager.cpp" />
+    <ClCompile Include="Source Files\CObject.cpp" />
+    <ClCompile Include="Source Files\CRenderAsset.cpp" />
+    <ClCompile Include="Source Files\CScene.cpp" />
+    <ClCompile Include="Source Files\CSceneManager.cpp" />
+    <ClCompile Include="Source Files\CTimeManager.cpp" />
+    <ClCompile Include="Source Files\D3DHelperFunc.cpp" />
+    <ClCompile Include="Source Files\IndexBuffer.cpp" />
+    <ClCompile Include="Source Files\main.cpp" />
+    <ClCompile Include="Source Files\ObjectRenderComp.cpp" />
     <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="TextureComp.cpp" />
-    <ClCompile Include="VertexBuffer.cpp" />
+    <ClCompile Include="Source Files\TextureComp.cpp" />
+    <ClCompile Include="Source Files\VertexBuffer.cpp" />
     <None Include="SampleCode\Samples.cpp" />
     <None Include="SampleCode\ModelLoader.cpp" />
     <None Include="SampleCode\TextureLoader.cpp" />
-    <ClCompile Include="SimplePrimitives.cpp" />
-    <ClCompile Include="struct.cpp" />
-    <ClCompile Include="TestActor.cpp" />
+    <ClCompile Include="Source Files\SimplePrimitives.cpp" />
+    <ClCompile Include="Source Files\struct.cpp" />
+    <ClCompile Include="Source Files\TestActor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project2.rc" />
