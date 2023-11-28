@@ -89,8 +89,17 @@ TextureComp::TextureComp()
 	this->CreateTextureResourceViewSimpleColor(DefaultColors::UnloadedTextureColor, aiTextureType::aiTextureType_DIFFUSE);
 }
 
+TextureComp::TextureComp(const TextureComp& _other)
+	: m_TextureResourceView(_other.m_TextureResourceView)
+	, m_texture(_other.m_texture)
+	, m_type(_other.m_type)
+{
+	m_TextureResourceView->AddRef();
+	m_texture->AddRef();
+}
+
 TextureComp::~TextureComp()
 {
-	//if (m_TextureResourceView)m_TextureResourceView->Release();
-	//if (m_texture) m_texture->Release();
+	if (m_TextureResourceView)m_TextureResourceView->Release();
+	if (m_texture) m_texture->Release();
 }
