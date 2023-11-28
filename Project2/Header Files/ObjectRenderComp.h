@@ -2,7 +2,6 @@
 
 #include "IndexBuffer.h"
 #include "Shader.h"
-#include "TextureComp.h"
 #include "VertexBuffer.h"
 
 struct ObjectRenderComp {
@@ -10,24 +9,42 @@ struct ObjectRenderComp {
 	PixelShader m_PixelShader;
 	VertexBuffer m_VertexBuffer;
 	IndexBuffer m_IndexBuffer;
-	TextureComp m_TextureComp;
 
 public:
+	void StartRender();
 
+	void Render(Matrix _WorldMat);
+
+public:
 	HRESULT CreateVertexShader(LPCWSTR _ShaderName,
 							   LPCSTR _EntryPoint,
-							   LPCSTR _ShaderModel);
+							   LPCSTR _ShaderModel)
+	{
+		return m_VertexShader.CreateVertexShader(_ShaderName, _EntryPoint, _ShaderModel);
+	}
 
 	HRESULT SetInputLayout(const D3D11_INPUT_ELEMENT_DESC* _layoutDesc,
-						   UINT _numElements);
+						   UINT _numElements)
+	{
+		return m_VertexShader.SetInputLayout(_layoutDesc, _numElements);
+	}
 
-	bool IsVertexShaderValid();
+	bool IsVertexShaderValid()
+	{
+		return m_VertexShader.IsValid();
+	}
 
 	HRESULT CreatePixelShader(LPCWSTR _ShaderName,
 							  LPCSTR _EntryPoint,
-							  LPCSTR _ShaderModel);
+							  LPCSTR _ShaderModel)
+	{
+		return m_PixelShader.CreatePixelShader(_ShaderName, _EntryPoint, _ShaderModel);
+	}
 
-	bool IsPixelShaderValid();
+	bool IsPixelShaderValid()
+	{
+		return m_PixelShader.IsValid();
+	}
 
 	template <typename T>
 	HRESULT CreateVertexBuffer(T* _VertexData, UINT _numVertices)
@@ -35,16 +52,12 @@ public:
 		return m_VertexBuffer.CreateVertexBuffer(_VertexData, _numVertices);
 	}
 
-	HRESULT CreateIndexBuffer(WORD* _IndiceData, UINT _numIndices);
-
-	HRESULT CreateTextureResourceView(LPCWSTR _TextureName);
-
-	HRESULT CreateDefaultTextureSampler();
+	HRESULT CreateIndexBuffer(WORD* _IndiceData, UINT _numIndices)
+	{
+		return m_IndexBuffer.CreateIndexBuffer(_IndiceData, _numIndices);
+	}
 
 public:
-	void StartRender();
-
-	void Render(Matrix _WorldMat);
 
 	ID3D11VertexShader* GetVertexShader()
 	{
@@ -54,16 +67,6 @@ public:
 	ID3D11PixelShader* GetPixelShader()
 	{
 		return m_PixelShader.m_pPixelShader;
-	}
-
-	ID3D11SamplerState** GetSampler()
-	{
-		return &(m_TextureComp.m_TextureSampler);
-	}
-
-	ID3D11ShaderResourceView** GetResourceView()
-	{
-		return &(m_TextureComp.m_TextureResourceView);
 	}
 
 	UINT GetNumOfIndices()

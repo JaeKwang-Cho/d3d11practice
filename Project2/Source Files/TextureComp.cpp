@@ -1,10 +1,43 @@
 #include "pch.h"
 #include "TextureComp.h"
 
-HRESULT TextureComp::CreateTextureResourceView(LPCWSTR _TextureName)
+HRESULT TextureComp::CreateTextureResourceViewFromImage(LPCWSTR _TextureName)
 {
 	// Switch ~
 	return CreateTextureResourceViewFromdds(_TextureName);
+}
+
+HRESULT TextureComp::CreateTextureResourceViewFromColor(const ColorComp* _colorData, UINT _width, UINT _height, aiTextureType _type)
+{
+	// 타입을 일단 저장해준다.
+	m_type = _type;
+
+	// 2D Texture desc를 지정해준다.
+	CD3D11_TEXTURE2D_DESC td;
+	memset(&td, 0, sizeof(td));
+	td.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	td.Width = _width;
+	td.Height = _height;
+
+	// 2D Texture data를 지정해준다.
+	D3D11_SUBRESOURCE_DATA initData;
+	memset(&initData, 0, sizeof(initData));
+	initData.pSysMem = _colorData;
+	initData.SysMemPitch = _width * sizeof(_colorData);
+
+	// 설정한 값들로 Texture2D를 만든다.
+	ID3D11Texture2D* p2DTexture = static_cast<ID3D11Texture2D*>(m_texture);
+	HRESULT hr = g_pd3dDevice->CreateTexture2D(&td, &initData, &p2DTexture);
+
+	// 그리고 그것을 쉐이더가 볼 수 있게, 리소스 뷰로 만든다.
+	CD3D11_SHADER_RESOURCE_VIEW_DESC srvd;
+	memset(&srvd, 0, sizeof(srvd));
+	srvd.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	srvd.Format = td.Format;
+
+	hr = g_pd3dDevice->CreateShaderResourceView(m_texture, &srvd, &m_TextureResourceView);
+
+	return hr;
 }
 
 HRESULT TextureComp::CreateDefaultTextureSampler()
@@ -46,6 +79,8 @@ HRESULT TextureComp::CreateTextureResourceViewFromdds(LPCWSTR _TextureName)
 TextureComp::TextureComp()
 	: m_TextureResourceView(nullptr)
 	, m_TextureSampler(nullptr)
+	, m_texture(nullptr)
+	, m_type(aiTextureType::aiTextureType_UNKNOWN)
 {
 }
 
@@ -53,4 +88,5 @@ TextureComp::~TextureComp()
 {
 	if (m_TextureResourceView)m_TextureResourceView->Release();
 	if (m_TextureSampler) m_TextureSampler->Release();
+	if (m_texture) m_texture->Release();
 }

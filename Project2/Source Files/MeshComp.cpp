@@ -22,8 +22,8 @@ void MeshComp::Initialize(vector<DefaultVertex>& _vertices, vector<WORD>& _indic
     numElements = (UINT)m_Indices.size();
     hr = m_RenderComp->CreateIndexBuffer(m_Indices.data(), numElements);
 
-    hr = m_RenderComp->CreateTextureResourceView(L"seafloor.dds");
-    hr = m_RenderComp->CreateDefaultTextureSampler();
+    //hr = m_RenderComp->CreateTextureResourceViewFromImage(L"seafloor.dds");
+    //hr = m_RenderComp->CreateDefaultTextureSampler();
 
     if (FAILED(hr))
     {
@@ -52,6 +52,7 @@ MeshComp::MeshComp()
 	: m_RenderComp(nullptr)
 	, m_Vertices()
 	, m_Indices()
+    , m_Textures()
 {
 }
 

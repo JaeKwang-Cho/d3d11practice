@@ -1,51 +1,6 @@
 #include "pch.h"
 #include "ObjectRenderComp.h"
 
-HRESULT ObjectRenderComp::CreateVertexShader(LPCWSTR _ShaderName,
-						   LPCSTR _EntryPoint,
-						   LPCSTR _ShaderModel)
-{
-	return m_VertexShader.CreateVertexShader(_ShaderName, _EntryPoint, _ShaderModel);
-}
-
-HRESULT ObjectRenderComp::SetInputLayout(const D3D11_INPUT_ELEMENT_DESC* _layoutDesc,
-					   UINT _numElements)
-{
-	return m_VertexShader.SetInputLayout(_layoutDesc, _numElements);
-}
-
-bool ObjectRenderComp::IsVertexShaderValid()
-{
-	return m_VertexShader.IsValid();
-}
-
-HRESULT ObjectRenderComp::CreatePixelShader(LPCWSTR _ShaderName,
-						  LPCSTR _EntryPoint,
-						  LPCSTR _ShaderModel)
-{
-	return m_PixelShader.CreatePixelShader(_ShaderName, _EntryPoint, _ShaderModel);
-}
-
-bool ObjectRenderComp::IsPixelShaderValid()
-{
-	return m_PixelShader.IsValid();
-}
-
-HRESULT ObjectRenderComp::CreateIndexBuffer(WORD* _IndiceData, UINT _numIndices)
-{
-	return m_IndexBuffer.CreateIndexBuffer(_IndiceData, _numIndices);
-}
-
-HRESULT ObjectRenderComp::CreateTextureResourceView(LPCWSTR _TextureName)
-{
-	return m_TextureComp.CreateTextureResourceView(_TextureName);
-}
-
-HRESULT ObjectRenderComp::CreateDefaultTextureSampler()
-{
-	return m_TextureComp.CreateDefaultTextureSampler();
-}
-
 void ObjectRenderComp::StartRender()
 {
 	// 레이아웃 집어 넣기
@@ -86,9 +41,9 @@ void ObjectRenderComp::Render(Matrix _WorldMat)
         {
             g_pImmediateContext->PSSetShader(GetPixelShader(), NULL, 0);
             g_pImmediateContext->PSSetConstantBuffers(3, 1, &g_pCBChangesEveryFrame);
-            g_pImmediateContext->PSSetShaderResources(0, 1, GetResourceView());
+            //g_pImmediateContext->PSSetShaderResources(0, 1, GetResourceView());
             // 그리고 sampler state도 설정을 해준다.
-            g_pImmediateContext->PSSetSamplers(0, 1, GetSampler());
+            //g_pImmediateContext->PSSetSamplers(0, 1, GetSampler());
         }
         
         // 마저 그린다.
