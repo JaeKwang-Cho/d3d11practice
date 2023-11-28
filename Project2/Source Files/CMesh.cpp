@@ -106,8 +106,11 @@ MeshComp* CMesh::ProcessMesh(aiMesh* mesh, const aiScene* scene)
         }
     }
 
+    std::vector<TextureComp> defaultTextures;
+    defaultTextures.push_back(TextureComp());
+
     meshComp = new MeshComp;
-    meshComp->Initialize(vertices, indices);
+    meshComp->Initialize(vertices, indices, defaultTextures);
     return meshComp;
 }
 

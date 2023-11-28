@@ -14,50 +14,55 @@ HRESULT TextureComp::CreateTextureResourceViewFromColor(const ColorComp* _colorD
 
 	// 2D Texture desc를 지정해준다.
 	CD3D11_TEXTURE2D_DESC td;
+	// 이렇게 하지 말고 생성자를 쓰는 게 훨씬 편하다 #1
 	memset(&td, 0, sizeof(td));
 	td.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	td.Width = _width;
 	td.Height = _height;
+	td.ArraySize = 1;
+	td.MipLevels = 0;
+	td.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	td.Usage = D3D11_USAGE_DEFAULT;
+	td.CPUAccessFlags = 0;
+	td.SampleDesc.Count = 1;
+	td.SampleDesc.Quality = 0;
+	td.MiscFlags = 0;
 
 	// 2D Texture data를 지정해준다.
 	D3D11_SUBRESOURCE_DATA initData;
 	memset(&initData, 0, sizeof(initData));
 	initData.pSysMem = _colorData;
-	initData.SysMemPitch = _width * sizeof(_colorData);
+	initData.SysMemPitch = _width * sizeof(ColorComp);
+	initData.SysMemSlicePitch = 0; //3d에서만 사용한다 의미 없다.
 
 	// 설정한 값들로 Texture2D를 만든다.
-	ID3D11Texture2D* p2DTexture = static_cast<ID3D11Texture2D*>(m_texture);
+	ID3D11Texture2D* p2DTexture = nullptr;
 	HRESULT hr = g_pd3dDevice->CreateTexture2D(&td, &initData, &p2DTexture);
+	m_texture = static_cast<ID3D11Texture2D*>(p2DTexture);
 
 	// 그리고 그것을 쉐이더가 볼 수 있게, 리소스 뷰로 만든다.
 	CD3D11_SHADER_RESOURCE_VIEW_DESC srvd;
+	// 이렇게 하지 말고 생성자를 쓰는 게 훨씬 편하다 #2
 	memset(&srvd, 0, sizeof(srvd));
 	srvd.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	srvd.Format = td.Format;
+	srvd.Texture2D.MostDetailedMip = 0;
+	srvd.Texture2D.MipLevels = -1;
+	
 
-	hr = g_pd3dDevice->CreateShaderResourceView(m_texture, &srvd, &m_TextureResourceView);
+	if (m_texture)
+	{
+		hr = g_pd3dDevice->CreateShaderResourceView(m_texture, &srvd, &m_TextureResourceView);
+	}	
+
+	m_TextureResourceView->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("TextureComp::CreateTextureResourceViewFromColor") - 1, "TextureComp::CreateTextureResourceViewFromColor");
 
 	return hr;
 }
 
-HRESULT TextureComp::CreateDefaultTextureSampler()
+HRESULT TextureComp::CreateTextureResourceViewSimpleColor(const ColorComp& _colorData, aiTextureType _type)
 {
-	// 텍스쳐의 Sampler state 만들기
-	D3D11_SAMPLER_DESC sampDesc;
-	memset(&sampDesc, 0, sizeof(sampDesc));
-	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR; // 조합해서 쓸 수 있다. 지금은 선형 보간하는데 쓰인다. 
-	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP; // Wrap은 값이 넘어간다면 0 ~ 1 , 1 ~ 0 으로 반복이 되는 것이고
-	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP; // Mirror는 0 ~ 1 ~ 0으로 반복이 된다.
-	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP; // Clamp는 0 ~ 1을 벗어나면, 마지막 픽셀로 채워진다.
-	// Border는 넘어가면 Border Color로 지정해준 색으로 채워진다.
-	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER; // 셈플링된 데이터를 기존 샘플링된 데이터와 비교하는 함수
-	sampDesc.MinLOD = 0;
-	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
-
-
-	HRESULT hr = g_pd3dDevice->CreateSamplerState(&sampDesc, &m_TextureSampler);
-	m_TextureSampler->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("TextureComp::CreateDefaultTextureSampler") - 1, "TextureComp::CreateDefaultTextureSampler");
-	return hr;
+	return CreateTextureResourceViewFromColor(&_colorData, 1, 1, _type);
 }
 
 HRESULT TextureComp::CreateTextureResourceViewFromdds(LPCWSTR _TextureName)
@@ -78,15 +83,14 @@ HRESULT TextureComp::CreateTextureResourceViewFromdds(LPCWSTR _TextureName)
 
 TextureComp::TextureComp()
 	: m_TextureResourceView(nullptr)
-	, m_TextureSampler(nullptr)
 	, m_texture(nullptr)
 	, m_type(aiTextureType::aiTextureType_UNKNOWN)
 {
+	this->CreateTextureResourceViewSimpleColor(DefaultColors::UnloadedTextureColor, aiTextureType::aiTextureType_DIFFUSE);
 }
 
 TextureComp::~TextureComp()
 {
-	if (m_TextureResourceView)m_TextureResourceView->Release();
-	if (m_TextureSampler) m_TextureSampler->Release();
-	if (m_texture) m_texture->Release();
+	//if (m_TextureResourceView)m_TextureResourceView->Release();
+	//if (m_texture) m_texture->Release();
 }

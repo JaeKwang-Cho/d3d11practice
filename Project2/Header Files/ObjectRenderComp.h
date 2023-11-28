@@ -13,8 +13,6 @@ struct ObjectRenderComp {
 public:
 	void StartRender();
 
-	void Render(Matrix _WorldMat);
-
 public:
 	HRESULT CreateVertexShader(LPCWSTR _ShaderName,
 							   LPCSTR _EntryPoint,

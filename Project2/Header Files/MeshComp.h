@@ -12,7 +12,7 @@ struct MeshComp
     vector<TextureComp> m_Textures;
 
 public:
-    void Initialize(vector<DefaultVertex>& _vertices, vector<WORD>& _indices);
+    void Initialize(vector<DefaultVertex>& _vertices, vector<WORD>& _indices, vector<TextureComp>& _textures);
 
     void StartRender();
 

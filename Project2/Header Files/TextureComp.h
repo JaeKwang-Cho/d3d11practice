@@ -8,12 +8,12 @@ struct ColorComp {
 
 public:
 	union {
-		char rgba[4];
+		unsigned char rgba[4];
 		struct {
-			char r;
-			char g;
-			char b;
-			char a;
+			unsigned char r;
+			unsigned char g;
+			unsigned char b;
+			unsigned char a;
 		};
 		int color;
 	};
@@ -21,10 +21,10 @@ public:
 	ColorComp()
 		:color(0)
 	{}
-	ColorComp(char _r, char _g, char _b)
-		:r(_r), g(_g), b(_b)
+	ColorComp(unsigned char _r, unsigned char _g, unsigned char _b)
+		:r(_r), g(_g), b(_b), a(255)
 	{}
-	ColorComp(char _r, char _g, char _b, char _a)
+	ColorComp(unsigned char _r, unsigned char _g, unsigned char _b, unsigned char _a)
 		:r(_r), g(_g), b(_b), a(_a)
 	{ }
 	ColorComp(const ColorComp& _other)
@@ -51,7 +51,7 @@ public:
 namespace DefaultColors
 {
 	const ColorComp UnloadedTextureColor(100, 100, 100);
-	const ColorComp UnhandledTextureColor(255, 0, 0);
+	const ColorComp UnhandledTextureColor(250, 0, 0);
 }
 
 enum class TextureStorageType {
@@ -68,21 +68,29 @@ struct TextureComp {
 
 private:
 	ID3D11ShaderResourceView* m_TextureResourceView;
-	ID3D11SamplerState* m_TextureSampler;
 	ID3D11Resource* m_texture;
 	aiTextureType m_type;
 
-private:
+public:
 	HRESULT CreateTextureResourceViewFromImage(LPCWSTR _TextureName);
 	HRESULT CreateTextureResourceViewFromColor(const ColorComp* _colorData, UINT _width, UINT _height, aiTextureType _type);
-	HRESULT CreateDefaultTextureSampler();
+	HRESULT CreateTextureResourceViewSimpleColor(const ColorComp& _colorData, aiTextureType _type);
 
 private:
 	HRESULT CreateTextureResourceViewFromdds(LPCWSTR _TextureName);
 
 public:
+	aiTextureType GetTextureType()
+	{
+		return m_type;
+	}
+
+	ID3D11ShaderResourceView** GetTextureResourceViewAddress()
+	{
+		return &m_TextureResourceView;
+	}
+
+public:
 	TextureComp();
 	virtual ~TextureComp();
-
-	friend struct ObjectRenderComp;
 };

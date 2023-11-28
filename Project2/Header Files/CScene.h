@@ -6,6 +6,7 @@ class CScene
 {
 	vector<CObject*> m_vecObjectGroup[(UINT)GROUP_TYPE::END];
 	wstring m_Name;
+	ID3D11SamplerState* m_TextureSampler;
 
 public:
 	void AddObject(CObject* _pObj, GROUP_TYPE _eType)
@@ -16,6 +17,14 @@ public:
 public:
 	void SetSceneName(const wstring& _Name){m_Name = _Name;}
 	const wstring& GetSceneName(){return m_Name;}
+
+public:
+	HRESULT CreateDefaultTextureSampler();
+
+	ID3D11SamplerState** GetDefaultSampler()
+	{
+		return &m_TextureSampler;
+	}
 
 	void Enter();
 	void Update();
