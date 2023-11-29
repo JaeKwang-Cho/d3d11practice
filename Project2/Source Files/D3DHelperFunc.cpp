@@ -360,9 +360,8 @@ void GetShaderResourceFromViewToFile(ID3D11ShaderResourceView* _texResourceView)
     break;
     case D3D11_RESOURCE_DIMENSION_TEXTURE2D:
     {
-        ID3D11Texture2D* pTexture2D = (ID3D11Texture2D*)pResource;
         ScratchImage scratchImage = ScratchImage{};
-        CaptureTexture(g_pd3dDevice, g_pImmediateContext, pTexture2D, scratchImage);
+        CaptureTexture(g_pd3dDevice, g_pImmediateContext, (ID3D11Texture2D*)pResource, scratchImage);
         SaveToDDSFile(scratchImage.GetImages(), scratchImage.GetImageCount(), scratchImage.GetMetadata(), DDS_FLAGS_NONE, L"Test.dds");
     }
     break;
@@ -393,9 +392,8 @@ void GetShaderResourceFromViewToFile(ID3D11Resource* pResource)
     break;
     case D3D11_RESOURCE_DIMENSION_TEXTURE2D:
     {
-        ID3D11Texture2D* pTexture2D = (ID3D11Texture2D*)pResource;
         ScratchImage scratchImage = ScratchImage{};
-        CaptureTexture(g_pd3dDevice, g_pImmediateContext, pTexture2D, scratchImage);
+        CaptureTexture(g_pd3dDevice, g_pImmediateContext, (ID3D11Texture2D*)pResource, scratchImage);
         SaveToDDSFile(scratchImage.GetImages(), scratchImage.GetImageCount(), scratchImage.GetMetadata(), DDS_FLAGS_NONE, L"Test.dds");
     }
     break;
@@ -419,9 +417,9 @@ void FindD3DComObjLeak()
 
     GetDebugInterface(IID_PPV_ARGS(&debug));
 
-    OutputDebugStringW(L"============== D3D Object ref count : COM leak check ==============");
+    OutputDebugStringW(L"============== D3D Object ref count : COM leak check ==============\n");
     debug->ReportLiveObjects(DXGI_DEBUG_D3D11, DXGI_DEBUG_RLO_DETAIL);
-    OutputDebugStringW(L"================ End of IUnKnown Object leaked ... ================");
+    OutputDebugStringW(L"================ End of IUnKnown Object leaked ... ================\n");
 
     debug->Release();
 }

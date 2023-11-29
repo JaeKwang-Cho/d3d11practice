@@ -74,7 +74,11 @@ private:
 	aiTextureType m_type;
 
 public:
-	HRESULT CreateTextureResourceViewFromImage(LPCWSTR _TextureName);
+	HRESULT CreateTextureResourceViewFromImage(LPCSTR _TexturePath, aiTextureType _type);
+	HRESULT CreateTextureResourceViewFromImage(LPCWSTR _TexturePath, aiTextureType _type);
+	HRESULT CreateTextureResourceViewFromImage(string _TexturePath, aiTextureType _type);
+	HRESULT CreateTextureResourceViewFromImage(wstring _TexturePath, aiTextureType _type);
+
 	HRESULT CreateTextureResourceViewFromColor(const ColorComp* _colorData, UINT _width, UINT _height, aiTextureType _type);
 	HRESULT CreateTextureResourceViewSimpleColor(const ColorComp& _colorData, aiTextureType _type);
 
@@ -94,6 +98,7 @@ public:
 
 public:
 	TextureComp();
+	TextureComp(const ColorComp& _colorData, aiTextureType _type);
 	TextureComp(const TextureComp& _other);
 	virtual ~TextureComp();
 };

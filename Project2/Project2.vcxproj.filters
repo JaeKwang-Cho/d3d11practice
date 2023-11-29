@@ -188,6 +188,9 @@
     <ClInclude Include="Header Files\TextureComp.h">
       <Filter>Engine\01.Header\RenderComps\RenderComps_Objects\BasicComps</Filter>
     </ClInclude>
+    <ClInclude Include="Header Files\HelperFunc.h">
+      <Filter>Engine\01.Header\functions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project2.rc">
@@ -269,6 +272,9 @@
     </ClCompile>
     <ClCompile Include="Source Files\TextureComp.cpp">
       <Filter>Engine\01.Header\RenderComps\RenderComps_Objects\BasicComps</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\HelperFunc.cpp">
+      <Filter>Engine\01.Header\functions</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

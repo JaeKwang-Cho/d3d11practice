@@ -1,10 +1,50 @@
 #include "pch.h"
 #include "TextureComp.h"
 
-HRESULT TextureComp::CreateTextureResourceViewFromImage(LPCWSTR _TextureName)
+HRESULT TextureComp::CreateTextureResourceViewFromImage(wstring _TexturePath, aiTextureType _type)
 {
-	// Switch ~
-	return CreateTextureResourceViewFromdds(_TextureName);
+	HRESULT hr = E_NOTIMPL;
+	m_type = _type;
+	if (StringHelper::GetFileExtension(_TexturePath) == L".dds")
+	{
+		ScratchImage scratchImage = ScratchImage{};
+
+		hr = LoadFromDDSFile(_TexturePath.c_str(), DirectX::DDS_FLAGS_NONE, nullptr, scratchImage);
+
+		if (FAILED(hr))
+		{
+			return hr;
+		}
+
+		hr = CreateShaderResourceView(g_pd3dDevice, scratchImage.GetImages(), scratchImage.GetImageCount(), scratchImage.GetMetadata(), &m_TextureResourceView);
+
+		m_TextureResourceView->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("TextureComp::CreateTextureResourceViewFromImage") - 1, "TextureComp::CreateTextureResourceViewFromImage");
+	}
+	else if (StringHelper::GetFileExtension(_TexturePath) ==L".tga")
+	{
+
+	}
+	else if (StringHelper::GetFileExtension(_TexturePath) == L".hdr")
+	{
+
+	}
+	else
+	{
+		ScratchImage scratchImage = ScratchImage{};
+
+		hr = LoadFromWICFile(_TexturePath.c_str(), DirectX::WIC_FLAGS_NONE, nullptr, scratchImage);
+
+		if (FAILED(hr))
+		{
+			return hr;
+		}
+
+		hr = CreateShaderResourceView(g_pd3dDevice, scratchImage.GetImages(), scratchImage.GetImageCount(), scratchImage.GetMetadata(), &m_TextureResourceView);
+
+		m_TextureResourceView->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("TextureComp::CreateTextureResourceViewFromImage") - 1, "TextureComp::CreateTextureResourceViewFromImage");
+	}
+
+	return hr;
 }
 
 HRESULT TextureComp::CreateTextureResourceViewFromColor(const ColorComp* _colorData, UINT _width, UINT _height, aiTextureType _type)
@@ -36,9 +76,7 @@ HRESULT TextureComp::CreateTextureResourceViewFromColor(const ColorComp* _colorD
 	initData.SysMemSlicePitch = 0; //3d에서만 사용한다 의미 없다.
 
 	// 설정한 값들로 Texture2D를 만든다.
-	ID3D11Texture2D* p2DTexture = nullptr;
-	HRESULT hr = g_pd3dDevice->CreateTexture2D(&td, &initData, &p2DTexture);
-	m_texture = static_cast<ID3D11Texture2D*>(p2DTexture);
+	HRESULT hr = g_pd3dDevice->CreateTexture2D(&td, &initData, (ID3D11Texture2D**) & m_texture);
 
 	// 그리고 그것을 쉐이더가 볼 수 있게, 리소스 뷰로 만든다.
 	CD3D11_SHADER_RESOURCE_VIEW_DESC srvd;
@@ -81,12 +119,37 @@ HRESULT TextureComp::CreateTextureResourceViewFromdds(LPCWSTR _TextureName)
 	return hr;
 }
 
+HRESULT TextureComp::CreateTextureResourceViewFromImage(LPCSTR _TexturePath, aiTextureType _type)
+{
+	string str(_TexturePath);
+	return CreateTextureResourceViewFromImage(StringHelper::StrToWstr(str), _type);
+}
+
+HRESULT TextureComp::CreateTextureResourceViewFromImage(LPCWSTR _TexturePath, aiTextureType _type)
+{
+	wstring wstr(_TexturePath);
+	return CreateTextureResourceViewFromImage(wstr, _type);
+}
+
+HRESULT TextureComp::CreateTextureResourceViewFromImage(string _TexturePath, aiTextureType _type)
+{
+	return CreateTextureResourceViewFromImage(StringHelper::StrToWstr(_TexturePath), _type);
+}
+
 TextureComp::TextureComp()
 	: m_TextureResourceView(nullptr)
 	, m_texture(nullptr)
 	, m_type(aiTextureType::aiTextureType_UNKNOWN)
 {
-	this->CreateTextureResourceViewSimpleColor(DefaultColors::UnloadedTextureColor, aiTextureType::aiTextureType_DIFFUSE);
+	
+}
+
+TextureComp::TextureComp(const ColorComp& _colorData, aiTextureType _type)
+	: m_TextureResourceView(nullptr)
+	, m_texture(nullptr)
+	, m_type(_type)
+{
+	this->CreateTextureResourceViewSimpleColor(_colorData, _type);
 }
 
 TextureComp::TextureComp(const TextureComp& _other)

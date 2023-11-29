@@ -21,8 +21,9 @@ public:
 
 public:
     bool LoadModelFromFile(const string _FilePath);
-    void ProcessNodes(aiNode* node, const aiScene* scene);
-    MeshComp* ProcessMesh(aiMesh* mesh, const aiScene* scene);
+    void ProcessNodes(aiNode* _node, const aiScene* _scene);
+    MeshComp* ProcessMesh(aiMesh* _mesh, const aiScene* _scene);
+    vector<TextureComp> LoadMaterialTexture(aiMaterial* _pMaterial, aiTextureType _textureType, const aiScene* _scene);
 
     virtual CObject* Clone() override;
 

@@ -179,6 +179,7 @@
     <ClInclude Include="Header Files\TextureComp.h" />
     <ClInclude Include="Header Files\VertexBuffer.h" />
     <ClInclude Include="Header Files\MeshComp.h" />
+    <ClInclude Include="Header Files\HelperFunc.h" />
     <None Include="SampleCode\Samples.h" />
     <None Include="SampleCode\Mesh.h" />
     <None Include="SampleCode\ModelLoader.h" />
@@ -190,6 +191,7 @@
     <ClInclude Include="Header Files\TestActor.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source Files\HelperFunc.cpp" />
     <ClCompile Include="Source Files\MeshComp.cpp" />
     <ClCompile Include="Source Files\CActor.cpp" />
     <ClCompile Include="Source Files\CActorComponent.cpp" />

@@ -47,23 +47,23 @@ bool CMesh::LoadModelFromFile(const string _FilePath)
     return true;
 }
 
-void CMesh::ProcessNodes(aiNode* node, const aiScene* scene)
+void CMesh::ProcessNodes(aiNode* _node, const aiScene* _scene)
 {
     // Node 안에는 또 다른 노드가 있을 수 있고, Mesh 가 있을 수 있다.
     // 메쉬 처리
-    for (UINT i = 0; i < node->mNumMeshes; i++)
+    for (UINT i = 0; i < _node->mNumMeshes; i++)
     {
-        aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        m_Meshes.push_back(this->ProcessMesh(mesh, scene));
+        aiMesh* mesh = _scene->mMeshes[_node->mMeshes[i]];
+        m_Meshes.push_back(ProcessMesh(mesh, _scene));
     }
     // 하위 노드 처리
-    for (UINT i = 0; i < node->mNumChildren; i++)
+    for (UINT i = 0; i < _node->mNumChildren; i++)
     {
-        ProcessNodes(node->mChildren[i], scene);
+        ProcessNodes(_node->mChildren[i], _scene);
     }
 }
 
-MeshComp* CMesh::ProcessMesh(aiMesh* mesh, const aiScene* scene)
+MeshComp* CMesh::ProcessMesh(aiMesh* _mesh, const aiScene* _scene)
 {
     MeshComp* meshComp = nullptr;
     // 메쉬 데이터 채우기
@@ -71,19 +71,19 @@ MeshComp* CMesh::ProcessMesh(aiMesh* mesh, const aiScene* scene)
     vector<WORD>    indices;
     
     // 버텍스 가져오기
-    vertices.reserve(mesh->mNumVertices);
-    for (UINT i = 0; i < mesh->mNumVertices; i++)
+    vertices.reserve(_mesh->mNumVertices);
+    for (UINT i = 0; i < _mesh->mNumVertices; i++)
     {
         DefaultVertex vertex;
-        vertex.Pos.x = mesh->mVertices[i].x;
-        vertex.Pos.y = mesh->mVertices[i].y;
-        vertex.Pos.z = mesh->mVertices[i].z;
+        vertex.Pos.x = _mesh->mVertices[i].x;
+        vertex.Pos.y = _mesh->mVertices[i].y;
+        vertex.Pos.z = _mesh->mVertices[i].z;
 
         // UV 정보가 있다면 가져오기
-        if (mesh->mTextureCoords[0]) //0 ~ 7까지 존재한다.
+        if (_mesh->mTextureCoords[0]) //0 ~ 7까지 존재한다.
         {
-            vertex.Tex.u = (float)mesh->mTextureCoords[0][i].x;
-            vertex.Tex.v = (float)mesh->mTextureCoords[0][i].y;
+            vertex.Tex.u = (float)_mesh->mTextureCoords[0][i].x;
+            vertex.Tex.v = (float)_mesh->mTextureCoords[0][i].y;
         }
         vertices.push_back(vertex);
     }
@@ -91,27 +91,71 @@ MeshComp* CMesh::ProcessMesh(aiMesh* mesh, const aiScene* scene)
     // 인덱스 가져오기
     // Face 별로 가져오는데, 이렇게 하는 것은 위에서 aiProcess_Triangulate 플래그를 쓰면 이렇게 나온다.
     UINT numOfIndices = 0;
-    for (UINT i = 0; i < mesh->mNumFaces; i++)
+    for (UINT i = 0; i < _mesh->mNumFaces; i++)
     {
-        numOfIndices += mesh->mFaces[i].mNumIndices;
+        numOfIndices += _mesh->mFaces[i].mNumIndices;
     }
 
     indices.reserve(numOfIndices);
-    for (UINT i = 0; i < mesh->mNumFaces; i++)
+    for (UINT i = 0; i < _mesh->mNumFaces; i++)
     {
-        aiFace face = mesh->mFaces[i];
+        aiFace face = _mesh->mFaces[i];
         for (UINT j = 0; j < face.mNumIndices; j++)
         {
             indices.push_back(face.mIndices[j]);
         }
     }
-
-    std::vector<TextureComp> defaultTextures;
-    defaultTextures.push_back(TextureComp());
+    aiMaterial* material = _scene->mMaterials[_mesh->mMaterialIndex];
+    vector<TextureComp> diffuseTextures = LoadMaterialTexture(material, aiTextureType::aiTextureType_DIFFUSE, _scene);
 
     meshComp = new MeshComp;
-    meshComp->Initialize(vertices, indices, defaultTextures);
+    meshComp->Initialize(vertices, indices, diffuseTextures);
     return meshComp;
+}
+
+vector<TextureComp> CMesh::LoadMaterialTexture(aiMaterial* _pMaterial, aiTextureType _textureType, const aiScene* _scene)
+{
+    vector<TextureComp> matTextures;
+    TextureStorageType storeType = TextureStorageType::Invalid;
+    unsigned int textureCount = _pMaterial->GetTextureCount(_textureType);
+
+    TextureComp texComp;
+
+    if (textureCount == 0) // 텍스쳐가 없을 때를 대비
+    {
+        storeType = TextureStorageType::None;
+        aiColor3D aiColor(0.f, 0.f, 0.f);
+        switch (_textureType)
+        {
+        case aiTextureType_DIFFUSE:
+        {
+            _pMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, aiColor);
+            if (aiColor.IsBlack()) //
+            {
+                texComp.CreateTextureResourceViewSimpleColor(DefaultColors::UnloadedTextureColor, _textureType);
+                matTextures.push_back(texComp);
+
+                return matTextures;
+            }
+            else
+            {
+                ColorComp diffuseColor(unsigned char(aiColor.r * 255.f), unsigned char(aiColor.g * 255.f), unsigned char(aiColor.b * 255));
+                texComp.CreateTextureResourceViewSimpleColor(diffuseColor, _textureType);
+                matTextures.push_back(texComp);
+
+                return matTextures;
+            }
+        }
+
+        break;
+        default:
+            break;
+        }
+    }
+    texComp.CreateTextureResourceViewSimpleColor(DefaultColors::UnhandledTextureColor, aiTextureType_DIFFUSE);
+    matTextures.push_back(texComp);
+
+    return matTextures;
 }
 
 CObject* CMesh::Clone()

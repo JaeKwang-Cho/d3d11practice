@@ -69,7 +69,7 @@ HRESULT CScene::CreateDefaultTextureSampler()
 
 
 	HRESULT hr = g_pd3dDevice->CreateSamplerState(&sampDesc, &m_TextureSampler);
-	m_TextureSampler->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("TextureComp::CreateDefaultTextureSampler") - 1, "TextureComp::CreateDefaultTextureSampler");
+	m_TextureSampler->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("CScene::CreateDefaultTextureSampler") - 1, "CScene::CreateDefaultTextureSampler");
 	return hr;
 }
 
