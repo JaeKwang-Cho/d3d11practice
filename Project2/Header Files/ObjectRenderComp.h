@@ -11,7 +11,7 @@ struct ObjectRenderComp {
 	IndexBuffer m_IndexBuffer;
 
 public:
-	void StartRender();
+	void Render();
 
 public:
 	HRESULT CreateVertexShader(LPCWSTR _ShaderName,

@@ -5,7 +5,8 @@ HRESULT TextureComp::CreateTextureResourceViewFromImage(wstring _TexturePath, ai
 {
 	HRESULT hr = E_NOTIMPL;
 	m_type = _type;
-	if (StringHelper::GetFileExtension(_TexturePath) == L".dds")
+	wstring fileExtension = StringHelper::GetFileExtension(_TexturePath);
+	if (fileExtension == L".dds")
 	{
 		ScratchImage scratchImage = ScratchImage{};
 
@@ -20,11 +21,11 @@ HRESULT TextureComp::CreateTextureResourceViewFromImage(wstring _TexturePath, ai
 
 		m_TextureResourceView->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("TextureComp::CreateTextureResourceViewFromImage") - 1, "TextureComp::CreateTextureResourceViewFromImage");
 	}
-	else if (StringHelper::GetFileExtension(_TexturePath) ==L".tga")
+	else if (fileExtension ==L".tga")
 	{
 
 	}
-	else if (StringHelper::GetFileExtension(_TexturePath) == L".hdr")
+	else if (fileExtension == L".hdr")
 	{
 
 	}
@@ -158,7 +159,7 @@ TextureComp::TextureComp(const TextureComp& _other)
 	, m_type(_other.m_type)
 {
 	m_TextureResourceView->AddRef();
-	m_texture->AddRef();
+	if(m_texture) m_texture->AddRef();
 }
 
 TextureComp::~TextureComp()

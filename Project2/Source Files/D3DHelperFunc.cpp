@@ -97,8 +97,8 @@ bool InitDevice()
     // https://learn.microsoft.com/ko-kr/windows/win32/api/d3d11/ns-d3d11-d3d11_rasterizer_desc
     D3D11_RASTERIZER_DESC rd;
     memset(&rd, 0, sizeof(rd));
-    rd.FillMode = D3D11_FILL_WIREFRAME; // 그냥 렌더링 (나머지는 와이어프레임)
-    rd.CullMode = D3D11_CULL_BACK; // 뒤 삼각형을 짜른다.
+    rd.FillMode = D3D11_FILL_SOLID; // 그냥 렌더링 (나머지는 와이어프레임)
+    rd.CullMode = D3D11_CULL_FRONT; // 뒤 삼각형을 짜른다.
     rd.FrontCounterClockwise = false; // 반시계 방향이 앞쪽임 ( +z가 뒤쪽이니깐)
     rd.DepthBias = 0; // 깊이 바이어스 (동일한 Z 가 있을때, 좀 더 앞쪽으로(렌더링이 더 잘되게) 하는 친구이다.
     rd.DepthBiasClamp = 0.f; // https://learn.microsoft.com/ko-kr/windows/win32/direct3d11/d3d10-graphics-programming-guide-output-merger-stage-depth-bias

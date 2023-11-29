@@ -67,8 +67,6 @@ enum class TextureStorageType {
 struct TextureComp {
 
 private:
-	//	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_TextureResourceView;
-	// Microsoft::WRL::ComPtr<ID3D11Resource> m_texture;
 	ID3D11ShaderResourceView* m_TextureResourceView;
 	ID3D11Resource* m_texture;
 	aiTextureType m_type;

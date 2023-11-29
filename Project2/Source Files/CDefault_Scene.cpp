@@ -138,7 +138,7 @@ void CDefault_Scene::UpdateScene()
             cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
             g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
         }
-        if (KEYINPUTHOLD(KEY::Q))
+        if (KEYINPUTHOLD(KEY::E))
         {
             Eye = Eye + CameraUp * 3.f * DELTA_F;
 
@@ -150,7 +150,7 @@ void CDefault_Scene::UpdateScene()
             cbChangeOnInput.mView = MatrixTranspose(g_ViewMat);
             g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbChangeOnInput, 0, 0);
         }
-        if (KEYINPUTHOLD(KEY::E))
+        if (KEYINPUTHOLD(KEY::Q))
         {
             Eye = Eye + CameraUp * -3.f * DELTA_F;
 

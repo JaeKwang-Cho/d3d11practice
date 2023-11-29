@@ -16,7 +16,7 @@ public:
 
     void StartRender();
 
-    void Render(Matrix _WorldMat);
+    void Render();
 
 public:
     MeshComp();

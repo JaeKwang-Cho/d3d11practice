@@ -24,7 +24,6 @@ void MeshComp::Initialize(vector<DefaultVertex>& _vertices, vector<WORD>& _indic
     hr = m_RenderComp->CreateIndexBuffer(m_Indices.data(), numElements);
 
     //hr = m_RenderComp->CreateTextureResourceViewFromImage(L"seafloor.dds");
-    //hr = m_RenderComp->CreateDefaultTextureSampler();
 
     if (FAILED(hr))
     {
@@ -35,20 +34,10 @@ void MeshComp::Initialize(vector<DefaultVertex>& _vertices, vector<WORD>& _indic
 
 void MeshComp::StartRender()
 {
-    if (m_RenderComp != nullptr)
-    {
-        m_RenderComp->StartRender();
-    }
 }
 
-void MeshComp::Render(Matrix _WorldMat)
+void MeshComp::Render()
 {
-    // 매 프레임 마다 변하는 constant buffer 업데이트 하기
-    CBChangesEveryFrame cb;
-    cb.mWorld = MatrixTranspose(_WorldMat);
-    // 쉐이더에서 사용할 Constant buffer 객체에 시스템 메모리 값을 카피해준다.
-    g_pImmediateContext->UpdateSubresource(g_pCBChangesEveryFrame, 0, nullptr, &cb, 0, 0);
-
     // 이제 GPU로 하여금 셰이더에 적힌, 레지스터 번호로 Contant buffer가 어디로 들어가야 하는지 알려주고
     // 계산을 돌리고 인덱스를 따라 삼각형을 그리도록 시킨다.
     {
@@ -72,6 +61,8 @@ void MeshComp::Render(Matrix _WorldMat)
             }
         }
     }
+    m_RenderComp->Render();
+
     // 마저 그린다.
     g_pImmediateContext->DrawIndexed(m_RenderComp->GetNumOfIndices(), 0, 0);
 }

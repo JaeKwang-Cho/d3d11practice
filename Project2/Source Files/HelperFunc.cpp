@@ -24,6 +24,16 @@ wstring StringHelper::GetDirectoryFromPath(const wstring& _filePath)
 	return _filePath.substr(0, off);
 }
 
+string StringHelper::GetDirectoryFromPath(const string& _filePath)
+{
+	size_t off = _filePath.find_last_of(L'\\');
+	if (off == string::npos)
+	{
+		return string();
+	}
+	return _filePath.substr(0, off);
+}
+
 wstring StringHelper::GetFileExtension(const wstring& _fileName)
 {
 	size_t off = _fileName.find_last_of(L'.');
@@ -31,5 +41,5 @@ wstring StringHelper::GetFileExtension(const wstring& _fileName)
 	{
 		return wstring();
 	}
-	return wstring(_fileName.substr(off + 1));
+	return wstring(_fileName.substr(off));
 }
