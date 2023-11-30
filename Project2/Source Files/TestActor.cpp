@@ -7,7 +7,7 @@
 void TestActor::StartObject()
 {
 	m_mesh = new CMesh;
-	m_mesh->Initialize("fbx\\eyeball.fbx");
+	m_mesh->Initialize("obj\\eyeball.obj");
 	AddComponent(m_mesh);
 }
 

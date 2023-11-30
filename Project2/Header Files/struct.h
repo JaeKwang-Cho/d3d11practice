@@ -457,17 +457,20 @@ struct SampleVertex {
 struct DefaultVertex {
     FLOAT3 Pos;
     FLOAT2 Tex;
+    float Alpha;
 
     //FLOAT3 Normal;
     //FLOAT4 Color;
 
-    DefaultVertex(){ }
-    DefaultVertex(float x, float y, float z, float u, float v)
-        :Pos(x,y,z),Tex(u,v)
+    DefaultVertex()
+        :Alpha(1.f)
+    { }
+    DefaultVertex(float x, float y, float z, float u, float v, float a)
+        :Pos(x,y,z),Tex(u,v), Alpha(a)
     { }
 
-    DefaultVertex(FLOAT3 _Pos, FLOAT2 _Tex)
-        :Pos(_Pos), Tex(_Tex)
+    DefaultVertex(FLOAT3 _Pos, FLOAT2 _Tex, float _Alpha)
+        :Pos(_Pos), Tex(_Tex), Alpha(_Alpha)
     { }
 };
 

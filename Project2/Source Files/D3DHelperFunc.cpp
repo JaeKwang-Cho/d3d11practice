@@ -98,7 +98,7 @@ bool InitDevice()
     D3D11_RASTERIZER_DESC rd;
     memset(&rd, 0, sizeof(rd));
     rd.FillMode = D3D11_FILL_SOLID; // 그냥 렌더링 (나머지는 와이어프레임)
-    rd.CullMode = D3D11_CULL_FRONT; // 뒤 삼각형을 짜른다.
+    rd.CullMode = D3D11_CULL_BACK; // 뒤 삼각형을 짜른다.
     rd.FrontCounterClockwise = false; // 반시계 방향이 앞쪽임 ( +z가 뒤쪽이니깐)
     rd.DepthBias = 0; // 깊이 바이어스 (동일한 Z 가 있을때, 좀 더 앞쪽으로(렌더링이 더 잘되게) 하는 친구이다.
     rd.DepthBiasClamp = 0.f; // https://learn.microsoft.com/ko-kr/windows/win32/direct3d11/d3d10-graphics-programming-guide-output-merger-stage-depth-bias
@@ -116,21 +116,6 @@ bool InitDevice()
     }
     g_pImmediateContext->RSSetState(g_pRasterizerState);
     g_pRasterizerState->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("g_pRasterizerState") - 1, "g_pRasterizerState");
-
-    // Blend 모드를 설정한다.
-    // https://learn.microsoft.com/ko-kr/windows/win32/api/d3d11/ns-d3d11-d3d11_blend_desc
-    D3D11_BLEND_DESC bd;
-    memset(&bd, 0, sizeof(bd));
-    bd.AlphaToCoverageEnable = false;
-    bd.IndependentBlendEnable = false;
-    bd.RenderTarget[0].BlendEnable = false; // 최대 8개 까지 있다.
-    bd.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-    // 일단은 기본 상태이다.
-    g_pd3dDevice->CreateBlendState(&bd, &g_pBlendState);
-    g_pBlendState->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("g_pBlendState") - 1, "g_pBlendState");
-
-    float blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
-    g_pImmediateContext->OMSetBlendState(g_pBlendState, blendFactor, 0xffffffff);
 
     // depth / stencil 모드를 설정한다.
     // https://learn.microsoft.com/en-us/windows/win32/api/d3d11/ns-d3d11-d3d11_depth_stencil_desc
@@ -202,6 +187,41 @@ bool InitDevice()
     g_pImmediateContext->OMSetRenderTargets(1, &g_pRenderTargetView, g_pDepthStencilView);
     // 렌더 타겟을 해제하는 방법은 다음과 같다.
     // g_pImmediateContext->OMSetRenderTargets(0, nullptr, nullptr);
+
+    
+    // Blend 모드를 설정한다.
+    // https://learn.microsoft.com/ko-kr/windows/win32/api/d3d11/ns-d3d11-d3d11_blend_desc
+    D3D11_BLEND_DESC bd;
+    memset(&bd, 0, sizeof(bd));
+    bd.AlphaToCoverageEnable = false;
+    bd.IndependentBlendEnable = false;
+
+    // 1) 기본 상태
+    //bd.RenderTarget[0].BlendEnable = false; // 최대 8개 까지 있다.
+    //bd.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+    // Blend RenderTarget을 설정한다. (최대 8개 까지 있다)
+    D3D11_RENDER_TARGET_BLEND_DESC rtbd;
+    memset(&rtbd, 0, sizeof(rtbd));
+    rtbd.BlendEnable = true;
+    rtbd.SrcBlend = D3D11_BLEND_SRC_ALPHA;
+    rtbd.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+    rtbd.BlendOp = D3D11_BLEND_OP_ADD;
+    rtbd.SrcBlendAlpha = D3D11_BLEND_ONE;
+    rtbd.DestBlendAlpha = D3D11_BLEND_ZERO;
+    rtbd.BlendOpAlpha = D3D11_BLEND_OP_ADD;
+    rtbd.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+    // 2) 렌더 타겟 블랜드 추가 상태
+    bd.RenderTarget[0] = rtbd;
+    bd.RenderTarget[0].BlendEnable = true;
+    bd.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+    g_pd3dDevice->CreateBlendState(&bd, &g_pBlendState);
+    g_pBlendState->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("g_pBlendState") - 1, "g_pBlendState");
+    
+    float blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
+    g_pImmediateContext->OMSetBlendState(g_pBlendState, nullptr, 0xffffffff);
 
     // 뷰포트를 설정한다.
     D3D11_VIEWPORT vp;

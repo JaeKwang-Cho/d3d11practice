@@ -4,7 +4,10 @@
 HRESULT TextureComp::CreateTextureResourceViewFromImage(wstring _TexturePath, aiTextureType _type)
 {
 	HRESULT hr = E_NOTIMPL;
+
 	m_type = _type;
+	m_filename = _TexturePath;
+
 	wstring fileExtension = StringHelper::GetFileExtension(_TexturePath);
 	if (fileExtension == L".dds")
 	{
@@ -149,6 +152,7 @@ TextureComp::TextureComp(const ColorComp& _colorData, aiTextureType _type)
 	: m_TextureResourceView(nullptr)
 	, m_texture(nullptr)
 	, m_type(_type)
+	, m_filename()
 {
 	this->CreateTextureResourceViewSimpleColor(_colorData, _type);
 }
@@ -157,6 +161,7 @@ TextureComp::TextureComp(const TextureComp& _other)
 	: m_TextureResourceView(_other.m_TextureResourceView)
 	, m_texture(_other.m_texture)
 	, m_type(_other.m_type)
+	, m_filename(_other.m_filename)
 {
 	m_TextureResourceView->AddRef();
 	if(m_texture) m_texture->AddRef();

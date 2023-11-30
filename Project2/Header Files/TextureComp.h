@@ -70,6 +70,7 @@ private:
 	ID3D11ShaderResourceView* m_TextureResourceView;
 	ID3D11Resource* m_texture;
 	aiTextureType m_type;
+	wstring m_filename;
 
 public:
 	HRESULT CreateTextureResourceViewFromImage(LPCSTR _TexturePath, aiTextureType _type);
