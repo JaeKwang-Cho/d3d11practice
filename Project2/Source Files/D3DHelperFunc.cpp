@@ -214,8 +214,6 @@ bool InitDevice()
 
     // 2) 렌더 타겟 블랜드 추가 상태
     bd.RenderTarget[0] = rtbd;
-    bd.RenderTarget[0].BlendEnable = true;
-    bd.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
     g_pd3dDevice->CreateBlendState(&bd, &g_pBlendState);
     g_pBlendState->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("g_pBlendState") - 1, "g_pBlendState");

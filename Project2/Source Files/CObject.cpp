@@ -3,9 +3,9 @@
 
 void CObject::Start()
 {
-	StartObject();
-
 	FindWorldTransform();
+
+	StartObject();
 
 	StartComponent();
 }
@@ -21,9 +21,9 @@ void CObject::StartComponent()
 
 void CObject::Update()
 {
-	UpdateObject();
-
 	FindWorldTransform();
+
+	UpdateObject();
 
 	UpdateComponent();
 }

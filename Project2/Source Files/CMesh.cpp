@@ -12,11 +12,12 @@ void CMesh::Initialize(const string _FilePath)
 
 void CMesh::StartObject()
 {
+   
 }
 
 void CMesh::UpdateObject()
 {
-    SetWorldMat();
+    UpdateWorldMat();
 
     // 매 프레임 마다 변하는 constant buffer 업데이트 하기
     CBChangesEveryFrame cb;
@@ -29,6 +30,7 @@ void CMesh::RenderObject()
 {
     g_pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+    /*
     m_Meshes[1]->StartRender();
     m_Meshes[1]->Render();
     m_Meshes[2]->StartRender();
@@ -37,15 +39,15 @@ void CMesh::RenderObject()
     m_Meshes[3]->Render();
     m_Meshes[0]->StartRender();
     m_Meshes[0]->Render();
-
-    /*
+    */
+    
     auto iter = m_Meshes.begin();
     for (; iter != m_Meshes.end(); iter++)
     {
         (*iter)->StartRender();
         (*iter)->Render();
     }
-    */
+    
 }
 
 bool CMesh::LoadModelFromFile(const string _FilePath)
@@ -62,133 +64,36 @@ bool CMesh::LoadModelFromFile(const string _FilePath)
     {
         return false;
     }
+
+#if 0
+    {
+        aiMaterial* mat1 = pScene->mMaterials[0];
+
+        int countNone = mat1->GetTextureCount(aiTextureType_NONE);
+        int countDiffuse = mat1->GetTextureCount(aiTextureType_DIFFUSE);
+        int countSpecular = mat1->GetTextureCount(aiTextureType_SPECULAR);
+        int countAmbient = mat1->GetTextureCount(aiTextureType_AMBIENT);
+        int countEmissive = mat1->GetTextureCount(aiTextureType_EMISSIVE);
+        int countHeight = mat1->GetTextureCount(aiTextureType_HEIGHT);
+        int countNomals = mat1->GetTextureCount(aiTextureType_NORMALS);
+        int countShininess = mat1->GetTextureCount(aiTextureType_SHININESS);
+        int countOpacity = mat1->GetTextureCount(aiTextureType_OPACITY);
+        int countDisplacement = mat1->GetTextureCount(aiTextureType_DISPLACEMENT);
+        int countLightMap = mat1->GetTextureCount(aiTextureType_LIGHTMAP);
+        int countReflection = mat1->GetTextureCount(aiTextureType_REFLECTION);
+        int countBaseColor = mat1->GetTextureCount(aiTextureType_BASE_COLOR);
+        int countNormalCamera = mat1->GetTextureCount(aiTextureType_NORMAL_CAMERA);
+        int countEmissionColor = mat1->GetTextureCount(aiTextureType_EMISSION_COLOR);
+        int countMetalness = mat1->GetTextureCount(aiTextureType_METALNESS);
+        int countDiffuseRoughness = mat1->GetTextureCount(aiTextureType_DIFFUSE_ROUGHNESS);
+        int countRoughness = mat1->GetTextureCount(aiTextureType_AMBIENT_OCCLUSION);
+        int countSheen = mat1->GetTextureCount(aiTextureType_SHEEN);
+        int countClearCoat = mat1->GetTextureCount(aiTextureType_CLEARCOAT);
+        int countTransmission = mat1->GetTextureCount(aiTextureType_TRANSMISSION);
+        int countUnKnown = mat1->GetTextureCount(aiTextureType_UNKNOWN);
+    }
+#endif
     // #3 Scene 하위에 있는 Node를 처리한다.  
-    aiMaterial* mat1 = pScene->mMaterials[0];
-
-    int countNone = mat1->GetTextureCount(aiTextureType_NONE);
-    int countDiffuse = mat1->GetTextureCount(aiTextureType_DIFFUSE);
-    int countSpecular = mat1->GetTextureCount(aiTextureType_SPECULAR);
-    int countAmbient = mat1->GetTextureCount(aiTextureType_AMBIENT);
-    int countEmissive = mat1->GetTextureCount(aiTextureType_EMISSIVE);
-    int countHeight = mat1->GetTextureCount(aiTextureType_HEIGHT);
-    int countNomals = mat1->GetTextureCount(aiTextureType_NORMALS);
-    int countShininess = mat1->GetTextureCount(aiTextureType_SHININESS);
-    int countOpacity = mat1->GetTextureCount(aiTextureType_OPACITY);
-    int countDisplacement = mat1->GetTextureCount(aiTextureType_DISPLACEMENT);
-    int countLightMap = mat1->GetTextureCount(aiTextureType_LIGHTMAP);
-    int countReflection = mat1->GetTextureCount(aiTextureType_REFLECTION);
-    int countBaseColor = mat1->GetTextureCount(aiTextureType_BASE_COLOR);
-    int countNormalCamera = mat1->GetTextureCount(aiTextureType_NORMAL_CAMERA);
-    int countEmissionColor = mat1->GetTextureCount(aiTextureType_EMISSION_COLOR);
-    int countMetalness = mat1->GetTextureCount(aiTextureType_METALNESS);
-    int countDiffuseRoughness = mat1->GetTextureCount(aiTextureType_DIFFUSE_ROUGHNESS);
-    int countRoughness = mat1->GetTextureCount(aiTextureType_AMBIENT_OCCLUSION);
-    int countSheen = mat1->GetTextureCount(aiTextureType_SHEEN);
-    int countClearCoat = mat1->GetTextureCount(aiTextureType_CLEARCOAT);
-    int countTransmission = mat1->GetTextureCount(aiTextureType_TRANSMISSION);
-    int countUnKnown = mat1->GetTextureCount(aiTextureType_UNKNOWN);
-
-    aiMaterial* mat2 = pScene->mMaterials[1];
-
-    countNone = mat2->GetTextureCount(aiTextureType_NONE);
-    countDiffuse = mat2->GetTextureCount(aiTextureType_DIFFUSE);
-    countSpecular = mat2->GetTextureCount(aiTextureType_SPECULAR);
-    countAmbient = mat2->GetTextureCount(aiTextureType_AMBIENT);
-    countEmissive = mat2->GetTextureCount(aiTextureType_EMISSIVE);
-    countHeight = mat2->GetTextureCount(aiTextureType_HEIGHT);
-    countNomals = mat2->GetTextureCount(aiTextureType_NORMALS);
-    countShininess = mat2->GetTextureCount(aiTextureType_SHININESS);
-    countOpacity = mat2->GetTextureCount(aiTextureType_OPACITY);
-    countDisplacement = mat2->GetTextureCount(aiTextureType_DISPLACEMENT);
-    countLightMap = mat2->GetTextureCount(aiTextureType_LIGHTMAP);
-    countReflection = mat2->GetTextureCount(aiTextureType_REFLECTION);
-    countBaseColor = mat2->GetTextureCount(aiTextureType_BASE_COLOR);
-    countNormalCamera = mat2->GetTextureCount(aiTextureType_NORMAL_CAMERA);
-    countEmissionColor = mat2->GetTextureCount(aiTextureType_EMISSION_COLOR);
-    countMetalness = mat2->GetTextureCount(aiTextureType_METALNESS);
-    countDiffuseRoughness = mat2->GetTextureCount(aiTextureType_DIFFUSE_ROUGHNESS);
-    countRoughness = mat2->GetTextureCount(aiTextureType_AMBIENT_OCCLUSION);
-    countSheen = mat2->GetTextureCount(aiTextureType_SHEEN);
-    countClearCoat = mat2->GetTextureCount(aiTextureType_CLEARCOAT);
-    countTransmission = mat2->GetTextureCount(aiTextureType_TRANSMISSION);
-    countUnKnown = mat2->GetTextureCount(aiTextureType_UNKNOWN);
-
-    aiMaterial* mat3 = pScene->mMaterials[2];
-
-    countNone = mat3->GetTextureCount(aiTextureType_NONE);
-    countDiffuse = mat3->GetTextureCount(aiTextureType_DIFFUSE);
-    countSpecular = mat3->GetTextureCount(aiTextureType_SPECULAR);
-    countAmbient = mat3->GetTextureCount(aiTextureType_AMBIENT);
-    countEmissive = mat3->GetTextureCount(aiTextureType_EMISSIVE);
-    countHeight = mat3->GetTextureCount(aiTextureType_HEIGHT);
-    countNomals = mat3->GetTextureCount(aiTextureType_NORMALS);
-    countShininess = mat3->GetTextureCount(aiTextureType_SHININESS);
-    countOpacity = mat3->GetTextureCount(aiTextureType_OPACITY);
-    countDisplacement = mat3->GetTextureCount(aiTextureType_DISPLACEMENT);
-    countLightMap = mat3->GetTextureCount(aiTextureType_LIGHTMAP);
-    countReflection = mat3->GetTextureCount(aiTextureType_REFLECTION);
-    countBaseColor = mat3->GetTextureCount(aiTextureType_BASE_COLOR);
-    countNormalCamera = mat3->GetTextureCount(aiTextureType_NORMAL_CAMERA);
-    countEmissionColor = mat3->GetTextureCount(aiTextureType_EMISSION_COLOR);
-    countMetalness = mat3->GetTextureCount(aiTextureType_METALNESS);
-    countDiffuseRoughness = mat3->GetTextureCount(aiTextureType_DIFFUSE_ROUGHNESS);
-    countRoughness = mat3->GetTextureCount(aiTextureType_AMBIENT_OCCLUSION);
-    countSheen = mat3->GetTextureCount(aiTextureType_SHEEN);
-    countClearCoat = mat3->GetTextureCount(aiTextureType_CLEARCOAT);
-    countTransmission = mat3->GetTextureCount(aiTextureType_TRANSMISSION);
-    countUnKnown = mat3->GetTextureCount(aiTextureType_UNKNOWN);
-
-    aiMaterial* mat4 = pScene->mMaterials[3];
-
-    countNone = mat4->GetTextureCount(aiTextureType_NONE);
-    countDiffuse = mat4->GetTextureCount(aiTextureType_DIFFUSE);
-    countSpecular = mat4->GetTextureCount(aiTextureType_SPECULAR);
-    countAmbient = mat4->GetTextureCount(aiTextureType_AMBIENT);
-    countEmissive = mat4->GetTextureCount(aiTextureType_EMISSIVE);
-    countHeight = mat4->GetTextureCount(aiTextureType_HEIGHT);
-    countNomals = mat4->GetTextureCount(aiTextureType_NORMALS);
-    countShininess = mat4->GetTextureCount(aiTextureType_SHININESS);
-    countOpacity = mat4->GetTextureCount(aiTextureType_OPACITY);
-    countDisplacement = mat4->GetTextureCount(aiTextureType_DISPLACEMENT);
-    countLightMap = mat4->GetTextureCount(aiTextureType_LIGHTMAP);
-    countReflection = mat4->GetTextureCount(aiTextureType_REFLECTION);
-    countBaseColor = mat4->GetTextureCount(aiTextureType_BASE_COLOR);
-    countNormalCamera = mat4->GetTextureCount(aiTextureType_NORMAL_CAMERA);
-    countEmissionColor = mat4->GetTextureCount(aiTextureType_EMISSION_COLOR);
-    countMetalness = mat4->GetTextureCount(aiTextureType_METALNESS);
-    countDiffuseRoughness = mat4->GetTextureCount(aiTextureType_DIFFUSE_ROUGHNESS);
-    countRoughness = mat4->GetTextureCount(aiTextureType_AMBIENT_OCCLUSION);
-    countSheen = mat4->GetTextureCount(aiTextureType_SHEEN);
-    countClearCoat = mat4->GetTextureCount(aiTextureType_CLEARCOAT);
-    countTransmission = mat4->GetTextureCount(aiTextureType_TRANSMISSION);
-    countUnKnown = mat4->GetTextureCount(aiTextureType_UNKNOWN);
-
-
-    aiMaterial* mat5 = pScene->mMaterials[4];
-
-    countNone = mat5->GetTextureCount(aiTextureType_NONE);
-    countDiffuse = mat5->GetTextureCount(aiTextureType_DIFFUSE);
-    countSpecular = mat5->GetTextureCount(aiTextureType_SPECULAR);
-    countAmbient = mat5->GetTextureCount(aiTextureType_AMBIENT);
-    countEmissive = mat5->GetTextureCount(aiTextureType_EMISSIVE);
-    countHeight = mat5->GetTextureCount(aiTextureType_HEIGHT);
-    countNomals = mat5->GetTextureCount(aiTextureType_NORMALS);
-    countShininess = mat5->GetTextureCount(aiTextureType_SHININESS);
-    countOpacity = mat5->GetTextureCount(aiTextureType_OPACITY);
-    countDisplacement = mat5->GetTextureCount(aiTextureType_DISPLACEMENT);
-    countLightMap = mat5->GetTextureCount(aiTextureType_LIGHTMAP);
-    countReflection = mat5->GetTextureCount(aiTextureType_REFLECTION);
-    countBaseColor = mat5->GetTextureCount(aiTextureType_BASE_COLOR);
-    countNormalCamera = mat5->GetTextureCount(aiTextureType_NORMAL_CAMERA);
-    countEmissionColor = mat5->GetTextureCount(aiTextureType_EMISSION_COLOR);
-    countMetalness = mat5->GetTextureCount(aiTextureType_METALNESS);
-    countDiffuseRoughness = mat5->GetTextureCount(aiTextureType_DIFFUSE_ROUGHNESS);
-    countRoughness = mat5->GetTextureCount(aiTextureType_AMBIENT_OCCLUSION);
-    countSheen = mat5->GetTextureCount(aiTextureType_SHEEN);
-    countClearCoat = mat5->GetTextureCount(aiTextureType_CLEARCOAT);
-    countTransmission = mat5->GetTextureCount(aiTextureType_TRANSMISSION);
-    countUnKnown = mat5->GetTextureCount(aiTextureType_UNKNOWN);
-
     ProcessNodes(pScene->mRootNode, pScene);
     return true;
 }
@@ -217,7 +122,6 @@ MeshComp* CMesh::ProcessMesh(aiMesh* _mesh, const aiScene* _pScene)
     vector<WORD>    indices;
     
     // 버텍스 가져오기
-    int numOfUV = 0;
     vertices.reserve(_mesh->mNumVertices);
     //wchar_t szBuffer[255] = {};
     aiMaterial* mat = _pScene->mMaterials[_mesh->mMaterialIndex];
@@ -237,7 +141,6 @@ MeshComp* CMesh::ProcessMesh(aiMesh* _mesh, const aiScene* _pScene)
             
             //swprintf_s(szBuffer, L"(u, v) = (%.2f, %.2f)\n", vertex.Tex.u, vertex.Tex.v);
             //OutputDebugStringW(szBuffer);
-            numOfUV++;
         }
         
         ai_real alphaVal = 1.f;

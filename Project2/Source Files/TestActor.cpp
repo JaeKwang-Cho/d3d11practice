@@ -6,9 +6,7 @@
 
 void TestActor::StartObject()
 {
-	m_mesh = new CMesh;
-	m_mesh->Initialize("obj\\eyeball.obj");
-	AddComponent(m_mesh);
+
 }
 
 void TestActor::UpdateObject()
@@ -62,8 +60,12 @@ void TestActor::UpdateObject()
 
 TestActor::TestActor()
 	:m_mesh(nullptr)
-	//,pRAs{}
 {
+	SetObjectName("TestActor");
+	m_mesh = new CMesh;
+	m_mesh->Initialize("obj\\eyeball.obj");
+	m_mesh->SetObjectName("EyeballMesh");
+	AddComponent(m_mesh);
 }
 
 TestActor::~TestActor()

@@ -11,19 +11,21 @@ class CRenderAsset :
 {
 protected:
 	Matrix m_WorldMat;
+	Matrix m_RenderMat;
 	//ObjectRenderComp* m_cube;
 private:
 
 public:
 
 public:
-	virtual void StartObject() override;
+	virtual void StartObject() = 0;
 
-	virtual void UpdateObject() override;
-	virtual void RenderObject() override;
+	virtual void UpdateObject() = 0;
+	virtual void RenderObject() = 0;
 
 protected:
-	void SetWorldMat();
+	void UpdateWorldMat();
+	void UpdateRenderMat();
 
 public:
 	CRenderAsset();

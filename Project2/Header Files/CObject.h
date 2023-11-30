@@ -4,7 +4,7 @@ class CObject
 {
 protected:
 	// Property
-	wstring		m_Name;
+	string		m_Name;
 	bool		m_bAlive;
 	bool		m_bRenderComponent;
 
@@ -22,6 +22,17 @@ public:
 	void AddComponent(CObject* _comp)
 	{
 		m_Components.push_back(_comp);
+		_comp->m_OwnerObject = this;
+	}
+
+	void SetObjectName(string _Name)
+	{
+		m_Name = _Name;
+	}
+
+	string GetObjectName()
+	{
+		return m_Name;
 	}
 
 public:

@@ -101,6 +101,9 @@
     <Filter Include="Engine\01.Header\RenderComps\RenderComps_Objects\BasicComps">
       <UniqueIdentifier>{dd1d20e6-a946-487c-9ac9-fbd1935283df}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\03.Manager\RenderManager">
+      <UniqueIdentifier>{818ab136-e6be-4a5b-933b-7893528dfcda}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\targetver.h">
