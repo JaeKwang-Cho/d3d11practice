@@ -93,6 +93,29 @@ bool InitDevice()
     }
     g_pRenderTargetView->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("g_pRenderTargetView") - 1, "g_pRenderTargetView");
 
+    // 뷰포트를 설정한다.
+    D3D11_VIEWPORT vp;
+    vp.Width = (float)width;
+    vp.Height = (float)height;
+    vp.MinDepth = 0.f;
+    vp.MaxDepth = 1.f;
+    vp.TopLeftX = 0;
+    vp.TopLeftY = 0;
+    // 뷰포트 구조체를 레스터라이즈 단계에 바인딩 한다.
+    g_pImmediateContext->RSSetViewports(1, &vp);
+
+    return true;
+}
+
+bool InitRenderState()
+{
+    // 일단 윈도우의 프로퍼티를 가져오고
+    RECT rc;
+    GetClientRect(g_hWnd, &rc);
+    UINT    width = rc.right - rc.left;
+    UINT    height = rc.bottom - rc.top;
+
+    HRESULT hr;
     // rasterizer 모드를 설정한다.
     // https://learn.microsoft.com/ko-kr/windows/win32/api/d3d11/ns-d3d11-d3d11_rasterizer_desc
     D3D11_RASTERIZER_DESC rd;
@@ -107,7 +130,7 @@ bool InitDevice()
     rd.ScissorEnable = false; // https://learn.microsoft.com/ko-kr/windows/win32/direct3d9/scissor-test
     rd.MultisampleEnable = false;
     rd.AntialiasedLineEnable = false;
-   
+
     hr = g_pd3dDevice->CreateRasterizerState(&rd, &g_pRasterizerState);
     if (FAILED(hr))
     {
@@ -158,12 +181,13 @@ bool InitDevice()
     descDepth.SampleDesc.Quality = 0;
     descDepth.Usage = D3D11_USAGE_DEFAULT;
     descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-    descDepth.CPUAccessFlags = 0; 
+    descDepth.CPUAccessFlags = 0;
     descDepth.MiscFlags = 0;
     // 뎁스 버퍼도 텍스쳐를 일단 만들어서 사용하는 것이다.
     hr = g_pd3dDevice->CreateTexture2D(&descDepth, nullptr, &g_pDepthStencil);
     if (FAILED(hr))
     {
+        assert("g_pd3dDevice->CreateTexture2D" && false);
         return false;
     }
     g_pDepthStencil->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("g_pDepthStencil") - 1, "g_pDepthStencil");
@@ -178,6 +202,7 @@ bool InitDevice()
     hr = g_pd3dDevice->CreateDepthStencilView(g_pDepthStencil, &descDSv, &g_pDepthStencilView);
     if (FAILED(hr))
     {
+        assert("g_pd3dDevice->CreateDepthStencilView" && false);
         return false;
     }
     g_pDepthStencilView->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("g_pDepthStencilView") - 1, "g_pDepthStencilView");
@@ -188,7 +213,7 @@ bool InitDevice()
     // 렌더 타겟을 해제하는 방법은 다음과 같다.
     // g_pImmediateContext->OMSetRenderTargets(0, nullptr, nullptr);
 
-    
+
     // Blend 모드를 설정한다.
     // https://learn.microsoft.com/ko-kr/windows/win32/api/d3d11/ns-d3d11-d3d11_blend_desc
     D3D11_BLEND_DESC bd;
@@ -215,22 +240,17 @@ bool InitDevice()
     // 2) 렌더 타겟 블랜드 추가 상태
     bd.RenderTarget[0] = rtbd;
 
-    g_pd3dDevice->CreateBlendState(&bd, &g_pBlendState);
+    hr = g_pd3dDevice->CreateBlendState(&bd, &g_pBlendState);
+    if (FAILED(hr))
+    {
+        assert("g_pd3dDevice->CreateBlendState" && false);
+        return false;
+    }
+
     g_pBlendState->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("g_pBlendState") - 1, "g_pBlendState");
-    
+
     float blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
     g_pImmediateContext->OMSetBlendState(g_pBlendState, nullptr, 0xffffffff);
-
-    // 뷰포트를 설정한다.
-    D3D11_VIEWPORT vp;
-    vp.Width = (float)width;
-    vp.Height = (float)height;
-    vp.MinDepth = 0.f;
-    vp.MaxDepth = 1.f;
-    vp.TopLeftX = 0;
-    vp.TopLeftY = 0;
-    // 뷰포트 구조체를 레스터라이즈 단계에 바인딩 한다.
-    g_pImmediateContext->RSSetViewports(1, &vp);
 
     return true;
 }
@@ -342,7 +362,7 @@ HRESULT ResizeWindow()
 
 void CallbackResizeWindow()
 {
-    if (g_pImmediateContext && g_pSwapChain && g_pCBChangeOnResize)
+    if (g_pImmediateContext && g_pSwapChain)
     {
         g_pSwapChain->ResizeBuffers(1, 0, 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
 
@@ -351,11 +371,6 @@ void CallbackResizeWindow()
         UINT width = rc.right - rc.left;
         UINT height = rc.bottom - rc.top;
         g_ProjectionMat = MatrixPerspectiveFovLH(PIDiv2, width / (float)height, 0.01f, 100.f);
-
-        // 윈도우 크기 변환 시에 변하는 Constant buffer 초기화
-        CBChangeOnResize cbChangeOnResize;
-        cbChangeOnResize.mProjection = MatrixTranspose(g_ProjectionMat);
-        g_pImmediateContext->UpdateSubresource(g_pCBChangeOnResize, 0, nullptr, &cbChangeOnResize, 0, 0);
     }
 }
 
@@ -429,16 +444,19 @@ void GetShaderResourceFromViewToFile(ID3D11Resource* pResource)
 void FindD3DComObjLeak()
 {
     HMODULE dxgidebugdll = GetModuleHandleW(L"dxgidebug.dll");
-    decltype(&DXGIGetDebugInterface) GetDebugInterface = reinterpret_cast<decltype(&DXGIGetDebugInterface)>(GetProcAddress(dxgidebugdll, "DXGIGetDebugInterface"));
+    if (dxgidebugdll)
+    {
+        decltype(&DXGIGetDebugInterface) GetDebugInterface = reinterpret_cast<decltype(&DXGIGetDebugInterface)>(GetProcAddress(dxgidebugdll, "DXGIGetDebugInterface"));
 
-    IDXGIDebug* debug;
+        IDXGIDebug* debug;
 
-    GetDebugInterface(IID_PPV_ARGS(&debug));
+        GetDebugInterface(IID_PPV_ARGS(&debug));
 
-    OutputDebugStringW(L"============== D3D Object ref count : COM leak check ==============\n");
-    debug->ReportLiveObjects(DXGI_DEBUG_D3D11, DXGI_DEBUG_RLO_DETAIL);
-    OutputDebugStringW(L"================ End of IUnKnown Object leaked ... ================\n");
+        OutputDebugStringW(L"============== D3D Object ref count : COM leak check ==============\n");
+        debug->ReportLiveObjects(DXGI_DEBUG_D3D11, DXGI_DEBUG_RLO_DETAIL);
+        OutputDebugStringW(L"================ End of IUnKnown Object leaked ... ================\n");
 
-    debug->Release();
+        debug->Release();
+    }
 }
 #endif

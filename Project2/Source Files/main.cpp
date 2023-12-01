@@ -32,15 +32,18 @@ Matrix                      g_ViewMat;
 Matrix                      g_ProjectionMat;
 FLOAT4                      g_vMeshColor(0.7f, 0.7f, 0.7f, 1.0f);
 
-// Temp// Constant Buffer
+// Temp
+
+// Constant Buffer
 ID3D11Buffer*               g_pConstantBuffer = nullptr;
-ID3D11Buffer*               g_pCBNeverChanges = nullptr;
-ID3D11Buffer*               g_pCBChangeOnResize = nullptr;
-ID3D11Buffer*               g_pCBChangesEveryFrame = nullptr;
+ID3D11Buffer*               g_pCBMVPMat = nullptr;
 
 // 전역 프로퍼티
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름
+
+// 윈도우 사이즈를 정하고
+RECT rc = { 0, 0, 1280, 768};
 
 // 전방 선언
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -77,12 +80,17 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
+    if (!InitRenderState())
+    {
+        return FALSE;
+    }
+
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_PROJECT2));
 
     MSG msg = { 0 };
 
     // Core를 초기화 한다.
-    if (FAILED(CCore::GetInstance()->Init(g_hWnd, POINT{ 1280, 768 })))
+    if (FAILED(CCore::GetInstance()->Init(g_hWnd, POINT{ rc.right, rc.bottom })))
     {
         MessageBox(g_hWnd, L"Core Init Failed", L"Error", MB_OK);
         // https://learn.microsoft.com/ko-kr/windows/win32/api/winuser/nf-winuser-messagebox
@@ -136,9 +144,6 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 bool InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
     g_hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
-
-    // 윈도우 사이즈를 정하고
-    RECT rc = { 0, 0, 640, 480 };
     AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, true);
 
     g_hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,

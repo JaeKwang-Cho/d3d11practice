@@ -16,6 +16,9 @@ using std::vector;
 using std::wstring;
 using std::string;
 
+#include <queue>
+using std::priority_queue;
+
 #include <d3d11.h>
 #include <d3dcompiler.h>
 

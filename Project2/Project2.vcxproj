@@ -154,6 +154,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Header Files\CRenderManager.h" />
     <ClInclude Include="Header Files\CActor.h" />
     <ClInclude Include="Header Files\CActorComponent.h" />
     <ClInclude Include="Header Files\CCore.h" />
@@ -191,6 +192,7 @@
     <ClInclude Include="Header Files\TestActor.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source Files\CRenderManager.cpp" />
     <ClCompile Include="Source Files\HelperFunc.cpp" />
     <ClCompile Include="Source Files\MeshComp.cpp" />
     <ClCompile Include="Source Files\CActor.cpp" />

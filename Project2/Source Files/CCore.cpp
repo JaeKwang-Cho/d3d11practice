@@ -5,6 +5,7 @@
 #include "CKeyManager.h"
 #include "CMouseManager.h"
 #include "CSceneManager.h"
+#include "CRenderManager.h"
 
 int CCore::Init(HWND _hWnd, POINT _ptResolution)
 {
@@ -25,6 +26,7 @@ int CCore::Init(HWND _hWnd, POINT _ptResolution)
 		CKeyManager::GetInstance()->Init();
 		CMouseManager::GetInstance()->Init();
 		CSceneManager::GetInstance()->Init();
+		CRenderManager::GetInstance()->Init();
 	}
 
 	return S_OK;
@@ -92,10 +94,11 @@ void CCore::render()
 	CTimeManager::GetInstance()->Render();
 
 	// ===================
-	// ==Scene Rendering==
+	// ==Rendering==
 	// ===================
 
 	CSceneManager::GetInstance()->Render();
+	CRenderManager::GetInstance()->Render();
 }
 
 CCore::CCore() :

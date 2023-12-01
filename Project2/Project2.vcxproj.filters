@@ -194,6 +194,9 @@
     <ClInclude Include="Header Files\HelperFunc.h">
       <Filter>Engine\01.Header\functions</Filter>
     </ClInclude>
+    <ClInclude Include="Header Files\CRenderManager.h">
+      <Filter>Engine\03.Manager\RenderManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project2.rc">
@@ -278,6 +281,9 @@
     </ClCompile>
     <ClCompile Include="Source Files\HelperFunc.cpp">
       <Filter>Engine\01.Header\functions</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\CRenderManager.cpp">
+      <Filter>Engine\03.Manager\RenderManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

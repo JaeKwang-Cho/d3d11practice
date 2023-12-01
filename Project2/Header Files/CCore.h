@@ -8,9 +8,7 @@ extern Matrix                      g_ProjectionMat;
 extern FLOAT4                      g_vMeshColor;
 
 extern ID3D11Buffer*				g_pConstantBuffer;
-extern ID3D11Buffer*				g_pCBNeverChanges;
-extern ID3D11Buffer*				g_pCBChangeOnResize;
-extern ID3D11Buffer*				g_pCBChangesEveryFrame;
+extern ID3D11Buffer*				g_pCBMVPMat;
 
 class CCore
 {

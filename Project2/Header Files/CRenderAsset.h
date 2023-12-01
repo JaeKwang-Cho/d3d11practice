@@ -13,6 +13,7 @@ protected:
 	Matrix m_WorldMat;
 	Matrix m_RenderMat;
 	//ObjectRenderComp* m_cube;
+
 private:
 
 public:

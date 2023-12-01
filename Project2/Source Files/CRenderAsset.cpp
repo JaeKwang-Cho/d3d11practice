@@ -34,6 +34,9 @@ void CRenderAsset::UpdateRenderMat()
     //2. 여기서 일단, 불투명한 애들을 냅다 출력한다.
     //3. 그리고 alpha가 < 0 인 친구들을 sort 한다.
     //4. 그리고 출력한다.
+    UpdateWorldMat();
+
+    m_RenderMat = m_WorldMat * g_ViewMat * g_ProjectionMat;
 }
 
 CRenderAsset::CRenderAsset()
@@ -45,7 +48,7 @@ CRenderAsset::CRenderAsset()
 
 CRenderAsset::CRenderAsset(const CRenderAsset& _other)
     :CObject(_other)
-    ,m_WorldMat(MatrixIdentity())
+    , m_WorldMat(MatrixIdentity())
     , m_RenderMat(MatrixIdentity())
 {
     // 여기다가는 그 인스턴싱 어떻게 시도해보기
@@ -53,5 +56,4 @@ CRenderAsset::CRenderAsset(const CRenderAsset& _other)
 
 CRenderAsset::~CRenderAsset()
 {
-    //if (m_cube) delete m_cube;
 }

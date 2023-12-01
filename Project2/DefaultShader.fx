@@ -9,21 +9,10 @@ cbuffer ConstantBuffer : register(b0)
 }
 */
 
-cbuffer cbNeverChanges : register(b1)
+cbuffer cbMVPMatrix : register(b0)
 {
-    matrix View;
+    matrix Mat;
 };
-
-cbuffer cbChangeOnResize : register(b2)
-{
-    matrix Projection;
-};
-
-cbuffer cbChangesEveryFrame : register(b3)
-{
-    matrix World;
-};
-
 
 //--------------------------------------------------------------------------------------
 struct VS_INPUT
@@ -52,9 +41,7 @@ struct PS_INPUT
 PS_INPUT VS(VS_INPUT input)
 {
     PS_INPUT output = (PS_INPUT) 0;
-    output.Pos = mul(input.Pos, World);
-    output.Pos = mul(output.Pos, View);
-    output.Pos = mul(output.Pos, Projection);
+    output.Pos = mul(input.Pos, Mat);
     output.Alpha = input.Alpha;
     //output.Color = input.Color;
     //output.Norm = mul(input.Normal, World);

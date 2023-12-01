@@ -474,6 +474,12 @@ struct DefaultVertex {
     { }
 };
 
+struct MVPMatrix
+{
+    Matrix mat;
+};
+
+/*
 struct CBChangeOnInput
 {
     Matrix mView;
@@ -488,3 +494,4 @@ struct CBChangesEveryFrame
 {
     Matrix mWorld;
 };
+*/

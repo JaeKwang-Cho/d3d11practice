@@ -17,20 +17,21 @@ void CMesh::StartObject()
 
 void CMesh::UpdateObject()
 {
-    UpdateWorldMat();
+    UpdateRenderMat();
 
+    MVPMatrix cbMVPMatrix;
+    cbMVPMatrix.mat = MatrixTranspose(m_RenderMat);
+    g_pImmediateContext->UpdateSubresource(g_pCBMVPMat, 0, nullptr, &cbMVPMatrix, 0, 0);
     // 매 프레임 마다 변하는 constant buffer 업데이트 하기
-    CBChangesEveryFrame cb;
-    cb.mWorld = MatrixTranspose(m_WorldMat);
-    // 쉐이더에서 사용할 Constant buffer 객체에 시스템 메모리 값을 카피해준다.
-    g_pImmediateContext->UpdateSubresource(g_pCBChangesEveryFrame, 0, nullptr, &cb, 0, 0);
 }
 
 void CMesh::RenderObject()
 {
     g_pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-    /*
+    // 계산을 돌리고 인덱스를 따라 삼각형을 그리도록 시킨다.
+    g_pImmediateContext->VSSetConstantBuffers(0, 1, &g_pCBMVPMat);
+
     m_Meshes[1]->StartRender();
     m_Meshes[1]->Render();
     m_Meshes[2]->StartRender();
@@ -39,15 +40,15 @@ void CMesh::RenderObject()
     m_Meshes[3]->Render();
     m_Meshes[0]->StartRender();
     m_Meshes[0]->Render();
-    */
     
+    /*
     auto iter = m_Meshes.begin();
     for (; iter != m_Meshes.end(); iter++)
     {
         (*iter)->StartRender();
         (*iter)->Render();
     }
-    
+    */
 }
 
 bool CMesh::LoadModelFromFile(const string _FilePath)
@@ -126,6 +127,16 @@ MeshComp* CMesh::ProcessMesh(aiMesh* _mesh, const aiScene* _pScene)
     //wchar_t szBuffer[255] = {};
     aiMaterial* mat = _pScene->mMaterials[_mesh->mMaterialIndex];
 
+    bool bAlphaLessOne = false;
+    ai_real alphaVal = 1.f;
+    if (mat->Get(AI_MATKEY_OPACITY, alphaVal) == AI_SUCCESS)
+    {
+        if (alphaVal < 1.f)
+        {
+            bAlphaLessOne = true;
+        }
+    }
+
     for (UINT i = 0; i < _mesh->mNumVertices; i++)
     {
         DefaultVertex vertex;
@@ -142,12 +153,8 @@ MeshComp* CMesh::ProcessMesh(aiMesh* _mesh, const aiScene* _pScene)
             //swprintf_s(szBuffer, L"(u, v) = (%.2f, %.2f)\n", vertex.Tex.u, vertex.Tex.v);
             //OutputDebugStringW(szBuffer);
         }
-        
-        ai_real alphaVal = 1.f;
-        if (mat->Get(AI_MATKEY_OPACITY, alphaVal) == AI_SUCCESS)
-        {
-            vertex.Alpha = alphaVal;
-        }
+
+        vertex.Alpha = alphaVal;
         vertices.push_back(vertex);
     }
 
@@ -172,7 +179,7 @@ MeshComp* CMesh::ProcessMesh(aiMesh* _mesh, const aiScene* _pScene)
     vector<TextureComp> diffuseTextures = LoadMaterialTexture(material, aiTextureType::aiTextureType_DIFFUSE, _pScene);
 
     meshComp = new MeshComp;
-    meshComp->Initialize(vertices, indices, diffuseTextures);
+    meshComp->Initialize(vertices, indices, diffuseTextures, bAlphaLessOne);
     return meshComp;
 }
 

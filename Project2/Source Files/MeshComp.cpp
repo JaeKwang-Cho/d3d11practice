@@ -1,11 +1,12 @@
 #include "pch.h"
 #include "MeshComp.h"
 
-void MeshComp::Initialize(vector<DefaultVertex>& _vertices, vector<WORD>& _indices, vector<TextureComp>& _textures)
+void MeshComp::Initialize(vector<DefaultVertex>& _vertices, vector<WORD>& _indices, vector<TextureComp>& _textures, bool _bAlphaLessOne)
 {
 	m_Vertices = _vertices;
 	m_Indices = _indices;
     m_Textures = _textures;
+    m_bAlphaLessOne = _bAlphaLessOne;
 
     m_RenderComp = new ObjectRenderComp;
 
@@ -23,7 +24,6 @@ void MeshComp::Initialize(vector<DefaultVertex>& _vertices, vector<WORD>& _indic
     numElements = (UINT)m_Indices.size();
     hr = m_RenderComp->CreateIndexBuffer(m_Indices.data(), numElements);
 
-    //hr = m_RenderComp->CreateTextureResourceViewFromImage(L"seafloor.dds");
 
     if (FAILED(hr))
     {
@@ -42,14 +42,11 @@ void MeshComp::Render()
     // 계산을 돌리고 인덱스를 따라 삼각형을 그리도록 시킨다.
     {
         g_pImmediateContext->VSSetShader(m_RenderComp->GetVertexShader(), NULL, 0);
-        g_pImmediateContext->VSSetConstantBuffers(1, 1, &g_pCBNeverChanges);
-        g_pImmediateContext->VSSetConstantBuffers(2, 1, &g_pCBChangeOnResize);
-        g_pImmediateContext->VSSetConstantBuffers(3, 1, &g_pCBChangesEveryFrame);
     }
     // Vectex shader에 constant buffer를 세팅을 했어도, Pixel Shader에도 따로 세팅을 해야 한다.
     {
         g_pImmediateContext->PSSetShader(m_RenderComp->GetPixelShader(), NULL, 0);
-        g_pImmediateContext->PSSetConstantBuffers(3, 1, &g_pCBChangesEveryFrame);
+        g_pImmediateContext->PSSetConstantBuffers(0, 1, &g_pCBMVPMat);
 
         size_t i = 0;
         for (; i < m_Textures.size(); i++)
@@ -72,6 +69,7 @@ MeshComp::MeshComp()
 	, m_Vertices()
 	, m_Indices()
     , m_Textures()
+    , m_bAlphaLessOne(false)
 {
 }
 
