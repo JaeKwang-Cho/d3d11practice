@@ -173,18 +173,6 @@
     <ClInclude Include="Header Files\CMesh.h">
       <Filter>Engine\04.Object\RenderAsset\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="Header Files\ObjectRenderComp.h">
-      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Header Files\IndexBuffer.h">
-      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects\BasicComps</Filter>
-    </ClInclude>
-    <ClInclude Include="Header Files\Shader.h">
-      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects\BasicComps</Filter>
-    </ClInclude>
-    <ClInclude Include="Header Files\VertexBuffer.h">
-      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects\BasicComps</Filter>
-    </ClInclude>
     <ClInclude Include="Header Files\MeshComp.h">
       <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
     </ClInclude>
@@ -196,6 +184,9 @@
     </ClInclude>
     <ClInclude Include="Header Files\CRenderManager.h">
       <Filter>Engine\03.Manager\RenderManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\BasicRenderComp.h">
+      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects\BasicComps</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -261,23 +252,8 @@
     <ClCompile Include="Source Files\CMesh.cpp">
       <Filter>Engine\04.Object\RenderAsset\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\ObjectRenderComp.cpp">
-      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\IndexBuffer.cpp">
-      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects\BasicComps</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\Shader.cpp">
-      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects\BasicComps</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\VertexBuffer.cpp">
-      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects\BasicComps</Filter>
-    </ClCompile>
     <ClCompile Include="Source Files\MeshComp.cpp">
       <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\TextureComp.cpp">
-      <Filter>Engine\01.Header\RenderComps\RenderComps_Objects\BasicComps</Filter>
     </ClCompile>
     <ClCompile Include="Source Files\HelperFunc.cpp">
       <Filter>Engine\01.Header\functions</Filter>

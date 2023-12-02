@@ -118,7 +118,7 @@ void CDefault_Scene::UpdateScene()
 
             if (abs(Pitch) > MOUSE_THRESHOLD)
             {
-                Pitch *= 5.f;
+                Pitch *= 3.f;
 
                 Vector4 Formal = Direction;
                 Direction = RotateVectorAroundLocalAxis(Direction, CameraLeft, Pitch);
@@ -133,7 +133,7 @@ void CDefault_Scene::UpdateScene()
             }
             if (abs(Yaw) > MOUSE_THRESHOLD)
             {
-                Yaw *= 5.f;
+                Yaw *= 3.f;
                 Direction = RotateVectorAroundLocalAxis(Direction, CameraUp, Yaw);
                 bChanged = true;            
             }

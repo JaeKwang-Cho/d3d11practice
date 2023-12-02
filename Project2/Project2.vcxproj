@@ -154,6 +154,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Header Files\BasicRenderComp.h" />
     <ClInclude Include="Header Files\CRenderManager.h" />
     <ClInclude Include="Header Files\CActor.h" />
     <ClInclude Include="Header Files\CActorComponent.h" />
@@ -171,14 +172,10 @@
     <ClInclude Include="Header Files\define.h" />
     <ClInclude Include="Header Files\framework.h" />
     <ClInclude Include="Header Files\function.h" />
-    <ClInclude Include="Header Files\IndexBuffer.h" />
-    <ClInclude Include="Header Files\ObjectRenderComp.h" />
     <ClInclude Include="Header Files\pch.h" />
     <ClInclude Include="Header Files\project2.h" />
     <ClInclude Include="Header Files\Resource.h" />
-    <ClInclude Include="Header Files\Shader.h" />
     <ClInclude Include="Header Files\TextureComp.h" />
-    <ClInclude Include="Header Files\VertexBuffer.h" />
     <ClInclude Include="Header Files\MeshComp.h" />
     <ClInclude Include="Header Files\HelperFunc.h" />
     <None Include="SampleCode\Samples.h" />
@@ -208,12 +205,7 @@
     <ClCompile Include="Source Files\CSceneManager.cpp" />
     <ClCompile Include="Source Files\CTimeManager.cpp" />
     <ClCompile Include="Source Files\D3DHelperFunc.cpp" />
-    <ClCompile Include="Source Files\IndexBuffer.cpp" />
     <ClCompile Include="Source Files\main.cpp" />
-    <ClCompile Include="Source Files\ObjectRenderComp.cpp" />
-    <ClCompile Include="Source Files\Shader.cpp" />
-    <ClCompile Include="Source Files\TextureComp.cpp" />
-    <ClCompile Include="Source Files\VertexBuffer.cpp" />
     <None Include="SampleCode\Samples.cpp" />
     <None Include="SampleCode\ModelLoader.cpp" />
     <None Include="SampleCode\TextureLoader.cpp" />

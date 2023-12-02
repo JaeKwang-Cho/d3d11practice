@@ -1,8 +1,8 @@
 #pragma once
 #include "CObject.h"
 
-extern D3D11_INPUT_ELEMENT_DESC DefaultLayout[];
-extern UINT DefaultLayoutNumElements;
+extern D3D11_INPUT_ELEMENT_DESC g_DefaultLayout[];
+extern UINT g_DefaultLayoutNumElements;
 
 class CMesh;
 

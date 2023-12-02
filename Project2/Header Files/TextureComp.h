@@ -66,38 +66,33 @@ enum class TextureStorageType {
 
 struct TextureComp {
 
-private:
-	ID3D11ShaderResourceView* m_TextureResourceView;
+public:
+	ID3D11ShaderResourceView* m_pTextureResourceView;
 	ID3D11Resource* m_texture;
 	aiTextureType m_type;
 	wstring m_filename;
 
 public:
-	HRESULT CreateTextureResourceViewFromImage(LPCSTR _TexturePath, aiTextureType _type);
-	HRESULT CreateTextureResourceViewFromImage(LPCWSTR _TexturePath, aiTextureType _type);
-	HRESULT CreateTextureResourceViewFromImage(string _TexturePath, aiTextureType _type);
-	HRESULT CreateTextureResourceViewFromImage(wstring _TexturePath, aiTextureType _type);
+	TextureComp()
+		: m_pTextureResourceView(nullptr)
+		, m_texture(nullptr)
+		, m_type(aiTextureType::aiTextureType_UNKNOWN)
+	{}
 
-	HRESULT CreateTextureResourceViewFromColor(const ColorComp* _colorData, UINT _width, UINT _height, aiTextureType _type);
-	HRESULT CreateTextureResourceViewSimpleColor(const ColorComp& _colorData, aiTextureType _type);
-
-private:
-	HRESULT CreateTextureResourceViewFromdds(LPCWSTR _TextureName);
-
-public:
-	aiTextureType GetTextureType()
+	TextureComp(const TextureComp& _other)
+		: m_pTextureResourceView(_other.m_pTextureResourceView)
+		, m_texture(_other.m_texture)
+		, m_type(_other.m_type)
+		, m_filename(_other.m_filename)
 	{
-		return m_type;
+		if (m_pTextureResourceView)m_pTextureResourceView->AddRef();
+		if (m_texture) m_texture->AddRef();
 	}
 
-	ID3D11ShaderResourceView** GetTextureResourceViewAddress()
+	virtual ~TextureComp()
 	{
-		return &m_TextureResourceView;
+		if (m_pTextureResourceView)m_pTextureResourceView->Release();
+		if (m_texture) m_texture->Release();
 	}
-
-public:
-	TextureComp();
-	TextureComp(const ColorComp& _colorData, aiTextureType _type);
-	TextureComp(const TextureComp& _other);
-	virtual ~TextureComp();
 };
+

@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CMesh.h"
+#include "TextureComp.h"
 
 void CMesh::Initialize(const string _FilePath)
 {
@@ -250,7 +251,9 @@ vector<TextureComp> CMesh::LoadMaterialTexture(aiMaterial* _pMaterial, aiTexture
             _pMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, aiColor);
             if (aiColor.IsBlack()) //
             {
-                texComp.CreateTextureResourceViewSimpleColor(DefaultColors::UnloadedTextureColor, _textureType);
+                TexResource::CreateTextureResourceViewSingleColor(&texComp.m_pTextureResourceView, DefaultColors::UnloadedTextureColor);
+                texComp.m_type = _textureType;
+                texComp.m_pTextureResourceView->GetResource(&texComp.m_texture);
                 matTextures.push_back(texComp);
 
                 return matTextures;
@@ -258,7 +261,9 @@ vector<TextureComp> CMesh::LoadMaterialTexture(aiMaterial* _pMaterial, aiTexture
             else
             {
                 ColorComp diffuseColor(unsigned char(aiColor.r * 255.f), unsigned char(aiColor.g * 255.f), unsigned char(aiColor.b * 255));
-                texComp.CreateTextureResourceViewSimpleColor(diffuseColor, _textureType);
+                TexResource::CreateTextureResourceViewSingleColor(&texComp.m_pTextureResourceView, diffuseColor);
+                texComp.m_type = _textureType;
+                texComp.m_pTextureResourceView->GetResource(&texComp.m_texture);
                 matTextures.push_back(texComp);
 
                 return matTextures;
@@ -283,7 +288,9 @@ vector<TextureComp> CMesh::LoadMaterialTexture(aiMaterial* _pMaterial, aiTexture
             {
                 string filename = m_directory + '\\' + path.C_Str();
                 TextureComp diskTexture;
-                diskTexture.CreateTextureResourceViewFromImage(filename, _textureType);
+                TexResource::CreateTextureResourceViewFromImage(&diskTexture.m_pTextureResourceView, StringHelper::StrToWstr(filename));
+                diskTexture.m_type = _textureType;
+                diskTexture.m_pTextureResourceView->GetResource(&diskTexture.m_texture);
                 matTextures.push_back(diskTexture);
             }
             break;
@@ -316,7 +323,9 @@ vector<TextureComp> CMesh::LoadMaterialTexture(aiMaterial* _pMaterial, aiTexture
 
     if (matTextures.size() == 0)
     {
-        texComp.CreateTextureResourceViewSimpleColor(DefaultColors::UnhandledTextureColor, aiTextureType_DIFFUSE);
+        TexResource::CreateTextureResourceViewSingleColor(&texComp.m_pTextureResourceView, DefaultColors::UnhandledTextureColor);
+        texComp.m_type = aiTextureType_DIFFUSE;
+        texComp.m_pTextureResourceView->GetResource(&texComp.m_texture);
         matTextures.push_back(texComp);
     }
     
