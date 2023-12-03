@@ -6,7 +6,7 @@ class CRenderManager
 {
 	SINGLETON(CRenderManager)
 private:
-	priority_queue<MeshComp*> AlphaAssets;
+	vector<MeshComp*> AlphaAssets;
 	vector<vector<MeshComp*>> NonAlphaAssets;
 
 public:

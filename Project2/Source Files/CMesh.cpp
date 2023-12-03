@@ -33,14 +33,14 @@ void CMesh::RenderObject()
     // 계산을 돌리고 인덱스를 따라 삼각형을 그리도록 시킨다.
     g_pImmediateContext->VSSetConstantBuffers(0, 1, &g_pCBMVPMat);
 
-    m_Meshes[1]->StartRender();
-    m_Meshes[1]->Render();
-    m_Meshes[2]->StartRender();
-    m_Meshes[2]->Render();
-    m_Meshes[3]->StartRender();
-    m_Meshes[3]->Render();
-    m_Meshes[0]->StartRender();
-    m_Meshes[0]->Render();
+    m_Meshes[1]->UpdateComp();
+    m_Meshes[1]->RenderComp();
+    m_Meshes[2]->UpdateComp();
+    m_Meshes[2]->RenderComp();
+    m_Meshes[3]->UpdateComp();
+    m_Meshes[3]->RenderComp();
+    m_Meshes[0]->UpdateComp();
+    m_Meshes[0]->RenderComp();
     
     /*
     auto iter = m_Meshes.begin();

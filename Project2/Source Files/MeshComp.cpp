@@ -132,11 +132,11 @@ HRESULT MeshComp::Initialize(vector<DefaultVertex>& _vertices, vector<WORD>& _in
     return hr;
 }
 
-void MeshComp::StartRender()
+void MeshComp::UpdateComp()
 {
 }
 
-void MeshComp::Render()
+void MeshComp::RenderComp()
 {
     // 레이아웃 집어 넣기
     g_pImmediateContext->IASetInputLayout(m_VertexShader.m_pLayout);
@@ -180,6 +180,7 @@ MeshComp::MeshComp()
 	, m_Indices()
     , m_Textures()
     , m_bAlphaLessOne(false)
+    , m_fZval(0.f)
 {
 }
 
