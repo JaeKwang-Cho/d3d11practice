@@ -11,6 +11,8 @@ class CMesh :
 {
 private:
     vector<MeshComp*> m_Meshes;
+    vector<MeshComp*> m_NonAlphaMeshes;
+    vector<MeshComp*> m_AlphaMeshes;
     string m_directory;
 
 public:

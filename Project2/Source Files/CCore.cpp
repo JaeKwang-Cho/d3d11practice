@@ -81,7 +81,7 @@ void CCore::update()
 	CKeyManager::GetInstance()->Update();
 	CMouseManager::GetInstance()->Update();
 	CSceneManager::GetInstance()->Update();
-	
+	CRenderManager::GetInstance()->Update();
 }
 
 void CCore::render()
@@ -97,7 +97,6 @@ void CCore::render()
 	// ==Rendering==
 	// ===================
 
-	CSceneManager::GetInstance()->Render();
 	CRenderManager::GetInstance()->Render();
 }
 

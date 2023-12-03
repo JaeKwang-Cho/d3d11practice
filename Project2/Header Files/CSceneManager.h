@@ -14,7 +14,6 @@ private:
 public:
 	void Init();
 	void Update();
-	void Render();
 
 public:
 	CScene* GetCurrScene()

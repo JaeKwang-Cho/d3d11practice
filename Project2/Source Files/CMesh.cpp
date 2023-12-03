@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CMesh.h"
 #include "TextureComp.h"
+#include "CRenderManager.h"
 
 void CMesh::Initialize(const string _FilePath)
 {
@@ -20,36 +21,32 @@ void CMesh::UpdateObject()
 {
     UpdateRenderMat();
 
-    MVPMatrix cbMVPMatrix;
-    cbMVPMatrix.mat = MatrixTranspose(m_RenderMat);
-    g_pImmediateContext->UpdateSubresource(g_pCBMVPMat, 0, nullptr, &cbMVPMatrix, 0, 0);
     // 매 프레임 마다 변하는 constant buffer 업데이트 하기
+    auto iter = m_NonAlphaMeshes.begin();
+    for (; iter != m_NonAlphaMeshes.end(); iter++)
+    {
+        (*iter)->UpdateComp(m_RenderMat);
+    }
+
+    CRenderManager::GetInstance()->EnqueNonAlphaMeshComps(&m_NonAlphaMeshes);
+
+    iter = m_AlphaMeshes.begin();
+    for (; iter != m_AlphaMeshes.end(); iter++)
+    {
+        MeshComp* pIter = *iter;
+        pIter->UpdateComp(m_RenderMat);
+        pIter->CalcZValue();
+        CRenderManager::GetInstance()->EnqueAlphaMeshComp(pIter);
+    }
 }
 
 void CMesh::RenderObject()
 {
-    g_pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-    // 계산을 돌리고 인덱스를 따라 삼각형을 그리도록 시킨다.
-    g_pImmediateContext->VSSetConstantBuffers(0, 1, &g_pCBMVPMat);
-
-    m_Meshes[1]->UpdateComp();
-    m_Meshes[1]->RenderComp();
-    m_Meshes[2]->UpdateComp();
-    m_Meshes[2]->RenderComp();
-    m_Meshes[3]->UpdateComp();
-    m_Meshes[3]->RenderComp();
-    m_Meshes[0]->UpdateComp();
-    m_Meshes[0]->RenderComp();
-    
-    /*
-    auto iter = m_Meshes.begin();
-    for (; iter != m_Meshes.end(); iter++)
+    auto iter = m_NonAlphaMeshes.begin();
+    for (; iter != m_NonAlphaMeshes.end(); iter++)
     {
-        (*iter)->StartRender();
-        (*iter)->Render();
+        (*iter)->RenderComp();
     }
-    */
 }
 
 bool CMesh::LoadModelFromFile(const string _FilePath)
@@ -107,7 +104,16 @@ void CMesh::ProcessNodes(aiNode* _node, const aiScene* _scene)
     for (UINT i = 0; i < _node->mNumMeshes; i++)
     {
         aiMesh* mesh = _scene->mMeshes[_node->mMeshes[i]];
+        MeshComp* pMeshComp = ProcessMesh(mesh, _scene);
         m_Meshes.push_back(ProcessMesh(mesh, _scene));
+        if (pMeshComp->m_bAlphaLessOne)
+        {
+            m_AlphaMeshes.push_back(pMeshComp);
+        }
+        else
+        {
+            m_NonAlphaMeshes.push_back(pMeshComp);
+        }
     }
     // 하위 노드 처리
     for (UINT i = 0; i < _node->mNumChildren; i++)
@@ -181,6 +187,7 @@ MeshComp* CMesh::ProcessMesh(aiMesh* _mesh, const aiScene* _pScene)
 
     meshComp = new MeshComp;
     meshComp->Initialize(vertices, indices, diffuseTextures, bAlphaLessOne);
+
     return meshComp;
 }
 

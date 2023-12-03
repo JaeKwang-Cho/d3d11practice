@@ -132,12 +132,26 @@ HRESULT MeshComp::Initialize(vector<DefaultVertex>& _vertices, vector<WORD>& _in
     return hr;
 }
 
-void MeshComp::UpdateComp()
+void MeshComp::UpdateComp(Matrix _RenderMat)
 {
+    m_RenderMat = _RenderMat;
+}
+
+void MeshComp::CalcZValue()
+{
+    Vector4 vPos = VectorTransform(FLOAT4(m_Vertices[0].Pos, 1.f), m_RenderMat);
+    m_fZval = vPos.z;        
 }
 
 void MeshComp::RenderComp()
 {
+    MVPMatrix cbMVPMatrix;
+    cbMVPMatrix.mat = MatrixTranspose(m_RenderMat);
+    g_pImmediateContext->UpdateSubresource(g_pCBMVPMat, 0, nullptr, &cbMVPMatrix, 0, 0);
+
+    // constant buffer 전달하기
+    g_pImmediateContext->VSSetConstantBuffers(0, 1, &g_pCBMVPMat);
+
     // 레이아웃 집어 넣기
     g_pImmediateContext->IASetInputLayout(m_VertexShader.m_pLayout);
 
@@ -181,6 +195,7 @@ MeshComp::MeshComp()
     , m_Textures()
     , m_bAlphaLessOne(false)
     , m_fZval(0.f)
+    , m_RenderMat()
 {
 }
 

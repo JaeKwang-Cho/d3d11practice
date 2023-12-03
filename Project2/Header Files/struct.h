@@ -97,6 +97,12 @@ struct FLOAT4 {
     {
     }
 
+    FLOAT4(FLOAT3 _pos, float _a)
+        :x(_pos.x), y(_pos.y), z(_pos.z), a(_a)
+    {
+
+    }
+
     FLOAT4 Nomalize()
     {
         double sumP = (double)x * (double)x + (double)y * (double)y + (double)z * (double)z + (double)a * (double)a;

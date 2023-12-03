@@ -14,13 +14,17 @@ struct MeshComp
     vector<DefaultVertex> m_Vertices;
     vector<WORD> m_Indices;
     vector<TextureComp> m_Textures;
+
     bool m_bAlphaLessOne;
     float m_fZval;
+    Matrix m_RenderMat;
 
 public:
     HRESULT Initialize(vector<DefaultVertex>& _vertices, vector<WORD>& _indices, vector<TextureComp>& _textures, bool _bAlphaLessOne);
 
-    void UpdateComp();
+    void UpdateComp(Matrix _RenderMat);
+
+    void CalcZValue();
 
     void RenderComp();
 

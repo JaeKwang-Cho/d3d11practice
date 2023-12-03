@@ -16,11 +16,6 @@ void CSceneManager::Update()
 	m_pCurrScene->Update();
 }
 
-void CSceneManager::Render()
-{
-	m_pCurrScene->Render();
-}
-
 CSceneManager::CSceneManager()
 	:m_SceneArr{}
 	, m_pCurrScene(nullptr)
