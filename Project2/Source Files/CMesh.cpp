@@ -93,19 +93,20 @@ bool CMesh::LoadModelFromFile(const string _FilePath)
     }
 #endif
     // #3 Scene 하위에 있는 Node를 처리한다.  
-    ProcessNodes(pScene->mRootNode, pScene);
+    ProcessNodes(pScene->mRootNode, pScene, MatrixIdentity());
     return true;
 }
 
-void CMesh::ProcessNodes(aiNode* _node, const aiScene* _scene)
+void CMesh::ProcessNodes(aiNode* _node, const aiScene* _scene, Matrix _ParentTransfromMat)
 {
+    Matrix nodeTransfromMat = MatrixTranspose(Matrix(&_node->mTransformation.a1)) * _ParentTransfromMat;
     // Node 안에는 또 다른 노드가 있을 수 있고, Mesh 가 있을 수 있다.
     // 메쉬 처리
     for (UINT i = 0; i < _node->mNumMeshes; i++)
     {
         aiMesh* mesh = _scene->mMeshes[_node->mMeshes[i]];
-        MeshComp* pMeshComp = ProcessMesh(mesh, _scene);
-        m_Meshes.push_back(ProcessMesh(mesh, _scene));
+        MeshComp* pMeshComp = ProcessMesh(mesh, _scene, nodeTransfromMat);
+        m_Meshes.push_back(pMeshComp);
         if (pMeshComp->m_bAlphaLessOne)
         {
             m_AlphaMeshes.push_back(pMeshComp);
@@ -118,11 +119,11 @@ void CMesh::ProcessNodes(aiNode* _node, const aiScene* _scene)
     // 하위 노드 처리
     for (UINT i = 0; i < _node->mNumChildren; i++)
     {
-        ProcessNodes(_node->mChildren[i], _scene);
+        ProcessNodes(_node->mChildren[i], _scene, nodeTransfromMat);
     }
 }
 
-MeshComp* CMesh::ProcessMesh(aiMesh* _mesh, const aiScene* _pScene)
+MeshComp* CMesh::ProcessMesh(aiMesh* _mesh, const aiScene* _pScene, Matrix _TransfromMat)
 {
     MeshComp* meshComp = nullptr;
     // 메쉬 데이터 채우기
@@ -186,7 +187,7 @@ MeshComp* CMesh::ProcessMesh(aiMesh* _mesh, const aiScene* _pScene)
     vector<TextureComp> diffuseTextures = LoadMaterialTexture(material, aiTextureType::aiTextureType_DIFFUSE, _pScene);
 
     meshComp = new MeshComp;
-    meshComp->Initialize(vertices, indices, diffuseTextures, bAlphaLessOne);
+    meshComp->Initialize(vertices, indices, diffuseTextures, bAlphaLessOne, _TransfromMat);
 
     return meshComp;
 }
@@ -303,22 +304,33 @@ vector<TextureComp> CMesh::LoadMaterialTexture(aiMaterial* _pMaterial, aiTexture
             break;
             case TextureStorageType::EmbeddedCompressed:
             {
-                int i = 0;
+                const aiTexture* pTexture = _pScene->GetEmbeddedTexture(path.C_Str());
+                TextureComp EmbeddedTexture;
+                TexResource::CreateTextureResourceViewFromData(&EmbeddedTexture.m_pTextureResourceView, reinterpret_cast<uint8_t*>(pTexture->pcData), pTexture->mWidth);
+                EmbeddedTexture.m_type = _textureType;
+                EmbeddedTexture.m_pTextureResourceView->GetResource(&EmbeddedTexture.m_texture);
+                matTextures.push_back(EmbeddedTexture);
             }
             break;
             case TextureStorageType::EmbeddedNonCompressed:
             {
-                int i = 0;
+                assert("TextureStorageType::EmbeddedNonCompressed isn't implemented" && false);
             }
             break;
             case TextureStorageType::EmbeddedIndexCompressed:
             {
-                int i = 0;
+                const char* data = path.C_Str();
+                int index = atoi(data + 1);
+                TextureComp EmbeddedIndexTexture;
+                TexResource::CreateTextureResourceViewFromData(&EmbeddedIndexTexture.m_pTextureResourceView, reinterpret_cast<uint8_t*>(_pScene->mTextures[index]->pcData), _pScene->mTextures[index]->mWidth);
+                EmbeddedIndexTexture.m_type = _textureType;
+                EmbeddedIndexTexture.m_pTextureResourceView->GetResource(&EmbeddedIndexTexture.m_texture);
+                matTextures.push_back(EmbeddedIndexTexture);
             }
             break;
             case TextureStorageType::EmbeddedIndexNonCompressed:
             {
-                int i = 0;
+                assert("TextureStorageType::EmbeddedIndexNonCompressed isn't implemented" && false);
             }
             break;
             default:
@@ -360,10 +372,10 @@ CMesh::CMesh(const CMesh& _other)
 CMesh::~CMesh()
 {
     auto iter = m_Meshes.begin();
-    for (; iter != m_Meshes.end();)
+    for (; iter != m_Meshes.end(); iter++)
     {
         MeshComp* p = *iter;
         delete p;
-        iter = m_Meshes.erase(iter);
     }
+    m_Meshes.clear();
 }

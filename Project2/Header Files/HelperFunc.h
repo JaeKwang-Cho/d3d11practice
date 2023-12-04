@@ -19,4 +19,6 @@ namespace TexResource
 	HRESULT CreateTextureResourceViewFromColor(ID3D11ShaderResourceView** _ppTextureResourceView, const ColorComp* _colorData, UINT _width, UINT _height);
 
 	HRESULT CreateTextureResourceViewSingleColor(ID3D11ShaderResourceView** _ppTextureResourceView, const ColorComp& _colorData);
+
+	HRESULT CreateTextureResourceViewFromData(ID3D11ShaderResourceView** _ppTextureResourceView, const uint8_t* _pData, size_t _width);
 }

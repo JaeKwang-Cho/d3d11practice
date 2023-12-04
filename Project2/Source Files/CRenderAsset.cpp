@@ -51,7 +51,6 @@ CRenderAsset::CRenderAsset(const CRenderAsset& _other)
     , m_WorldMat(MatrixIdentity())
     , m_RenderMat(MatrixIdentity())
 {
-    // 여기다가는 그 인스턴싱 어떻게 시도해보기
 }
 
 CRenderAsset::~CRenderAsset()

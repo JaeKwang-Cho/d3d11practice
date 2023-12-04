@@ -156,3 +156,23 @@ HRESULT TexResource::CreateTextureResourceViewSingleColor(ID3D11ShaderResourceVi
 	return CreateTextureResourceViewFromColor(_ppTextureResourceView, &_colorData, 1, 1);
 }
 
+HRESULT TexResource::CreateTextureResourceViewFromData(ID3D11ShaderResourceView** _ppTextureResourceView, const uint8_t* _pData, size_t _width)
+{
+	TexMetadata texMetadata = TexMetadata{};
+	GetMetadataFromWICMemory(_pData, _width, DirectX::WIC_FLAGS_NONE, texMetadata);
+
+	ScratchImage scratchImage = ScratchImage{};
+	LoadFromWICMemory(_pData, _width, DirectX::WIC_FLAGS_NONE, &texMetadata, scratchImage);
+
+
+	HRESULT hr = CreateShaderResourceView(g_pd3dDevice, scratchImage.GetImages(), scratchImage.GetImageCount(), scratchImage.GetMetadata(), _ppTextureResourceView);
+	if (FAILED(hr))
+	{
+		assert("TexResource::CreateTextureResourceViewFromData Failed" && false);
+		return hr;
+	}
+	(*_ppTextureResourceView)->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("CreateTextureResourceViewFromData") - 1, "CreateTextureResourceViewFromData");
+
+	return hr;
+}
+

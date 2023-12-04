@@ -9,6 +9,8 @@
 #include <cassert>
 #include <cmath>
 
+#include <memory>
+
 #include <vector>
 using std::vector;
 

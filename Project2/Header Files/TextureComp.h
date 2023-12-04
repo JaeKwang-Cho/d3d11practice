@@ -85,7 +85,7 @@ public:
 		, m_type(_other.m_type)
 		, m_filename(_other.m_filename)
 	{
-		if (m_pTextureResourceView)m_pTextureResourceView->AddRef();
+		if (m_pTextureResourceView) m_pTextureResourceView->AddRef();
 		if (m_texture) m_texture->AddRef();
 	}
 

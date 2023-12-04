@@ -1,12 +1,13 @@
 #include "pch.h"
 #include "MeshComp.h"
 
-HRESULT MeshComp::Initialize(vector<DefaultVertex>& _vertices, vector<WORD>& _indices, vector<TextureComp>& _textures, bool _bAlphaLessOne)
+HRESULT MeshComp::Initialize(vector<DefaultVertex>& _vertices, vector<WORD>& _indices, vector<TextureComp>& _textures, bool _bAlphaLessOne, Matrix _SubPosMat)
 {
 	m_Vertices = _vertices;
 	m_Indices = _indices;
     m_Textures = _textures;
     m_bAlphaLessOne = _bAlphaLessOne;
+    m_SubPosMat = _SubPosMat;
 
     HRESULT hr = S_OK;
     // Vertex Shader
@@ -134,7 +135,7 @@ HRESULT MeshComp::Initialize(vector<DefaultVertex>& _vertices, vector<WORD>& _in
 
 void MeshComp::UpdateComp(Matrix _RenderMat)
 {
-    m_RenderMat = _RenderMat;
+    m_RenderMat = m_SubPosMat * _RenderMat;
 }
 
 void MeshComp::CalcZValue()
@@ -195,6 +196,7 @@ MeshComp::MeshComp()
     , m_Textures()
     , m_bAlphaLessOne(false)
     , m_fZval(0.f)
+    , m_SubPosMat()
     , m_RenderMat()
 {
 }

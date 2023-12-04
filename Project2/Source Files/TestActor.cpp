@@ -64,6 +64,7 @@ TestActor::TestActor()
 	SetObjectName("TestActor");
 	m_mesh = new CMesh;
 	m_mesh->Initialize("obj\\eyeball.obj");
+	//m_mesh->Initialize("fbx\\dodge_challenger.fbx");
 	m_mesh->SetObjectName("EyeballMesh");
 	AddComponent(m_mesh);
 }
