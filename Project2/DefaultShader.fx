@@ -57,8 +57,8 @@ PS_INPUT VS(VS_INPUT input)
 float4 PS(PS_INPUT input) : SV_Target
 {
     
-    //float4 SampleColor = txDiffuse.Sample(samLinear, input.Tex);
-    float4 SampleColor = float4(input.Normal, 1.f);
+    float4 SampleColor = txDiffuse.Sample(samLinear, input.Tex);
+    //float4 SampleColor = float4(input.Normal, 1.f);
     
     // Sample : 쉐이더 내장함수, 파라미터에 따라 동작이 달라진다.
     // 여기서는 샘플러와 좌표로 보간을 해서 텍스쳐를 그리게 된다.

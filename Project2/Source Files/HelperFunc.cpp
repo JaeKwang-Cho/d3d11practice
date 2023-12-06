@@ -145,7 +145,7 @@ HRESULT TexResource::CreateTextureResourceViewFromColor(ID3D11ShaderResourceView
 	{
 		hr = g_pd3dDevice->CreateShaderResourceView(ptexture, &srvd, _ppTextureResourceView);
 	}
-
+	ptexture->Release();
 	(*_ppTextureResourceView)->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("CreateTextureResourceViewFromColor") - 1, "CreateTextureResourceViewFromColor");
 
 	return hr;

@@ -1,4 +1,5 @@
 #pragma once
+#include "CScene.h"
 
 class CObject
 {
@@ -10,6 +11,7 @@ protected:
 
 	// Owner
 	CObject* m_OwnerObject;
+	CScene* m_OwnerScene;
 	Transform m_RelativeTransform;
 	Transform m_WorldTransform;
 
@@ -18,7 +20,21 @@ protected:
 public:
 	void SetOwnerObject(CObject* const _OwnerObject) {
 		m_OwnerObject = _OwnerObject;
-	 }
+	}
+	void SetOwnerScene(CScene* const _OwnerScene)
+	{
+		m_OwnerScene = _OwnerScene;
+		auto iter = m_Components.begin();
+		for (; iter != m_Components.end(); iter++)
+		{
+			(*iter)->SetOwnerScene(_OwnerScene);
+		}
+	}
+	CScene* GetOwnerScene()
+	{
+		return m_OwnerScene;
+	}
+
 	void AddComponent(CObject* _comp)
 	{
 		m_Components.push_back(_comp);
@@ -44,13 +60,7 @@ public:
 	virtual void UpdateObject() = 0;
 	void UpdateComponent();
 
-	void Render();
-	virtual void RenderObject() = 0;
-
 	virtual CObject* Clone() = 0;
-
-	void Render_Component();
-
 private:
 	void FindWorldTransform();
 

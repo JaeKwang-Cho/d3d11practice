@@ -101,6 +101,12 @@
     <Filter Include="Engine\03.Manager\RenderManager">
       <UniqueIdentifier>{818ab136-e6be-4a5b-933b-7893528dfcda}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\04.Object\RenderAsset\Light">
+      <UniqueIdentifier>{c428c01e-5443-4538-b7e6-3cfb7570fefe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Contents\Default\Light">
+      <UniqueIdentifier>{5820a336-4aab-490e-85ac-4a2f1ac09d1a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\targetver.h">
@@ -185,6 +191,12 @@
     <ClInclude Include="Header Files\RenderStruct.h">
       <Filter>Engine\01.Header\struct</Filter>
     </ClInclude>
+    <ClInclude Include="Header Files\CLight.h">
+      <Filter>Engine\04.Object\RenderAsset\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\TestLight.h">
+      <Filter>Contents\Default\Light</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project2.rc">
@@ -257,6 +269,12 @@
     </ClCompile>
     <ClCompile Include="Source Files\RenderStruct.cpp">
       <Filter>Engine\01.Header\struct</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\CLight.cpp">
+      <Filter>Engine\04.Object\RenderAsset\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\TestLight.cpp">
+      <Filter>Contents\Default\Light</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

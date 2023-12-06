@@ -39,15 +39,6 @@ void CMesh::UpdateObject()
     UpdateRenderMat();
 }
 
-void CMesh::RenderObject()
-{
-    auto iter = m_NonAlphaMeshes.begin();
-    for (; iter != m_NonAlphaMeshes.end(); iter++)
-    {
-        (*iter)->RenderComp();
-    }
-}
-
 bool CMesh::LoadModelFromFile(const string _FilePath)
 {
     // #1 임포터를 만든다.
@@ -250,6 +241,7 @@ vector<TextureComp> CMesh::LoadMaterialTexture(aiMaterial* _pMaterial, aiTexture
     unsigned int textureCount = _pMaterial->GetTextureCount(_textureType);
 
     TextureComp texComp;
+    HRESULT hr;
 
     if (textureCount == 0) // 텍스쳐가 없을 때를 대비
     {
@@ -262,7 +254,7 @@ vector<TextureComp> CMesh::LoadMaterialTexture(aiMaterial* _pMaterial, aiTexture
             _pMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, aiColor);
             if (aiColor.IsBlack()) //
             {
-                TexResource::CreateTextureResourceViewSingleColor(&texComp.m_pTextureResourceView, DefaultColors::UnloadedTextureColor);
+                hr = TexResource::CreateTextureResourceViewSingleColor(&texComp.m_pTextureResourceView, DefaultColors::UnloadedTextureColor);
                 texComp.m_type = _textureType;
                 texComp.m_pTextureResourceView->GetResource(&texComp.m_texture);
                 matTextures.push_back(texComp);
@@ -272,7 +264,7 @@ vector<TextureComp> CMesh::LoadMaterialTexture(aiMaterial* _pMaterial, aiTexture
             else
             {
                 ColorComp diffuseColor(unsigned char(aiColor.r * 255.f), unsigned char(aiColor.g * 255.f), unsigned char(aiColor.b * 255));
-                TexResource::CreateTextureResourceViewSingleColor(&texComp.m_pTextureResourceView, diffuseColor);
+                hr = TexResource::CreateTextureResourceViewSingleColor(&texComp.m_pTextureResourceView, diffuseColor);
                 texComp.m_type = _textureType;
                 texComp.m_pTextureResourceView->GetResource(&texComp.m_texture);
                 matTextures.push_back(texComp);

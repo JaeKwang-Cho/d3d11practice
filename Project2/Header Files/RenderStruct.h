@@ -4,6 +4,15 @@
 extern D3D11_INPUT_ELEMENT_DESC g_DefaultLayout[];
 extern UINT g_DefaultLayoutNumElements;
 
+struct CameraStruct {
+    Vector4 Eye;
+    Vector4 Direction;
+    Vector4 At;
+    Vector4 Up;
+    Vector4 CameraLeft;
+    Vector4 CameraUp;
+};
+
 struct SampleVertex {
     FLOAT3 Pos;
     FLOAT4 Color;

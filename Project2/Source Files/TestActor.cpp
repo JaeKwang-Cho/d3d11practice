@@ -39,7 +39,7 @@ void TestActor::UpdateObject()
 	if (KEYINPUTTAP(KEY::R))
 	{
 		Transform transform = GetWorldTransform();
-		transform.Rotation += FLOAT3(0.f, 1.f, 0.f);
+		transform.Rotation += FLOAT3(0.f, 0.1f, 0.f);
 		SetWorldRotation(transform.Rotation);
 	}
 

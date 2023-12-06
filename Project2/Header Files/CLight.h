@@ -1,12 +1,10 @@
 #pragma once
 #include "CObject.h"
 
-class CActor :
-    public CObject
+class CLight
+	: public CObject
 {
-private:
-
-private:
+public:
 
 public:
 	void SetWorldPosition(float _x, float _y, float _z)
@@ -35,17 +33,14 @@ public:
 		m_WorldTransform.Scale = _Scale;
 	}
 
+
 public:
 	virtual void StartObject() override;
-
 	virtual void UpdateObject() override;
-
-	virtual CObject* Clone()  override;
-
-private:
+	virtual CObject* Clone() override;
 
 public:
-	CActor();
-	virtual ~CActor();
+	CLight();
+	virtual ~CLight();
 };
 

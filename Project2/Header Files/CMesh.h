@@ -23,7 +23,6 @@ public:
     virtual void StartObject() override;
 
     virtual void UpdateObject() override;
-    virtual void RenderObject() override;
 
 public:
     bool LoadModelFromFile(const string _FilePath);

@@ -1,7 +1,6 @@
 #pragma once
 #include "CActor.h"
 
-class CRenderAsset;
 class CMesh;
 
 class TestActor :

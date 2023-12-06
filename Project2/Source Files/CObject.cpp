@@ -38,23 +38,6 @@ void CObject::UpdateComponent()
 	}
 }
 
-void CObject::Render()
-{
-	RenderObject();
-
-	Render_Component();
-}
-
-void CObject::Render_Component()
-{
-	// update all component
-	auto iter = m_Components.begin();
-	for (; iter != m_Components.end(); iter++)
-	{
-		(*iter)->Render();
-	}
-}
-
 void CObject::FindWorldTransform()
 {
 	if (m_OwnerObject != nullptr)

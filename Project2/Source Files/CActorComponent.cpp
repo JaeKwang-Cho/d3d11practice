@@ -9,10 +9,6 @@ void CActorComponent::UpdateObject()
 {
 }
 
-void CActorComponent::RenderObject()
-{
-}
-
 CActorComponent::CActorComponent()
 	:CObject()
 {

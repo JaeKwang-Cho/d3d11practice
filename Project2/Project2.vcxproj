@@ -154,6 +154,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Header Files\CLight.h" />
     <ClInclude Include="Header Files\BasicRenderComp.h" />
     <ClInclude Include="Header Files\CRenderManager.h" />
     <ClInclude Include="Header Files\CActor.h" />
@@ -178,6 +179,7 @@
     <ClInclude Include="Header Files\MeshComp.h" />
     <ClInclude Include="Header Files\HelperFunc.h" />
     <ClInclude Include="Header Files\RenderStruct.h" />
+    <ClInclude Include="Header Files\TestLight.h" />
     <None Include="SampleCode\Samples.h" />
     <None Include="SampleCode\Mesh.h" />
     <None Include="SampleCode\ModelLoader.h" />
@@ -189,6 +191,7 @@
     <ClInclude Include="Header Files\TestActor.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source Files\CLight.cpp" />
     <ClCompile Include="Source Files\RenderStruct.cpp" />
     <ClCompile Include="Source Files\CRenderManager.cpp" />
     <ClCompile Include="Source Files\HelperFunc.cpp" />
@@ -206,6 +209,7 @@
     <ClCompile Include="Source Files\CTimeManager.cpp" />
     <ClCompile Include="Source Files\D3DHelperFunc.cpp" />
     <ClCompile Include="Source Files\main.cpp" />
+    <ClCompile Include="Source Files\TestLight.cpp" />
     <None Include="SampleCode\Samples.cpp" />
     <None Include="SampleCode\ModelLoader.cpp" />
     <None Include="SampleCode\TextureLoader.cpp" />

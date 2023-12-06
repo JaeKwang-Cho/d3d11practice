@@ -18,10 +18,6 @@ void CActor::UpdateObject()
 {
 }
 
-void CActor::RenderObject()
-{
-}
-
 CObject* CActor::Clone()
 {
 	return nullptr;
