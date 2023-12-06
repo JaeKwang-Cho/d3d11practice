@@ -40,7 +40,7 @@ using std::priority_queue;
 
 // #3 custom project setting
 #include "define.h"
-#include "struct.h"
+#include "RenderStruct.h" // include "struct.h"
 #include "function.h"
 
 // #4 many use class

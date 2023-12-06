@@ -37,6 +37,7 @@ FLOAT4                      g_vMeshColor(0.7f, 0.7f, 0.7f, 1.0f);
 // Constant Buffer
 ID3D11Buffer*               g_pConstantBuffer = nullptr;
 ID3D11Buffer*               g_pCBMVPMat = nullptr;
+ID3D11Buffer*               g_pCBLightBuffer = nullptr;
 
 // 전역 프로퍼티
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트

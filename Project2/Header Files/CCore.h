@@ -9,6 +9,7 @@ extern FLOAT4                      g_vMeshColor;
 
 extern ID3D11Buffer*				g_pConstantBuffer;
 extern ID3D11Buffer*				g_pCBMVPMat;
+extern ID3D11Buffer*				g_pCBLightBuffer;
 
 class CCore
 {

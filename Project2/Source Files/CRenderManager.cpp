@@ -100,8 +100,23 @@ HRESULT CRenderManager::CreateConstantBuffer()
         assert(false && "CreateBuffer Failed");
         return hr;
     }
-    g_pCBMVPMat->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("CRenderManager::Init - g_pCBMVPMat") - 1, "CDefault_Scene::EnterScene - g_pCBNeverChanges");
+    g_pCBMVPMat->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("CRenderManager::CreateConstantBuffer - g_pCBMVPMat") - 1, "CRenderManager::CreateConstantBuffer - g_pCBNeverChanges");
 
+    memset(&bd, 0, sizeof(bd));
+    bd.CPUAccessFlags = 0;
+    bd.Usage = D3D11_USAGE_DEFAULT;
+    bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    bd.CPUAccessFlags = 0;
+
+    bd.ByteWidth = sizeof(LightBuffer);
+    hr = g_pd3dDevice->CreateBuffer(&bd, nullptr, &g_pCBLightBuffer);
+    
+    if (FAILED(hr))
+    {
+        assert(false && "CreateBuffer Failed");
+        return hr;
+    }
+    g_pCBLightBuffer->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("CRenderManager::CreateConstantBuffer - g_pCBLightBuffer") - 1, "CRenderManager::CreateConstantBuffer - g_pCBLightBuffer");
     return hr;
 }
 
@@ -114,5 +129,6 @@ CRenderManager::CRenderManager()
 CRenderManager::~CRenderManager()
 {
     if (g_pCBMVPMat) g_pCBMVPMat->Release();
+    if (g_pCBLightBuffer) g_pCBLightBuffer->Release();
     if (m_TextureSampler) m_TextureSampler->Release();
 }

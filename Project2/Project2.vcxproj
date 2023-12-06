@@ -164,7 +164,6 @@
     <ClInclude Include="Header Files\CMesh.h" />
     <ClInclude Include="Header Files\CMouseManager.h" />
     <ClInclude Include="Header Files\CObject.h" />
-    <ClInclude Include="Header Files\CRenderAsset.h" />
     <ClInclude Include="Header Files\CScene.h" />
     <ClInclude Include="Header Files\CSceneManager.h" />
     <ClInclude Include="Header Files\CTimeManager.h" />
@@ -178,6 +177,7 @@
     <ClInclude Include="Header Files\TextureComp.h" />
     <ClInclude Include="Header Files\MeshComp.h" />
     <ClInclude Include="Header Files\HelperFunc.h" />
+    <ClInclude Include="Header Files\RenderStruct.h" />
     <None Include="SampleCode\Samples.h" />
     <None Include="SampleCode\Mesh.h" />
     <None Include="SampleCode\ModelLoader.h" />
@@ -189,6 +189,7 @@
     <ClInclude Include="Header Files\TestActor.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source Files\RenderStruct.cpp" />
     <ClCompile Include="Source Files\CRenderManager.cpp" />
     <ClCompile Include="Source Files\HelperFunc.cpp" />
     <ClCompile Include="Source Files\MeshComp.cpp" />
@@ -200,7 +201,6 @@
     <ClCompile Include="Source Files\CMesh.cpp" />
     <ClCompile Include="Source Files\CMouseManager.cpp" />
     <ClCompile Include="Source Files\CObject.cpp" />
-    <ClCompile Include="Source Files\CRenderAsset.cpp" />
     <ClCompile Include="Source Files\CScene.cpp" />
     <ClCompile Include="Source Files\CSceneManager.cpp" />
     <ClCompile Include="Source Files\CTimeManager.cpp" />

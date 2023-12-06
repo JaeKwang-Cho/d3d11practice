@@ -1,6 +1,4 @@
 #pragma once
-
-#include "CRenderAsset.h"
 #include "TextureComp.h"
 #include "BasicRenderComp.h"
 
@@ -19,11 +17,12 @@ struct MeshComp
     float m_fZval;
     Matrix m_SubPosMat;
     Matrix m_RenderMat;
+    Matrix m_WorldMat;
 
 public:
     HRESULT Initialize(vector<DefaultVertex>& _vertices, vector<WORD>& _indices, vector<TextureComp>& _textures, bool _bAlphaLessOne, Matrix _SubPosMat);
 
-    void UpdateComp(Matrix _RenderMat);
+    void UpdateComp(Matrix _WorldMat);
 
     void CalcZValue();
 

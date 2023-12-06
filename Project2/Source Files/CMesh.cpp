@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "CMesh.h"
-#include "TextureComp.h"
 #include "CRenderManager.h"
 
 void CMesh::Initialize(const string _FilePath)
@@ -19,13 +18,11 @@ void CMesh::StartObject()
 
 void CMesh::UpdateObject()
 {
-    UpdateRenderMat();
-
     // 매 프레임 마다 변하는 constant buffer 업데이트 하기
     auto iter = m_NonAlphaMeshes.begin();
     for (; iter != m_NonAlphaMeshes.end(); iter++)
     {
-        (*iter)->UpdateComp(m_RenderMat);
+        (*iter)->UpdateComp(m_WorldMat);
     }
 
     CRenderManager::GetInstance()->EnqueNonAlphaMeshComps(&m_NonAlphaMeshes);
@@ -34,10 +31,12 @@ void CMesh::UpdateObject()
     for (; iter != m_AlphaMeshes.end(); iter++)
     {
         MeshComp* pIter = *iter;
-        pIter->UpdateComp(m_RenderMat);
+        pIter->UpdateComp(m_WorldMat);
         pIter->CalcZValue();
         CRenderManager::GetInstance()->EnqueAlphaMeshComp(pIter);
     }
+
+    UpdateRenderMat();
 }
 
 void CMesh::RenderObject()
@@ -151,6 +150,10 @@ MeshComp* CMesh::ProcessMesh(aiMesh* _mesh, const aiScene* _pScene, Matrix _Tran
         vertex.Pos.x = _mesh->mVertices[i].x;
         vertex.Pos.y = _mesh->mVertices[i].y;
         vertex.Pos.z = _mesh->mVertices[i].z;
+
+        vertex.Normal.x = _mesh->mNormals[i].x;
+        vertex.Normal.y = _mesh->mNormals[i].y;
+        vertex.Normal.z = _mesh->mNormals[i].z;
         
         // UV 정보가 있다면 가져오기
         if (_mesh->mTextureCoords[0]) //0 ~ 7까지 존재한다.
@@ -357,6 +360,34 @@ CObject* CMesh::Clone()
     return new CMesh(*this);
 }
 
+void CMesh::UpdateWorldMat()
+{
+    // 행렬 곱 순서는 스케일 -> 자전 -> 공전 (이동 + 회전) 순서로 곱하면 된다.
+    m_WorldMat = MatrixIdentity();
+
+    Matrix ScaleMat = MatrixScale(GetWorldTransform().Scale);
+
+    Matrix RotMat = MatrixRotationZ(GetWorldTransform().Rotation.z);
+    RotMat *= MatrixRotationX(GetWorldTransform().Rotation.x);
+    RotMat *= MatrixRotationX(GetWorldTransform().Rotation.y);
+
+    Matrix TransMat = MatrixTranslation(GetWorldTransform().Position);
+
+    m_WorldMat = ScaleMat * RotMat * TransMat;
+}
+
+void CMesh::UpdateRenderMat()
+{
+    //1. RenderAsset들을 전부 가지고 있는 RenderManager
+    //2. 여기서 일단, 불투명한 애들을 냅다 출력한다.
+    //3. 그리고 alpha가 < 0 인 친구들을 sort 한다.
+    //4. 그리고 출력한다.
+    UpdateWorldMat();
+
+    m_RenderMat = m_WorldMat * g_ViewMat * g_ProjectionMat;
+}
+
+
 
 CMesh::CMesh()
     : m_Meshes()
@@ -364,7 +395,9 @@ CMesh::CMesh()
 }
 
 CMesh::CMesh(const CMesh& _other)
-	:CRenderAsset(_other)
+	:CObject(_other)
+    , m_WorldMat(MatrixIdentity())
+    , m_RenderMat(MatrixIdentity())
     , m_Meshes()
 {
 }

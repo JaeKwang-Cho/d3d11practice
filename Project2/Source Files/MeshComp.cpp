@@ -1,5 +1,8 @@
 #include "pch.h"
 #include "MeshComp.h"
+#include "CSceneManager.h"
+#include "CScene.h"
+#include "CMesh.h"
 
 HRESULT MeshComp::Initialize(vector<DefaultVertex>& _vertices, vector<WORD>& _indices, vector<TextureComp>& _textures, bool _bAlphaLessOne, Matrix _SubPosMat)
 {
@@ -133,9 +136,10 @@ HRESULT MeshComp::Initialize(vector<DefaultVertex>& _vertices, vector<WORD>& _in
     return hr;
 }
 
-void MeshComp::UpdateComp(Matrix _RenderMat)
+void MeshComp::UpdateComp(Matrix _WorldMat)
 {
-    m_RenderMat = m_SubPosMat * _RenderMat;
+    m_WorldMat = m_SubPosMat * _WorldMat;
+    m_RenderMat = m_SubPosMat * m_WorldMat * g_ViewMat * g_ProjectionMat;
 }
 
 void MeshComp::CalcZValue()
@@ -146,34 +150,38 @@ void MeshComp::CalcZValue()
 
 void MeshComp::RenderComp()
 {
+    // 이제 GPU로 하여금 셰이더에 적힌, 레지스터 번호로 Contant buffer가 어디로 들어가야 하는지 알려주고
+    // 계산을 돌리고 인덱스를 따라 삼각형을 그리도록 시킨다.
+    g_pImmediateContext->VSSetShader(m_VertexShader.m_pVertexShader, NULL, 0);
+
     MVPMatrix cbMVPMatrix;
-    cbMVPMatrix.mat = MatrixTranspose(m_RenderMat);
+    cbMVPMatrix.RenderMat = MatrixTranspose(m_RenderMat);
+    cbMVPMatrix.WorldMat = MatrixTranspose(m_WorldMat);
     g_pImmediateContext->UpdateSubresource(g_pCBMVPMat, 0, nullptr, &cbMVPMatrix, 0, 0);
 
     // constant buffer 전달하기
     g_pImmediateContext->VSSetConstantBuffers(0, 1, &g_pCBMVPMat);
 
+    LightBuffer cbLightBuffer = CSceneManager::GetInstance()->GetCurrScene()->GetSceneLight();
+    g_pImmediateContext->UpdateSubresource(g_pCBLightBuffer, 0, nullptr, &cbLightBuffer, 0, 0);
+    g_pImmediateContext->VSSetConstantBuffers(1, 1, &g_pCBLightBuffer);
+
     // 레이아웃 집어 넣기
     g_pImmediateContext->IASetInputLayout(m_VertexShader.m_pLayout);
 
-    // 버텍스 버퍼 객체 세팅 (바꿀 일이 없이 때문에 이렇게 한다.)
+    // 버텍스 버퍼 객체 세팅 
     UINT stride = m_VertexBuffer.m_stride;
     UINT offset = m_VertexBuffer.m_offset;
     g_pImmediateContext->IASetVertexBuffers(0, 1, &m_VertexBuffer.m_pVertexBuffer, &stride, &offset);
 
-    // Render Asset으로 빼기
     // 인덱스 버퍼 세팅 (인덱스 개수가 엄청 많아지면 DXGI_FORMAT_R32_UINT로 바꾼다.)
     g_pImmediateContext->IASetIndexBuffer(m_IndexBuffer.m_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 
-    // 이제 GPU로 하여금 셰이더에 적힌, 레지스터 번호로 Contant buffer가 어디로 들어가야 하는지 알려주고
-    // 계산을 돌리고 인덱스를 따라 삼각형을 그리도록 시킨다.
-    {
-        g_pImmediateContext->VSSetShader(m_VertexShader.m_pVertexShader, NULL, 0);
-    }
     // Vectex shader에 constant buffer를 세팅을 했어도, Pixel Shader에도 따로 세팅을 해야 한다.
     {
         g_pImmediateContext->PSSetShader(m_PixelShader.m_pPixelShader, NULL, 0);
         g_pImmediateContext->PSSetConstantBuffers(0, 1, &g_pCBMVPMat);
+        g_pImmediateContext->PSSetConstantBuffers(1, 1, &g_pCBLightBuffer);
 
         size_t i = 0;
         for (; i < m_Textures.size(); i++)
@@ -198,6 +206,7 @@ MeshComp::MeshComp()
     , m_fZval(0.f)
     , m_SubPosMat()
     , m_RenderMat()
+    , m_WorldMat()
 {
 }
 

@@ -28,6 +28,10 @@ void CScene::Update()
 	}
 }
 
+void CScene::Render()
+{
+}
+
 
 CScene::CScene()
 {

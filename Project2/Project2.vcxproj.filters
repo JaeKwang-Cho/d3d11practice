@@ -95,9 +95,6 @@
     <Filter Include="Engine\01.Header\RenderComps\RenderComps_Objects">
       <UniqueIdentifier>{c47f9ca0-662a-4ccf-883d-cbe0dc42d294}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\01.Header\RenderComps\RenderComps_Scene">
-      <UniqueIdentifier>{6e841ba9-0d78-442a-9d2a-76a52c3e63e2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\01.Header\RenderComps\RenderComps_Objects\BasicComps">
       <UniqueIdentifier>{dd1d20e6-a946-487c-9ac9-fbd1935283df}</UniqueIdentifier>
     </Filter>
@@ -152,9 +149,6 @@
     <ClInclude Include="Header Files\CActorComponent.h">
       <Filter>Engine\04.Object\Component\ActorComponent</Filter>
     </ClInclude>
-    <ClInclude Include="Header Files\CRenderAsset.h">
-      <Filter>Engine\04.Object\RenderAsset</Filter>
-    </ClInclude>
     <ClInclude Include="Header Files\CScene.h">
       <Filter>Engine\06.Scene</Filter>
     </ClInclude>
@@ -187,6 +181,9 @@
     </ClInclude>
     <ClInclude Include="Header Files\BasicRenderComp.h">
       <Filter>Engine\01.Header\RenderComps\RenderComps_Objects\BasicComps</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\RenderStruct.h">
+      <Filter>Engine\01.Header\struct</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -231,9 +228,6 @@
     <ClCompile Include="Source Files\CActorComponent.cpp">
       <Filter>Engine\04.Object\Component\ActorComponent</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\CRenderAsset.cpp">
-      <Filter>Engine\04.Object\RenderAsset</Filter>
-    </ClCompile>
     <ClCompile Include="Source Files\CScene.cpp">
       <Filter>Engine\06.Scene</Filter>
     </ClCompile>
@@ -260,6 +254,9 @@
     </ClCompile>
     <ClCompile Include="Source Files\CRenderManager.cpp">
       <Filter>Engine\03.Manager\RenderManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\RenderStruct.cpp">
+      <Filter>Engine\01.Header\struct</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -40,6 +40,9 @@ void CDefault_Scene::EnterScene()
     cbChangeOnResize.mProjection = MatrixTranspose(g_ProjectionMat);
     g_pImmediateContext->UpdateSubresource(g_pCBChangeOnResize, 0, nullptr, &cbChangeOnResize, 0, 0);
     */
+
+    m_SceneLight.ambientColor = FLOAT3(1.f, 1.f, 1.f);
+    m_SceneLight.ambientStrength = 1.f;
 }
 
 void CDefault_Scene::UpdateScene()

@@ -1,19 +1,22 @@
 #pragma once
-#include "CRenderAsset.h"
+#include "CObject.h"
 #include "MeshComp.h"
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 
-
 class CMesh :
-    public CRenderAsset
+    public CObject
 {
 private:
     vector<MeshComp*> m_Meshes;
     vector<MeshComp*> m_NonAlphaMeshes;
     vector<MeshComp*> m_AlphaMeshes;
     string m_directory;
+
+protected:
+    Matrix m_WorldMat;
+    Matrix m_RenderMat;
 
 public:
     void Initialize(const string _FilePath);
@@ -30,6 +33,10 @@ public:
     vector<TextureComp> LoadMaterialTexture(aiMaterial* _pMaterial, aiTextureType _textureType, const aiScene* _pScene);
 
     virtual CObject* Clone() override;
+
+protected:
+    void UpdateWorldMat();
+    void UpdateRenderMat();
 
 public:
     CMesh();

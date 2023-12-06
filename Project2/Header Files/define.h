@@ -67,7 +67,7 @@ enum class ROT_ORDER {
 #define OneDiv2PI 0.159154943f
 
 #define MAX_LOADSTRING (100)
-#define SHADER_BUFFER_SIZE (8192)
+#define SHADER_BUFFER_SIZE (16384)
 
 #define SINGLETON(_classname) public:\
 								static _classname* GetInstance() \
