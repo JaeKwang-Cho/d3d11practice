@@ -11,6 +11,8 @@ struct CameraStruct {
     Vector4 Up;
     Vector4 CameraLeft;
     Vector4 CameraUp;
+
+    FLOAT3 Rotation;
 };
 
 struct SampleVertex {
@@ -51,6 +53,12 @@ struct MVPMatrix
 
 struct LightBuffer
 {
-    FLOAT3 ambientColor;
-    float ambientStrength;
+    FLOAT3 ambientColor; // 0 - 12
+    float ambientStrength; // 12 - 16
+
+    FLOAT3 dynamicColor; // 16 - 28
+    float dynamicStrength; // 28 - 32
+
+    FLOAT3 dynamicPosition; // 32 - 44
+    float dummy;
 };

@@ -1,6 +1,7 @@
 #pragma once
 
 class CObject;
+class CLight;
 
 class CScene
 {
@@ -12,7 +13,7 @@ protected:
 	CameraStruct m_CameraStruct;
 
 protected:
-	LightBuffer	m_SceneLight;
+	CLight*	m_pSceneLight;
 
 public:
 	void AddObject(CObject* _pObj, GROUP_TYPE _eType);
@@ -20,7 +21,7 @@ public:
 public:
 	void SetSceneName(const wstring& _Name){m_Name = _Name;}
 	const wstring& GetSceneName(){return m_Name;}
-	LightBuffer GetSceneLight(){return m_SceneLight;}
+	CLight* GetSceneLight(){return m_pSceneLight;}
 	CameraStruct GetCameraStruct(){return m_CameraStruct;}
 
 public:

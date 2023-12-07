@@ -3,6 +3,7 @@
 #include "CSceneManager.h"
 #include "CScene.h"
 #include "CMesh.h"
+#include "CLight.h"
 
 HRESULT MeshComp::Initialize(vector<DefaultVertex>& _vertices, vector<WORD>& _indices, vector<TextureComp>& _textures, bool _bAlphaLessOne, Matrix _SubPosMat)
 {
@@ -150,20 +151,23 @@ void MeshComp::CalcZValue()
 
 void MeshComp::RenderComp()
 {
-    // 이제 GPU로 하여금 셰이더에 적힌, 레지스터 번호로 Contant buffer가 어디로 들어가야 하는지 알려주고
-    // 계산을 돌리고 인덱스를 따라 삼각형을 그리도록 시킨다.
     g_pImmediateContext->VSSetShader(m_VertexShader.m_pVertexShader, NULL, 0);
 
+    // MVP 매트릭스
     MVPMatrix cbMVPMatrix;
     cbMVPMatrix.RenderMat = MatrixTranspose(m_RenderMat);
     cbMVPMatrix.WorldMat = MatrixTranspose(m_WorldMat);
     g_pImmediateContext->UpdateSubresource(g_pCBMVPMat, 0, nullptr, &cbMVPMatrix, 0, 0);
 
-    // constant buffer 전달하기
+    // constant buffer 전달하기 #1
     g_pImmediateContext->VSSetConstantBuffers(0, 1, &g_pCBMVPMat);
 
-    LightBuffer cbLightBuffer = CSceneManager::GetInstance()->GetCurrScene()->GetSceneLight();
-    g_pImmediateContext->UpdateSubresource(g_pCBLightBuffer, 0, nullptr, &cbLightBuffer, 0, 0);
+    // 조명
+    CLight* pLight = CSceneManager::GetInstance()->GetCurrScene()->GetSceneLight();
+    LightBuffer cpLightBuffer = pLight->GetLightBuffer();
+    g_pImmediateContext->UpdateSubresource(g_pCBLightBuffer, 0, nullptr, &cpLightBuffer, 0, 0);
+
+    // constant buffer 전달하기 #2
     g_pImmediateContext->VSSetConstantBuffers(1, 1, &g_pCBLightBuffer);
 
     // 레이아웃 집어 넣기

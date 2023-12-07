@@ -12,13 +12,11 @@ void CDefault_Scene::EnterScene()
     // ΄«±ς
 	TestActor* tempActor = new TestActor;
     // Α¶Έν
-    TestLight* tempLight = new TestLight;
+    m_pSceneLight = new TestLight;
 
 	AddObject(tempActor, GROUP_TYPE::Default);
-    AddObject(tempLight, GROUP_TYPE::Default);
-
-    m_SceneLight.ambientColor = FLOAT3(1.f, 1.f, 1.f);
-    m_SceneLight.ambientStrength = 1.f;
+    AddObject(m_pSceneLight, GROUP_TYPE::Default);
+    m_pSceneLight->SetWorldScale(10.f, 10.f, 10.f);
 }
 
 void CDefault_Scene::UpdateScene()

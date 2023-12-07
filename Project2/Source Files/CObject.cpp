@@ -50,6 +50,7 @@ void CObject::FindWorldTransform()
 
 CObject::CObject()
 	: m_OwnerObject(nullptr)
+	, m_OwnerScene(nullptr)
 	, m_RelativeTransform()
 	, m_WorldTransform()
 	, m_Name{}
@@ -60,6 +61,7 @@ CObject::CObject()
 
 CObject::CObject(const CObject& _other)
 	: m_OwnerObject(nullptr)
+	, m_OwnerScene(nullptr)
 	, m_RelativeTransform()
 	, m_WorldTransform()
 	, m_Name{}

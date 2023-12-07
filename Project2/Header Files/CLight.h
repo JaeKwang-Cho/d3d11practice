@@ -4,8 +4,11 @@
 class CLight
 	: public CObject
 {
-public:
+protected:
+	LightBuffer m_Light;
 
+public:
+	LightBuffer GetLightBuffer(){return m_Light;}
 public:
 	void SetWorldPosition(float _x, float _y, float _z)
 	{
@@ -35,9 +38,9 @@ public:
 
 
 public:
-	virtual void StartObject() override;
-	virtual void UpdateObject() override;
-	virtual CObject* Clone() override;
+	virtual void StartObject() = 0;
+	virtual void UpdateObject() = 0;
+	virtual CObject* Clone() = 0;
 
 public:
 	CLight();

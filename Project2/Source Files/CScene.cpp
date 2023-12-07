@@ -184,6 +184,7 @@ void CScene::FlyCamera()
 
 CScene::CScene()
 	:m_CameraStruct()
+    , m_pSceneLight(nullptr)
 {
 }
 

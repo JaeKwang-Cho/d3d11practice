@@ -383,6 +383,8 @@ void CMesh::UpdateRenderMat()
 
 CMesh::CMesh()
     : m_Meshes()
+    , m_WorldMat(MatrixIdentity())
+    , m_RenderMat(MatrixIdentity())
 {
 }
 

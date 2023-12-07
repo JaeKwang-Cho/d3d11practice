@@ -64,6 +64,13 @@ struct FLOAT3 {
 
         return *this;
     }
+
+    FLOAT3 Normalize() const{
+        double tmp = (double)x * (double)x + (double)y * (double)y + (double)z*(double)z;
+        float len = (float)sqrt(tmp);
+
+        return FLOAT3(x / len, y / len, z / len);
+    }
 };
 
 struct Transform {

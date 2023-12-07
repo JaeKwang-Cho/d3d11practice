@@ -11,6 +11,12 @@ cbuffer lightBuffer : register(b1)
 {
     float3 ambientColor;
     float ambientStrength;
+    
+    float3 dynamicColor;
+    float dynamicStrength;
+    
+    float3 dynamicPosition;
+    float dummy;
 };
 
 //--------------------------------------------------------------------------------------
@@ -29,6 +35,7 @@ struct PS_INPUT
     float2 Tex : TEXCOORD;
     float Alpha : ALPHA;
     float3 Normal : NORMAL;
+    float3 WorldPos : WORLD_POSITION;
     //float4 Color : COLOR;
 };
 
@@ -46,6 +53,7 @@ PS_INPUT VS(VS_INPUT input)
     
     output.Tex = input.Tex;
     output.Normal = normalize(mul(float4(input.Normal, 0.f), WorldMat));
+    output.WorldPos = normalize(mul(input.Pos, WorldMat));
 
     return output;
 }
@@ -62,10 +70,21 @@ float4 PS(PS_INPUT input) : SV_Target
     
     // Sample : 쉐이더 내장함수, 파라미터에 따라 동작이 달라진다.
     // 여기서는 샘플러와 좌표로 보간을 해서 텍스쳐를 그리게 된다.
-    SampleColor.a = input.Alpha;
     
-    float4 ambientLight = float4(ambientColor, 1.f) * ambientStrength;
-    float4 finalColor = SampleColor * ambientLight;
+    float4 ambientLight = float4(ambientColor * ambientStrength, 1.f);
+    
+    float4 appliedLight = ambientLight;
+    
+    float3 vectorToLight = normalize(dynamicPosition - input.WorldPos);
+    
+    float diffuseLightIntensity = max(dot(vectorToLight, input.Normal), 0);
+    
+    float diffuseLight = diffuseLightIntensity * dynamicStrength * dynamicColor;
+    appliedLight += diffuseLight;
+    
+    float4 finalColor = SampleColor * saturate(appliedLight);
+    
+    finalColor.a = input.Alpha;
     
     return finalColor;
 }
