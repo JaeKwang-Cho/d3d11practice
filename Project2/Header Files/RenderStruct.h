@@ -53,12 +53,16 @@ struct MVPMatrix
 
 struct LightBuffer
 {
-    FLOAT3 ambientColor; // 0 - 12
-    float ambientStrength; // 12 - 16
+    FLOAT3 ambientColor; 
+    float ambientStrength; 
 
-    FLOAT3 dynamicColor; // 16 - 28
-    float dynamicStrength; // 28 - 32
+    FLOAT3 dynamicColor; 
+    float dynamicStrength; 
 
-    FLOAT3 dynamicPosition; // 32 - 44
-    float dummy;
+    FLOAT3 dynamicPosition; 
+    float attenuation_a;
+
+    float attenuation_b;
+    float attenuation_c;
+    float dummy[2];
 };

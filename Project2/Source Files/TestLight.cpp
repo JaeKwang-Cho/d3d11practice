@@ -42,6 +42,10 @@ TestLight::TestLight()
 
 	m_Light.dynamicColor = FLOAT3(1.f, 1.f, 1.f);
 	m_Light.dynamicStrength = 1.f;
+
+	m_Light.attenuation_a = 1.f;
+	m_Light.attenuation_b = 0.1f; 
+	m_Light.attenuation_c = 0.1f;
 }
 
 TestLight::~TestLight()

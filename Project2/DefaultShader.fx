@@ -16,7 +16,11 @@ cbuffer lightBuffer : register(b1)
     float dynamicStrength;
     
     float3 dynamicPosition;
-    float dummy;
+    float attenuation_a;
+
+    float attenuation_b;
+    float attenuation_c;
+    float2 dummy;
 };
 
 //--------------------------------------------------------------------------------------
@@ -71,15 +75,35 @@ float4 PS(PS_INPUT input) : SV_Target
     // Sample : 쉐이더 내장함수, 파라미터에 따라 동작이 달라진다.
     // 여기서는 샘플러와 좌표로 보간을 해서 텍스쳐를 그리게 된다.
     
-    float4 ambientLight = float4(ambientColor * ambientStrength, 1.f);
-    
+    // 엠비언트
+    float4 ambientLight;
+    {
+        ambientLight = float4(ambientColor * ambientStrength, 1.f);
+    }
     float4 appliedLight = ambientLight;
     
-    float3 vectorToLight = normalize(dynamicPosition - input.WorldPos);
+    // 디퓨즈
+    float diffuseLight;
+    {
+        float3 vectorToLight = normalize(dynamicPosition - input.WorldPos);
     
-    float diffuseLightIntensity = max(dot(vectorToLight, input.Normal), 0);
+        float diffuseLightIntensity = max(dot(vectorToLight, input.Normal), 0);
     
-    float diffuseLight = diffuseLightIntensity * dynamicStrength * dynamicColor;
+        diffuseLight = diffuseLightIntensity * dynamicStrength * dynamicColor;
+    }
+    
+    float distanceToLight = distance(dynamicPosition, input.WorldPos);
+    
+    // 세기 감쇠
+    float attenuationFactor;
+    {
+        attenuationFactor = 
+            1 / (attenuation_a + 
+            attenuation_b * distanceToLight + 
+            attenuation_c * pow(distanceToLight, 2));
+    }
+    diffuseLight *= saturate(attenuationFactor);
+    
     appliedLight += diffuseLight;
     
     float4 finalColor = SampleColor * saturate(appliedLight);
