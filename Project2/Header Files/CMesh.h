@@ -1,12 +1,12 @@
 #pragma once
-#include "CObject.h"
+#include "CObject3D.h"
 #include "MeshComp.h"
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 
 class CMesh :
-    public CObject
+    public CObject3D
 {
 private:
     vector<MeshComp*> m_Meshes;

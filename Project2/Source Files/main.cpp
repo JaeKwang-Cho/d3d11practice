@@ -30,6 +30,7 @@ Matrix                      g_WorldMat;
 Matrix                      g_WorldMat2;
 Matrix                      g_ViewMat;
 Matrix                      g_ProjectionMat;
+Matrix                      g_OrthogratphicMat;
 FLOAT4                      g_vMeshColor(0.7f, 0.7f, 0.7f, 1.0f);
 
 // Temp

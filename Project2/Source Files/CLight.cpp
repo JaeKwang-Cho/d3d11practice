@@ -2,7 +2,7 @@
 #include "CLight.h"
 
 CLight::CLight()
-	:CObject()
+	:CObject3D()
 {
 }
 

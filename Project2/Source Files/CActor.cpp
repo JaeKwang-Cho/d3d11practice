@@ -2,7 +2,7 @@
 #include "CActor.h"
 
 CActor::CActor()
-	: CObject()
+	: CObject3D()
 {
 }
 

@@ -13,7 +13,9 @@ void CScene::AddObject(CObject* _pObj, GROUP_TYPE _eType)
 
 void CScene::Enter()
 {
-    InitCamera();
+    InitCamera3D();
+
+    InitCamera2D();
 
 	EnterScene();
 
@@ -41,22 +43,17 @@ void CScene::Update()
 	}
 }
 
-void CScene::Render()
-{
-}
-
-
-void CScene::InitCamera()
+void CScene::InitCamera3D()
 {
     // 월드 매트릭스 초기화
     g_WorldMat = MatrixIdentity();
 
     // 뷰 매트릭스 초기화
-    m_CameraStruct.Eye = Vector4(0.0f, 3.0f, -6.0f, 0.0f);
-    m_CameraStruct.Direction = Vector4(0.0f, -2.0f, 6.0f, 0.0f).Normalize3Vec();
-    m_CameraStruct.At = m_CameraStruct.Eye + m_CameraStruct.Direction;
-    m_CameraStruct.Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
-    g_ViewMat = MatrixLookAtLH(m_CameraStruct.Eye, m_CameraStruct.At, m_CameraStruct.Up, m_CameraStruct.CameraLeft, m_CameraStruct.CameraUp);
+    m_CameraStruct3D.Eye = Vector4(0.0f, 3.0f, -6.0f, 0.0f);
+    m_CameraStruct3D.Direction = Vector4(0.0f, -2.0f, 6.0f, 0.0f).Normalize3Vec();
+    m_CameraStruct3D.At = m_CameraStruct3D.Eye + m_CameraStruct3D.Direction;
+    m_CameraStruct3D.Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+    g_ViewMat = MatrixLookAtLH(m_CameraStruct3D.Eye, m_CameraStruct3D.At, m_CameraStruct3D.Up, m_CameraStruct3D.CameraLeft, m_CameraStruct3D.CameraUp);
 
     // 프로젝션 매트릭스 초기화
     RECT rc = {};
@@ -73,6 +70,20 @@ void CScene::InitCamera()
     */
 }
 
+void CScene::InitCamera2D()
+{
+    // 월드 매트릭스 초기화
+    g_WorldMat = MatrixIdentity();
+
+    // 오쏘 그래픽 뷰 초기화
+    RECT rc = {};
+    GetClientRect(g_hWnd, &rc);
+    UINT width = rc.right - rc.left;
+    UINT height = rc.bottom - rc.top;
+
+    g_OrthogratphicMat = MatrixOrthographicOffCenterLH(0.f, width, height, 0.f, 0.01f, 100.f);
+}
+
 void CScene::FlyCamera()
 {
     if (GetFocus() != CCore::GetInstance()->GetMainHwnd())
@@ -84,51 +95,51 @@ void CScene::FlyCamera()
 
         if (KEYINPUTHOLD(KEY::W))
         {
-            m_CameraStruct.Eye = m_CameraStruct.Eye + m_CameraStruct.Direction * 3.f * DELTA_F;
+            m_CameraStruct3D.Eye = m_CameraStruct3D.Eye + m_CameraStruct3D.Direction * 3.f * DELTA_F;
 
-            m_CameraStruct.At = m_CameraStruct.Eye + m_CameraStruct.Direction;
-            m_CameraStruct.Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
-            g_ViewMat = MatrixLookAtLH(m_CameraStruct.Eye, m_CameraStruct.At, m_CameraStruct.Up, m_CameraStruct.CameraLeft, m_CameraStruct.CameraUp);
+            m_CameraStruct3D.At = m_CameraStruct3D.Eye + m_CameraStruct3D.Direction;
+            m_CameraStruct3D.Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+            g_ViewMat = MatrixLookAtLH(m_CameraStruct3D.Eye, m_CameraStruct3D.At, m_CameraStruct3D.Up, m_CameraStruct3D.CameraLeft, m_CameraStruct3D.CameraUp);
         }
         if (KEYINPUTHOLD(KEY::A))
         {
-            m_CameraStruct.Eye = m_CameraStruct.Eye + m_CameraStruct.CameraLeft * -3.f * DELTA_F;
+            m_CameraStruct3D.Eye = m_CameraStruct3D.Eye + m_CameraStruct3D.CameraLeft * -3.f * DELTA_F;
 
-            m_CameraStruct.At = m_CameraStruct.Eye + m_CameraStruct.Direction;
-            m_CameraStruct.Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
-            g_ViewMat = MatrixLookAtLH(m_CameraStruct.Eye, m_CameraStruct.At, m_CameraStruct.Up, m_CameraStruct.CameraLeft, m_CameraStruct.CameraUp);
+            m_CameraStruct3D.At = m_CameraStruct3D.Eye + m_CameraStruct3D.Direction;
+            m_CameraStruct3D.Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+            g_ViewMat = MatrixLookAtLH(m_CameraStruct3D.Eye, m_CameraStruct3D.At, m_CameraStruct3D.Up, m_CameraStruct3D.CameraLeft, m_CameraStruct3D.CameraUp);
         }
         if (KEYINPUTHOLD(KEY::S))
         {
-            m_CameraStruct.Eye = m_CameraStruct.Eye + m_CameraStruct.Direction * -3.f * DELTA_F;
+            m_CameraStruct3D.Eye = m_CameraStruct3D.Eye + m_CameraStruct3D.Direction * -3.f * DELTA_F;
 
-            m_CameraStruct.At = m_CameraStruct.Eye + m_CameraStruct.Direction;
-            m_CameraStruct.Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
-            g_ViewMat = MatrixLookAtLH(m_CameraStruct.Eye, m_CameraStruct.At, m_CameraStruct.Up, m_CameraStruct.CameraLeft, m_CameraStruct.CameraUp);
+            m_CameraStruct3D.At = m_CameraStruct3D.Eye + m_CameraStruct3D.Direction;
+            m_CameraStruct3D.Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+            g_ViewMat = MatrixLookAtLH(m_CameraStruct3D.Eye, m_CameraStruct3D.At, m_CameraStruct3D.Up, m_CameraStruct3D.CameraLeft, m_CameraStruct3D.CameraUp);
         }
         if (KEYINPUTHOLD(KEY::D))
         {
-            m_CameraStruct.Eye = m_CameraStruct.Eye + m_CameraStruct.CameraLeft * 3.f * DELTA_F;
+            m_CameraStruct3D.Eye = m_CameraStruct3D.Eye + m_CameraStruct3D.CameraLeft * 3.f * DELTA_F;
 
-            m_CameraStruct.At = m_CameraStruct.Eye + m_CameraStruct.Direction;
-            m_CameraStruct.Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
-            g_ViewMat = MatrixLookAtLH(m_CameraStruct.Eye, m_CameraStruct.At, m_CameraStruct.Up, m_CameraStruct.CameraLeft, m_CameraStruct.CameraUp);
+            m_CameraStruct3D.At = m_CameraStruct3D.Eye + m_CameraStruct3D.Direction;
+            m_CameraStruct3D.Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+            g_ViewMat = MatrixLookAtLH(m_CameraStruct3D.Eye, m_CameraStruct3D.At, m_CameraStruct3D.Up, m_CameraStruct3D.CameraLeft, m_CameraStruct3D.CameraUp);
         }
         if (KEYINPUTHOLD(KEY::E))
         {
-            m_CameraStruct.Eye = m_CameraStruct.Eye + m_CameraStruct.CameraUp * 3.f * DELTA_F;
+            m_CameraStruct3D.Eye = m_CameraStruct3D.Eye + m_CameraStruct3D.CameraUp * 3.f * DELTA_F;
 
-            m_CameraStruct.At = m_CameraStruct.Eye + m_CameraStruct.Direction;
-            m_CameraStruct.Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
-            g_ViewMat = MatrixLookAtLH(m_CameraStruct.Eye, m_CameraStruct.At, m_CameraStruct.Up, m_CameraStruct.CameraLeft, m_CameraStruct.CameraUp);
+            m_CameraStruct3D.At = m_CameraStruct3D.Eye + m_CameraStruct3D.Direction;
+            m_CameraStruct3D.Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+            g_ViewMat = MatrixLookAtLH(m_CameraStruct3D.Eye, m_CameraStruct3D.At, m_CameraStruct3D.Up, m_CameraStruct3D.CameraLeft, m_CameraStruct3D.CameraUp);
         }
         if (KEYINPUTHOLD(KEY::Q))
         {
-            m_CameraStruct.Eye = m_CameraStruct.Eye + m_CameraStruct.CameraUp * -3.f * DELTA_F;
+            m_CameraStruct3D.Eye = m_CameraStruct3D.Eye + m_CameraStruct3D.CameraUp * -3.f * DELTA_F;
 
-            m_CameraStruct.At = m_CameraStruct.Eye + m_CameraStruct.Direction;
-            m_CameraStruct.Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
-            g_ViewMat = MatrixLookAtLH(m_CameraStruct.Eye, m_CameraStruct.At, m_CameraStruct.Up, m_CameraStruct.CameraLeft, m_CameraStruct.CameraUp);
+            m_CameraStruct3D.At = m_CameraStruct3D.Eye + m_CameraStruct3D.Direction;
+            m_CameraStruct3D.Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+            g_ViewMat = MatrixLookAtLH(m_CameraStruct3D.Eye, m_CameraStruct3D.At, m_CameraStruct3D.Up, m_CameraStruct3D.CameraLeft, m_CameraStruct3D.CameraUp);
         }
 
         FLOAT2 vMouseMov = CMouseManager::GetInstance()->GetRelativePos();
@@ -151,11 +162,11 @@ void CScene::FlyCamera()
             {
                 Pitch *= 3.f;
 
-                Vector4 Formal = m_CameraStruct.Direction;
-                m_CameraStruct.Direction = RotateVectorAroundLocalAxis(m_CameraStruct.Direction, m_CameraStruct.CameraLeft, Pitch);
-                if (abs(m_CameraStruct.Direction.y) >= FLOAT_NEAR_ONE)
+                Vector4 Formal = m_CameraStruct3D.Direction;
+                m_CameraStruct3D.Direction = RotateVectorAroundLocalAxis(m_CameraStruct3D.Direction, m_CameraStruct3D.CameraLeft, Pitch);
+                if (abs(m_CameraStruct3D.Direction.y) >= FLOAT_NEAR_ONE)
                 {
-                    m_CameraStruct.Direction = Formal;
+                    m_CameraStruct3D.Direction = Formal;
                 }
                 else
                 {
@@ -165,16 +176,16 @@ void CScene::FlyCamera()
             if (abs(Yaw) > MOUSE_THRESHOLD)
             {
                 Yaw *= 3.f;
-                m_CameraStruct.Direction = RotateVectorAroundLocalAxis(m_CameraStruct.Direction, m_CameraStruct.CameraUp, Yaw);
+                m_CameraStruct3D.Direction = RotateVectorAroundLocalAxis(m_CameraStruct3D.Direction, m_CameraStruct3D.CameraUp, Yaw);
                 bChanged = true;
             }
 
             if (bChanged)
             {
-                m_CameraStruct.Direction = m_CameraStruct.Direction.Normalize3Vec();
-                m_CameraStruct.At = m_CameraStruct.Eye + m_CameraStruct.Direction;
-                m_CameraStruct.Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
-                g_ViewMat = MatrixLookAtLH(m_CameraStruct.Eye, m_CameraStruct.At, m_CameraStruct.Up, m_CameraStruct.CameraLeft, m_CameraStruct.CameraUp);
+                m_CameraStruct3D.Direction = m_CameraStruct3D.Direction.Normalize3Vec();
+                m_CameraStruct3D.At = m_CameraStruct3D.Eye + m_CameraStruct3D.Direction;
+                m_CameraStruct3D.Up = Vector4(0.0f, 1.0f, 0.0f, 0.0f);
+                g_ViewMat = MatrixLookAtLH(m_CameraStruct3D.Eye, m_CameraStruct3D.At, m_CameraStruct3D.Up, m_CameraStruct3D.CameraLeft, m_CameraStruct3D.CameraUp);
             }
 
             CMouseManager::GetInstance()->RezeroRelativePos();
@@ -183,7 +194,7 @@ void CScene::FlyCamera()
 }
 
 CScene::CScene()
-	:m_CameraStruct()
+	:m_CameraStruct3D()
     , m_pSceneLight(nullptr)
 {
 }

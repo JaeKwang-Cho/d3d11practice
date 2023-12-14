@@ -61,8 +61,8 @@ public:
 	void UpdateComponent();
 
 	virtual CObject* Clone() = 0;
-private:
-	void FindWorldTransform();
+protected:
+	virtual void FindWorldTransform() = 0;
 
 public:
 	CObject();

@@ -173,21 +173,53 @@ Matrix MatrixTranslation(FLOAT3 _fNum)
     return Mat;
 }
 
-Matrix MatrixPerspectiveFovLH(float FovRadianY, float AspectRatio, float NearZ, float FarZ)
+Matrix MatrixPerspectiveFovLH(float _FovRadianY, float _AspectRatio, float _NearZ, float _FarZ)
 {
     Matrix Mat;
 
-    float SinRadian = sinf(FovRadianY * 0.5f);
-    float CosRadian = cosf(FovRadianY * 0.5f);
+    float SinRadian = sinf(_FovRadianY * 0.5f);
+    float CosRadian = cosf(_FovRadianY * 0.5f);
 
     float Height = CosRadian / SinRadian;
-    float Width = Height / AspectRatio;
+    float Width = Height / _AspectRatio;
 
     Mat.m[0] = Vector4(Width, 0.0f, 0.0f, 0.0f);
     Mat.m[1] = Vector4(0.0f, Height, 0.0f, 0.0f);
-    Mat.m[2] = Vector4(0.0f, 0.0f, FarZ / (FarZ - NearZ), 1.0f);
-    Mat.m[3] = Vector4(0.0f, 0.0f, -Mat.m[2].z * NearZ, 0.0f);
+    Mat.m[2] = Vector4(0.0f, 0.0f, _FarZ / (_FarZ - _NearZ), 1.0f);
+    Mat.m[3] = Vector4(0.0f, 0.0f, -Mat.m[2].z * _NearZ, 0.0f);
 
+    return Mat;
+}
+
+Matrix MatrixOrthographicLH(float _ViewWidth, float _ViewHeight, float _NearZ, float _FarZ)
+{
+    Matrix Mat;
+
+    float fRange = 1.0f / (_FarZ - _NearZ);
+
+    Mat.m[0] = Vector4(2.0f / _ViewWidth, 0.f, 0.f, 0.f);
+    Mat.m[1] = Vector4(0.f, 2.0f / _ViewHeight, 0.f, 0.f);
+    Mat.m[2] = Vector4(0.f, 0.f, fRange, 0.f);
+    Mat.m[3] = Vector4(0.f, 0.f, -fRange * _NearZ, 1.f);
+
+    return Mat;
+}
+
+Matrix MatrixOrthographicOffCenterLH(float _ViewLeft, float _ViewRight, float _ViewBottom, float _ViewTop, float _NearZ, float _FarZ)
+{
+    float ReciprocalWidth = 1.0f / (_ViewRight - _ViewLeft);
+    float ReciprocalHeight = 1.0f / (_ViewTop - _ViewBottom);
+    float fRange = 1.0f / (_FarZ - _NearZ);
+
+    Matrix Mat;
+    Mat.m[0] = Vector4(ReciprocalWidth + ReciprocalWidth, 0.f, 0.f, 0.f);
+    Mat.m[1] = Vector4(0.f, ReciprocalHeight + ReciprocalHeight, 0.f, 0.f);
+    Mat.m[2] = Vector4(0.f, 0.f, fRange, 0.f);
+    Mat.m[3] = Vector4(
+        -(_ViewLeft + _ViewRight) * ReciprocalWidth,
+        -(_ViewTop + _ViewBottom) * ReciprocalHeight, 
+        -fRange * _NearZ, 
+        1.0f);
     return Mat;
 }
 

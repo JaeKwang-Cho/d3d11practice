@@ -129,6 +129,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -154,11 +155,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Header Files\CObject3D.h" />
+    <ClInclude Include="Header Files\CObject2D.h" />
     <ClInclude Include="Header Files\CLight.h" />
     <ClInclude Include="Header Files\BasicRenderComp.h" />
     <ClInclude Include="Header Files\CRenderManager.h" />
     <ClInclude Include="Header Files\CActor.h" />
-    <ClInclude Include="Header Files\CActorComponent.h" />
     <ClInclude Include="Header Files\CCore.h" />
     <ClInclude Include="Header Files\CDefault_Scene.h" />
     <ClInclude Include="Header Files\CKeyManager.h" />
@@ -191,13 +193,14 @@
     <ClInclude Include="Header Files\TestActor.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source Files\CObject3D.cpp" />
+    <ClCompile Include="Source Files\CObject2D.cpp" />
     <ClCompile Include="Source Files\CLight.cpp" />
     <ClCompile Include="Source Files\RenderStruct.cpp" />
     <ClCompile Include="Source Files\CRenderManager.cpp" />
     <ClCompile Include="Source Files\HelperFunc.cpp" />
     <ClCompile Include="Source Files\MeshComp.cpp" />
     <ClCompile Include="Source Files\CActor.cpp" />
-    <ClCompile Include="Source Files\CActorComponent.cpp" />
     <ClCompile Include="Source Files\CCore.cpp" />
     <ClCompile Include="Source Files\CDefault_Scene.cpp" />
     <ClCompile Include="Source Files\CKeyManager.cpp" />

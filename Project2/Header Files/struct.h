@@ -443,7 +443,11 @@ Matrix MatrixTranslation(float _sx, float _sy, float _sz);
 
 Matrix MatrixTranslation(FLOAT3 _fNum);
 
-Matrix MatrixPerspectiveFovLH(float FovRadianY, float AspectRatio, float NearZ, float FarZ);
+Matrix MatrixPerspectiveFovLH(float _FovRadianY, float _AspectRatio, float _NearZ, float _FarZ);
+
+Matrix MatrixOrthographicLH(float _ViewWidth, float _ViewHeight, float _NearZ, float _FarZ);
+
+Matrix MatrixOrthographicOffCenterLH(float _ViewLeft, float _ViewRight, float _ViewBottom, float _ViewTop, float _NearZ, float _FarZ);
 
 Matrix MatrixLookAtLH(Vector4 _CameraPosition, Vector4 _LookAtPosition, Vector4 _UpDirection, Vector4& _CameraLeft, Vector4& _CameraUp);
 

@@ -38,21 +38,6 @@
     <Filter Include="Engine\04.Object">
       <UniqueIdentifier>{74d7cc56-bc04-40fb-b9b4-4585e43f4a4f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\04.Object\Actor">
-      <UniqueIdentifier>{6d3e9b55-81c3-4526-9fd3-84ad11209e9f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\04.Object\Component">
-      <UniqueIdentifier>{4ea3d7f9-a243-41f5-ad6e-c5c644825012}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\04.Object\Component\ActorComponent">
-      <UniqueIdentifier>{896f9388-6542-4433-a533-be814f9cfb98}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\04.Object\RenderAsset">
-      <UniqueIdentifier>{b9a3c86c-3453-475b-8f59-cb42a30c90df}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\07.Factory">
-      <UniqueIdentifier>{638a0eac-a36c-49eb-90f4-1fd5440f41a2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\06.Scene">
       <UniqueIdentifier>{e9e51c58-08ba-4be1-9c43-995140729882}</UniqueIdentifier>
     </Filter>
@@ -77,9 +62,6 @@
     <Filter Include="Contents\Default\Actors">
       <UniqueIdentifier>{1bedf24d-1b19-4694-a533-561fa3a5c60f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\04.Object\RenderAsset\Mesh">
-      <UniqueIdentifier>{509d7a45-3825-4750-8773-350b5e8cf149}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Defauit\Samples">
       <UniqueIdentifier>{848dfd4c-9c28-4e47-bfb4-526d8f2fa414}</UniqueIdentifier>
     </Filter>
@@ -101,11 +83,26 @@
     <Filter Include="Engine\03.Manager\RenderManager">
       <UniqueIdentifier>{818ab136-e6be-4a5b-933b-7893528dfcda}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\04.Object\RenderAsset\Light">
-      <UniqueIdentifier>{c428c01e-5443-4538-b7e6-3cfb7570fefe}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Contents\Default\Light">
       <UniqueIdentifier>{5820a336-4aab-490e-85ac-4a2f1ac09d1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\04.Object\3D">
+      <UniqueIdentifier>{71fc26ac-eb78-4c46-9466-4d92675bfe9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\04.Object\2D">
+      <UniqueIdentifier>{484d12d8-a123-461c-8206-7539a595b254}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\04.Object\3D\RenderAsset">
+      <UniqueIdentifier>{b9a3c86c-3453-475b-8f59-cb42a30c90df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\04.Object\3D\RenderAsset\Mesh">
+      <UniqueIdentifier>{509d7a45-3825-4750-8773-350b5e8cf149}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\04.Object\3D\RenderAsset\Light">
+      <UniqueIdentifier>{c428c01e-5443-4538-b7e6-3cfb7570fefe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\04.Object\3D\Actor">
+      <UniqueIdentifier>{6d3e9b55-81c3-4526-9fd3-84ad11209e9f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -150,10 +147,7 @@
       <Filter>Engine\04.Object</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\CActor.h">
-      <Filter>Engine\04.Object\Actor</Filter>
-    </ClInclude>
-    <ClInclude Include="Header Files\CActorComponent.h">
-      <Filter>Engine\04.Object\Component\ActorComponent</Filter>
+      <Filter>Engine\04.Object\3D\Actor</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\CScene.h">
       <Filter>Engine\06.Scene</Filter>
@@ -171,7 +165,7 @@
       <Filter>Engine\03.Manager\InputManager</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\CMesh.h">
-      <Filter>Engine\04.Object\RenderAsset\Mesh</Filter>
+      <Filter>Engine\04.Object\3D\RenderAsset\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\MeshComp.h">
       <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
@@ -192,10 +186,16 @@
       <Filter>Engine\01.Header\struct</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\CLight.h">
-      <Filter>Engine\04.Object\RenderAsset\Light</Filter>
+      <Filter>Engine\04.Object\3D\RenderAsset\Light</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\TestLight.h">
       <Filter>Contents\Default\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\CObject2D.h">
+      <Filter>Engine\04.Object\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\CObject3D.h">
+      <Filter>Engine\04.Object\3D</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -235,10 +235,7 @@
       <Filter>Engine\04.Object</Filter>
     </ClCompile>
     <ClCompile Include="Source Files\CActor.cpp">
-      <Filter>Engine\04.Object\Actor</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Files\CActorComponent.cpp">
-      <Filter>Engine\04.Object\Component\ActorComponent</Filter>
+      <Filter>Engine\04.Object\3D\Actor</Filter>
     </ClCompile>
     <ClCompile Include="Source Files\CScene.cpp">
       <Filter>Engine\06.Scene</Filter>
@@ -256,7 +253,7 @@
       <Filter>Engine\03.Manager\InputManager</Filter>
     </ClCompile>
     <ClCompile Include="Source Files\CMesh.cpp">
-      <Filter>Engine\04.Object\RenderAsset\Mesh</Filter>
+      <Filter>Engine\04.Object\3D\RenderAsset\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="Source Files\MeshComp.cpp">
       <Filter>Engine\01.Header\RenderComps\RenderComps_Objects</Filter>
@@ -271,10 +268,16 @@
       <Filter>Engine\01.Header\struct</Filter>
     </ClCompile>
     <ClCompile Include="Source Files\CLight.cpp">
-      <Filter>Engine\04.Object\RenderAsset\Light</Filter>
+      <Filter>Engine\04.Object\3D\RenderAsset\Light</Filter>
     </ClCompile>
     <ClCompile Include="Source Files\TestLight.cpp">
       <Filter>Contents\Default\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\CObject2D.cpp">
+      <Filter>Engine\04.Object\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\CObject3D.cpp">
+      <Filter>Engine\04.Object\3D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

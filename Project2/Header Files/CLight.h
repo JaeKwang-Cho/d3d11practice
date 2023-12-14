@@ -1,8 +1,8 @@
 #pragma once
-#include "CObject.h"
+#include "CObject3D.h"
 
 class CLight
-	: public CObject
+	: public CObject3D
 {
 protected:
 	LightBuffer m_Light;

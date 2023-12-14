@@ -389,7 +389,7 @@ CMesh::CMesh()
 }
 
 CMesh::CMesh(const CMesh& _other)
-	:CObject(_other)
+	:CObject3D(_other)
     , m_WorldMat(MatrixIdentity())
     , m_RenderMat(MatrixIdentity())
     , m_Meshes()

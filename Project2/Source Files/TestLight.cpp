@@ -12,7 +12,7 @@ void TestLight::UpdateObject()
 {
 	if (KEYINPUTTAP(KEY::C))
 	{
-		CameraStruct cam = GetOwnerScene()->GetCameraStruct();
+		CameraStruct cam = GetOwnerScene()->GetCameraStruct3D();
 		FLOAT3 CameraPos = FLOAT3(cam.At.x, cam.At.y, cam.At.z);
 		FLOAT3 CameraRot = FLOAT3(1.0f, 0.f, 0.f);
 		SetWorldPosition(CameraPos);

@@ -1,8 +1,8 @@
 #pragma once
-#include "CObject.h"
+#include "CObject3D.h"
 
 class CActor :
-    public CObject
+    public CObject3D
 {
 private:
 
